@@ -11,17 +11,41 @@
   margin-right: 6px;
 }
 
+.inula-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 横向排列时增加间距 */
+.inula-radio-group.horizontal {
+  flex-direction: row;
+  gap: 24px;
+}
+
 .inula-radio-wrapper {
   display: inline-flex;
   align-items: center;
   cursor: pointer;
   font-size: 14px;
   user-select: none;
+  margin-bottom: 0;
 }
 
-.inula-radio-wrapper--disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+.inula-radio-large .inula-radio-inner {
+  width: 20px;
+  height: 20px;
+}
+.inula-radio-large .inula-radio-label {
+  font-size: 16px;
+}
+
+.inula-radio-small .inula-radio-inner {
+  width: 12px;
+  height: 12px;
+}
+.inula-radio-small .inula-radio-label {
+  font-size: 12px;
 }
 
 .inula-radio {
@@ -73,23 +97,27 @@
   transition: all 0.2s;
 }
 
-.inula-radio-disabled .inula-radio-inner {
+.inula-radio-disabled .inula-radio-inner,
+.inula-radio-wrapper--disabled .inula-radio-inner {
   background-color: #f5f5f5;
   border-color: #d9d9d9;
+  cursor: not-allowed;
 }
 
-.inula-radio-label {
-  margin-left: 4px;
-  color: #333;
-  font-size: 14px;
-}
-
-.inula-radio--disabled .inula-radio__icon {
-  border-color: #e4e7ed;
-  background: #f5f7fa;
-  box-shadow: none;
-}
-
-.inula-radio--disabled .inula-radio__label {
+.inula-radio-disabled .inula-radio-label,
+.inula-radio-wrapper--disabled .inula-radio-label {
   color: #c0c4cc;
+}
+
+.inula-radio-readonly .inula-radio-inner,
+.inula-radio-wrapper--readonly .inula-radio-inner {
+  background-color: #fafafa;
+  border-style: dashed;
+  border-color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+.inula-radio-readonly .inula-radio-label,
+.inula-radio-wrapper--readonly .inula-radio-label {
+  color: #bfbfbf;
 } 

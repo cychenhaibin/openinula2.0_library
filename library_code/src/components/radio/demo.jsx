@@ -1,19 +1,22 @@
-import Radio from './index.jsx';
+// import Button from './index.jsx';
+import demo1 from './demos/demo1.jsx';
+import demo2 from './demos/demo2.jsx';
+import demo3 from './demos/demo3.jsx';
+import demo4 from './demos/demo4.jsx';
+import demo5 from './demos/demo5.jsx';
+import demo6 from './demos/demo6.jsx';
 
 function RadioDemo() {
-  let selected = 'a';
-
-  function handleRadioChange(val) {
-    selected = val;
-  }
-
-  return (
-    <div>
-      <h3>基本用法</h3>
-      <Radio label="选项A" value="a" checked={selected === 'a'} onChange={handleRadioChange} name="group1" />
-      <Radio label="选项B" value="b" checked={selected === 'b'} onChange={handleRadioChange} name="group1" />
-      <Radio label="禁用" value="c" disabled label="禁用选项" name="group1" />
-    </div>
-  );
+    let loading = false;
+    return (
+        <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'column', gap: 16 }}>
+            <div><demo1 /></div>
+            <div><demo2 /></div>
+            <div><demo3 /></div>
+            <div><demo4 /></div>
+            <div><demo5 /></div>
+            <div><demo6 /></div>
+        </div>
+    );
 } 
 export default RadioDemo;
