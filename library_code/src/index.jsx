@@ -1,6 +1,7 @@
 import { render } from '@openinula/next';
 import './index.css';
 import Button from './components/button/demo.jsx';
+import Radio from './components/radio/demo.jsx';
 
 function App() {
   return (
@@ -11,9 +12,9 @@ function App() {
         <div className="hero-content">
           <Button />
         </div>
-        <p className="hero-subtitle animate__animated animate__fadeInUp">Button 组件</p>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Radio 组件</p>
         <div className="hero-content">
-          <Button />
+          <Radio />
         </div>
       </div>
 
