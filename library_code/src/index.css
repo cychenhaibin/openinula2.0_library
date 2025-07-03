@@ -140,7 +140,8 @@ body {
   animation: numberPop 0.3s ease-out;
 }
 .hero-content {
-  background-color: #c5d7eef6;
+  /*background-color: #c5d7eef6;*/
+  background-color: #fff;
   border-radius: 10px;
   padding: 30px;
 }

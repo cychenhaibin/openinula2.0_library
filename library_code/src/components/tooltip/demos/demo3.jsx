@@ -1,0 +1,26 @@
+import Tooltip from '../index.jsx';
+import Button from '../../button/index.jsx';
+import '../index.css';
+
+function Demo() {
+  return (
+    <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex' }}>
+        <Tooltip title="hover" trigger="hover">
+          <Button>hover</Button>
+        </Tooltip>
+      </div>
+      <div style={{ display: 'flex' }}>
+        <Tooltip title="click" trigger="click">
+          <Button>click</Button>
+        </Tooltip>
+      </div>
+      <div style={{ display: 'flex' }}>
+        <Tooltip title="focus" trigger="focus">
+          <input placeholder="focus" style={{ padding: '4px 8px' }} />
+        </Tooltip>
+      </div>
+    </div>
+  );
+}
+export default Demo;
