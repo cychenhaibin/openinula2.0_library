@@ -6,7 +6,7 @@ function Demo5() {
     selected = val;
   }
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
       <Radio label="只读A" value="a" checked={selected === 'a'} readOnly onChange={handleRadioChange} />
       <Radio label="只读B" value="b" checked={selected === 'b'} readOnly onChange={handleRadioChange} />
     </div>
