@@ -7,12 +7,12 @@ function Demo() {
     <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
       <div style={{ display: 'flex' }}>
         <Tooltip title="hover" trigger="hover">
-          <Button>hover</Button>
+          <Button type="primary">hover</Button>
         </Tooltip>
       </div>
       <div style={{ display: 'flex' }}>
         <Tooltip title="click" trigger="click">
-          <Button>click</Button>
+          <Button type="primary">click</Button>
         </Tooltip>
       </div>
       <div style={{ display: 'flex' }}>

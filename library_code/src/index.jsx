@@ -3,6 +3,8 @@ import './index.css';
 import Button from './components/button/demo.jsx';
 import Radio from './components/radio/demo.jsx';
 import Tooltip from './components/tooltip/demo.jsx';
+import Notification from './components/Notification/demo.jsx';
+window.render = render; 
 
 function App() {
   return (
@@ -20,6 +22,10 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Tooltip 组件</p>
         <div className="hero-content">
           <Tooltip />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Notification 通知组件</p>
+        <div className="hero-content">
+          <Notification />
         </div>
       </div>
 
