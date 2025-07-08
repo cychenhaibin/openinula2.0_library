@@ -5,6 +5,10 @@ import Button from './components/button/demo.jsx';
 import Icon from './components/icon/demo.jsx';
 import Checkbox from './components/checkbox/demo.jsx';
 import Switch from './components/switch/demo.jsx';
+import Radio from './components/radio/demo.jsx';
+import Tooltip from './components/tooltip/demo.jsx';
+import Notification from './components/Notification/demo.jsx';
+window.render = render; 
 
 function App() {
   return (
@@ -26,6 +30,18 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Switch 组件</p>
         <div className="hero-content">
           <Switch />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Radio 组件</p>
+        <div className="hero-content">
+          <Radio />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Tooltip 组件</p>
+        <div className="hero-content">
+          <Tooltip />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Notification 通知组件</p>
+        <div className="hero-content">
+          <Notification />
         </div>
       </div>
     </div>

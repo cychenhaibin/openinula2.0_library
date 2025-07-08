@@ -4,48 +4,43 @@ import demo2 from './demos/demo2.jsx';
 import demo3 from './demos/demo3.jsx';
 import demo4 from './demos/demo4.jsx';
 import demo5 from './demos/demo5.jsx';
-import demo6 from './demos/demo6.jsx';
 
-function ButtonDemo() {
+function NotificationDemo() {
     let loading = false;
     return (
         <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>基本</h2>
-                <div>展示按钮的五种类型：主按钮、默认按钮、虚线按钮、文本按钮、链接按钮。</div>
+                <h2>基础通知</h2>
+                <div>演示信息、成功、警告、错误四种类型的通知用法。</div>
             </div>
             <div><demo1 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>危险</h2>
-                <div>展示五种类型按钮的'危险'状态用法。</div>
+                <h2>自定义关闭按钮</h2>
+                <div>演示如何自定义通知的关闭按钮文本和样式。</div>
             </div>
             <div><demo2 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>幽灵</h2>
-                <div>展示按钮的'幽灵'状态，包括主按钮、默认按钮和危险主按钮的幽灵样式。</div>
+                <h2>自定义操作按钮</h2>
+                <div>演示如何为通知添加自定义操作按钮。</div>
             </div>
             <div><demo3 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>禁用</h2>
-                <div>展示五种类型按钮的'禁用'状态用法。</div>
+                <h2>弹出位置</h2>
+                <div>演示通知在不同屏幕位置的弹出效果。</div>
             </div>
             <div><demo4 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>加载中</h2>
-                <div>展示五种类型按钮的'加载中'状态用法。</div>
+                <h2>选择背景颜色</h2>
+                <div>可以传入bgColor显示不同的背景颜色</div>
             </div>
             <div><demo5 /></div>
 
-            <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>交互加载</h2>
-                <div>演示点击按钮后进入加载中状态，1.5秒后恢复。</div>
-            </div>
-            <div><demo6 /></div>
+            
         </div>
     );
 } 
-export default ButtonDemo;
+export default NotificationDemo;
