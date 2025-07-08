@@ -4,6 +4,7 @@ import './colors.css';
 import Button from './components/button/demo.jsx';
 import Icon from './components/icon/demo.jsx';
 import Checkbox from './components/checkbox/demo.jsx';
+import Switch from './components/switch/demo.jsx';
 
 function App() {
   return (
@@ -21,6 +22,10 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Checkbox 组件</p>
         <div className="hero-content">
           <Checkbox />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Switch 组件</p>
+        <div className="hero-content">
+          <Switch />
         </div>
       </div>
     </div>

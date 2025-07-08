@@ -53,4 +53,13 @@
   --inula-checkbox-indeterminate-hover-bg: #4096ff;
   --inula-checkbox-indeterminate-disabled-after: #b8b8b8;
 
+  /* switch */
+  --inula-switch-default-bg: #bfbfbf;
+  --inula-switch-default-hover-bg: #8c8c8c;
+
+  --inula-switch-checked-bg: #1677ff;
+  --inula-switch-checked-hover-bg: #4096ff;
+
+  --inula-switch-disabled-bg: #d5d5d5;
+  --inula-switch-checked-disabled-bg: #67a6ff;
 } 
