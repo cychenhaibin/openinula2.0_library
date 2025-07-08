@@ -1,6 +1,10 @@
 import { render } from '@openinula/next';
 import './index.css';
+import './colors.css';
 import Button from './components/button/demo.jsx';
+import Icon from './components/icon/demo.jsx';
+import Checkbox from './components/checkbox/demo.jsx';
+import Switch from './components/switch/demo.jsx';
 import Radio from './components/radio/demo.jsx';
 import Tooltip from './components/tooltip/demo.jsx';
 import Notification from './components/Notification/demo.jsx';
@@ -15,6 +19,18 @@ function App() {
         <div className="hero-content">
           <Button />
         </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Icon 组件</p>
+        <div className="hero-content">
+          <Icon />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Checkbox 组件</p>
+        <div className="hero-content">
+          <Checkbox />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Switch 组件</p>
+        <div className="hero-content">
+          <Switch />
+        </div>
         <p className="hero-subtitle animate__animated animate__fadeInUp">Radio 组件</p>
         <div className="hero-content">
           <Radio />
@@ -28,7 +44,6 @@ function App() {
           <Notification />
         </div>
       </div>
-
     </div>
   );
 }

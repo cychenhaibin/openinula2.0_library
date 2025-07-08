@@ -20,7 +20,7 @@ const Button = ({
     loading ? 'inula-btn-loading' : '',
   ].filter(Boolean).join(' ');
 
-  console.log('Button props:', rest);
+  // console.log('Button props:', rest);
 
   return (
     <button

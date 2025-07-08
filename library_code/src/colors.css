@@ -35,8 +35,8 @@
   --inula-color-ghost-bg-active: rgba(22, 119, 255, 0.16);
 
   /* 禁用状态颜色 */
-  --inula-color-disabled-bg: #fff;
-  --inula-color-disabled-text: #333;
+  --inula-color-disabled-bg: rgba(0,0,0,0.04);
+  --inula-color-disabled-text: rgba(0,0,0,0.25);
   --inula-color-disabled-border: #d9d9d9;
 
   /* 加载中 spinner 颜色 */
@@ -46,6 +46,23 @@
   /* demo 深色背景 */
   --inula-demo-dark-bg: #222;
 
+  /* icon 默认颜色 */
+  --inula-icon-default: #555555;
+
+  /* indeterminate-checkbox */
+  --inula-checkbox-indeterminate-hover-bg: #4096ff;
+  --inula-checkbox-indeterminate-disabled-after: #b8b8b8;
+
+  /* switch */
+  --inula-switch-default-bg: #bfbfbf;
+  --inula-switch-default-hover-bg: #8c8c8c;
+
+  --inula-switch-checked-bg: #1677ff;
+  --inula-switch-checked-hover-bg: #4096ff;
+
+  --inula-switch-disabled-bg: #d5d5d5;
+  --inula-switch-checked-disabled-bg: #67a6ff;
+  
   /* Radio 颜色 */
   --inula-radio-bg: #fff;
   --inula-radio-border: #d9d9d9;
