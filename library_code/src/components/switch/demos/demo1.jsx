@@ -11,6 +11,10 @@ const SwitchDemo = () => {
         <text>Switch</text>
       </div>
       <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+        <Switch size="small"/>
+        <text>小号Switch</text>
+      </div>
+      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
         <Switch defaultChecked={true} />
         <text>带默认选中的Switch</text>
       </div>
