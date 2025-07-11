@@ -8,6 +8,7 @@ const Switch = ({
   size = "default",  //default, small
   checked,
   onChange,
+  onClick,
   className,
   style,
   checkedChildren,
@@ -36,7 +37,7 @@ const Switch = ({
     .filter(Boolean)
     .join(" ");
 
-  console.log("classNames", classNames);
+  // console.log("classNames", classNames);
 
   const btnClassNames = [
     "inula-switch-btn",
@@ -59,6 +60,12 @@ const Switch = ({
     if (checked !== undefined) {
       e.target.checked = checked;
       isChecked = checked;
+      if (onChange) {
+        onChange(e);
+      }
+      if (onClick) {
+        onClick(e);
+      }
       return;
     }
 

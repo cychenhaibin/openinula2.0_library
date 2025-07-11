@@ -8,6 +8,7 @@ import Switch from './components/switch/demo.jsx';
 import Radio from './components/radio/demo.jsx';
 import Tooltip from './components/tooltip/demo.jsx';
 import Notification from './components/Notification/demo.jsx';
+import Spin from './components/spin/demo.jsx';
 window.render = render; 
 
 function App() {
@@ -42,6 +43,10 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Notification 通知组件</p>
         <div className="hero-content">
           <Notification />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Spin 加载组件</p>
+        <div className="hero-content">
+          <Spin />
         </div>
       </div>
     </div>
