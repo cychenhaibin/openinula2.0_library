@@ -7,10 +7,6 @@ function IconDemo() {
         <Icon value="user" />
         <text>user默认实体</text>
       </div>
-      {/* <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <Icon value="user" theme="outline" />
-        <text>user线条</text>
-      </div> */}
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <Icon value="user" theme="filled" />
         <text>user实体</text>
@@ -19,10 +15,6 @@ function IconDemo() {
         <Icon value="user" theme="filled" color="blue"/>
         <text>user实体蓝色</text>
       </div>
-      {/* <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <Icon value="user" theme="twoTone" />
-        <text>user双色</text>
-      </div> */}
     </div>
   );
 }
