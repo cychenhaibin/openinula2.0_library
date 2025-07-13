@@ -4,7 +4,8 @@ import Icon from "../../icon/index.jsx";
 const SwitchDemo = () => {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 16, alignItems: "center", width: '100%' }}>
+      <text style={{ width: "20%", textAlign: "start" }}>带内容的开关</text>
         <Switch
           checkedChildren="开启"
           unCheckedChildren="关闭"
@@ -16,7 +17,6 @@ const SwitchDemo = () => {
           unCheckedChildren={<Icon value="close" color="white" size={18} />}
           defaultChecked
         />
-        <text>带内容的Switch</text>
       </div>
     </div>
   );
