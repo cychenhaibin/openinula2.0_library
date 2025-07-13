@@ -10,7 +10,8 @@ const actions = [
 const CardDemo = () => {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 16, alignItems: "center", width: '100%' }}>
+        <text style={{width: '20%', textAlign: 'start'}}>完整Card布局</text>
         <Card
           title="Default size card"
           extra={<div>More</div>}
@@ -27,12 +28,13 @@ const CardDemo = () => {
           <span>Card content</span>
         </Card>
       </div>
-      <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
-        <Card title="borderless card" variant="borderless">
-          <div style={{ width: "100%" }}>Card content</div>
+      <div style={{ display: "flex", gap: 20, alignItems: "center", width: '100%' }}>
+        <text style={{width: '20%', textAlign: 'start'}}>边框样式，带边框和不带边框、型号、hover</text>
+        <Card title="不带边框的Card" variant="borderless">
+          <div style={{ width: "100%" }}>默认型号，无hover动效</div>
         </Card>
-        <Card title="outlined small hoverable card" size="small" hoverable>
-          <div style={{ width: "100%" }}>Card content</div>
+        <Card title="带边框的Card" size="small" hoverable>
+          <div style={{ width: "100%" }}>小号，有hover动效</div>
         </Card>
       </div>
     </div>

@@ -4,15 +4,15 @@ const SpinDemo = () => {
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 16, alignItems: "center", width: '100%' }}>
+      <text style={{width: '12%', textAlign: 'start'}}>最简单的Spin</text>
         <Spin />
-        <text>一个简单的Spin</text>
       </div>
-      <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 20, alignItems: "center", width: '100%' }}>
+      <text style={{width: '12%', textAlign: 'start'}}>小中大的Spin</text>
         <Spin size="small" />
         <Spin size="default" />
         <Spin size="large" />
-        <text>小中大的Spin</text>
       </div>
     </div>
   );

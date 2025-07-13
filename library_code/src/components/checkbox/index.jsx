@@ -18,6 +18,7 @@ const Checkbox = ({
   const handleBoxChange = (e) => {
     if (checked !== undefined) {
       e.target.checked = checked;
+      onChange && onChange(e);
       return;
     }
     if (onChange) {
@@ -76,7 +77,10 @@ const CheckboxGroup = ({
   let checkedValues = value || defaultValue || [];
 
   const handleBoxChange = (targetValue) => {
-    if (value) return;
+    if (value) {
+      onChange && onChange(targetValue);
+      return;
+    }
     if (checkedValues.includes(targetValue)) {
       checkedValues = checkedValues.filter((item) => item !== targetValue);
     } else {

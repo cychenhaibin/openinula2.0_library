@@ -20,7 +20,7 @@ const SpinDemo = () => {
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
       <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
         <Spin spinning={showFullScreen} fullscreen percent={percent} size="large"></Spin>
-        <Button onClick={showLoader}>showFullScreen</Button>
+        <Button onClick={showLoader}>点击触发全屏加载</Button>
       </div>
     </div>
   );

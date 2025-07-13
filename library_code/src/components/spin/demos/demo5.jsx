@@ -45,7 +45,7 @@ const SpinDemo = () => {
           unCheckedChildren="auto"
           checkedChildren="auto"
         />
-        <text>auto进度条永不停止</text>
+        <text>点击切换auto,进度条永不停止</text>
       </div>
     </div>
   );

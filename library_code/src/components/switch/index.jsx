@@ -57,6 +57,9 @@ const Switch = ({
   };
 
   const handleSwitchChange = (e) => {
+    
+    if (disabled || loading) return;
+
     if (checked !== undefined) {
       e.target.checked = checked;
       isChecked = checked;
@@ -68,8 +71,6 @@ const Switch = ({
       }
       return;
     }
-
-    if (disabled || loading) return;
 
     isChecked = e.target.checked;
     if (onChange) {

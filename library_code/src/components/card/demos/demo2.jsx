@@ -12,7 +12,8 @@ const CardDemo = () => {
   let loading = false;
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 20, alignItems: "center", width: '100%' }}>
+      <text style={{width: '20%', textAlign: 'start'}}>定义加载内容状态的Card</text>
         <Card
           title="loading card"
           extra={<div>More</div>}
@@ -35,10 +36,12 @@ const CardDemo = () => {
             loading = !loading;
           }}
         />
+        <text>点击切换内容加载状态</text>
       </div>
-      <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 20, alignItems: "center", width: '100%'}}>
+        <text style={{width: '20%', textAlign:'start'}}>嵌套Card样式</text>
         <Card title="inner card" type="inner">
-          <div style={{ width: "100%" }}>Card content</div>
+          <div style={{ width: "100%" }}>放在Card下的Card组件样式</div>
         </Card>
       </div>
     </div>
