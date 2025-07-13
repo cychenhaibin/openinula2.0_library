@@ -86,7 +86,7 @@ function Notification({ key, type = 'info', message, description, onClose, close
 
   let notificationClass = 'inula-notification';
   if (type === 'text') {
-    notificationClass += 'inula-notification-text';
+    notificationClass += ' inula-notification-text';
   } else if (type) {
     if (bgColor) {
         notificationClass += ' inula-notification-' + type;
