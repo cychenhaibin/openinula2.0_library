@@ -10,6 +10,7 @@ import Tooltip from './components/tooltip/demo.jsx';
 import Notification from './components/Notification/demo.jsx';
 import Spin from './components/spin/demo.jsx';
 import Card from './components/card/demo.jsx';
+import Tabs from './components/tabs/demo.jsx';
 window.render = render; 
 
 function App() {
@@ -52,6 +53,10 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Card 组件</p>
         <div className="hero-content">
           <Card />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Tabs 组件</p>
+        <div className="hero-content">
+          <Tabs />
         </div>
       </div>
     </div>
