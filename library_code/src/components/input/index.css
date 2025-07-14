@@ -1,0 +1,150 @@
+@import '../../colors.css';
+
+.inula-input {
+  display: inline-block;
+  width: 220px;
+  font-size: 14px;
+  color: var(--inula-color-default-text);
+  background: var(--inula-color-default-bg);
+  border: 1px solid var(--inula-color-default-border);
+  border-radius: 4px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 12px;
+}
+
+.inula-input-large {
+  height: 40px;
+  font-size: 16px;
+  padding: 0 16px;
+}
+.inula-input-default {
+  height: 32px;
+  font-size: 14px;
+  padding: 0 12px;
+}
+.inula-input-small {
+  height: 24px;
+  font-size: 12px;
+  padding: 0 8px;
+}
+
+/* 形态变体 */
+.inula-input-outlined {
+  background: var(--inula-color-default-bg);
+  border: 1px solid var(--inula-color-default-border);
+}
+.inula-input-filled {
+  background: #f5f5f5;
+  border: 1px solid var(--inula-color-default-border);
+}
+.inula-input-borderless {
+  background: var(--inula-color-default-bg);
+  border: none;
+}
+.inula-input-underlined {
+  background: var(--inula-color-default-bg);
+  border: none;
+  border-bottom: 1.5px solid var(--inula-color-default-border);
+  border-radius: 0;
+}
+
+.inula-input:focus,
+.inula-input-outlined:focus,
+.inula-input-filled:focus,
+.inula-input-borderless:focus,
+.inula-input-underlined:focus {
+  border-color: var(--inula-color-primary);
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.12);
+}
+
+.inula-input:hover,
+.inula-input-outlined:hover,
+.inula-input-filled:hover,
+.inula-input-borderless:hover,
+.inula-input-underlined:hover {
+  border-color: var(--inula-color-primary);
+}
+
+.inula-input-disabled,
+.inula-input:disabled {
+  background: var(--inula-color-disabled-bg);
+  color: var(--inula-color-disabled-text);
+  border-color: var(--inula-color-disabled-border);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.inula-input-wrapper {
+  display: inline-flex;
+  align-items: stretch;
+  vertical-align: middle;
+}
+.inula-input-addon {
+  display: inline-flex;
+  align-items: center;
+  background: #f5f5f5;
+  color: #888;
+  font-size: 14px;
+  padding: 0 12px;
+  border: 1px solid var(--inula-color-default-border);
+  border-radius: 4px 0 0 4px;
+  white-space: nowrap;
+  transition: background 0.2s, border 0.2s;
+}
+.inula-input-addon-before {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+.inula-input-addon-after {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+.inula-input-has-addon-before .inula-input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.inula-input-has-addon-after .inula-input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.inula-input-wrapper-large .inula-input-addon {
+  font-size: 16px;
+  padding: 0 16px;
+}
+.inula-input-wrapper-small .inula-input-addon {
+  font-size: 12px;
+  padding: 0 8px;
+}
+
+.inula-input-count {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  color: #888;
+  font-size: 12px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.inula-input-affix-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.inula-input-has-count {
+  padding-right: 48px !important;
+}
+.inula-input-count-inside {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 12px;
+  background: transparent;
+  pointer-events: none;
+  user-select: none;
+}
