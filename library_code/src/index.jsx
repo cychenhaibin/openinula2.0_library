@@ -7,11 +7,11 @@ import Checkbox from './components/checkbox/demo.jsx';
 import Switch from './components/switch/demo.jsx';
 import Radio from './components/radio/demo.jsx';
 import Tooltip from './components/tooltip/demo.jsx';
-import Notification from './components/Notification/demo.jsx';
+import Notification from './components/notification/demo.jsx';
 import Spin from './components/spin/demo.jsx';
 import Card from './components/card/demo.jsx';
 import Select from './components/select/demo.jsx';
-window.render = render; 
+window.render = render;
 
 function App() {
   return (
