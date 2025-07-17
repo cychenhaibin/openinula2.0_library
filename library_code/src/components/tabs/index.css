@@ -112,6 +112,12 @@
   color: rgba(0, 0, 0, 0.88);
 }
 
+.inula-tabs-bar-item-content {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
 .inula-tabs-bar-item.inula-tabs-bar-pos-top,
 .inula-tabs-bar-item.inula-tabs-bar-pos-bottom {
   height: 100%;
@@ -129,15 +135,15 @@
 }
 
 /* 选项卡item hover状态样式 */
-.inula-tabs-bar-item:hover > .inula-icon,
-.inula-tabs-bar-item:hover text {
+.inula-tabs-bar-item-content:hover > .inula-icon,
+.inula-tabs-bar-item-content:hover text {
   cursor: pointer;
   color: var(--inula-color-primary-hover);
   transition: color 0.1s ease-in-out;
 }
 
 /* 选项卡item disabled状态样式 */
-.inula-tabs-bar-item.inula-tabs-bar-item-disabled > .inula-icon,
+.inula-tabs-bar-item.inula-tabs-bar-item-disabled .inula-icon,
 .inula-tabs-bar-item.inula-tabs-bar-item-disabled text {
   color: rgba(0, 0, 0, 0.25);
   cursor: not-allowed;
@@ -241,8 +247,10 @@
 .inula-tabs-bar-item-card.inula-tabs-bar-item.inula-tabs-bar-item-active,
 .inula-tabs-bar-item-editable-card.inula-tabs-bar-item.inula-tabs-bar-item-active,
 .inula-tabs-bar-item-card.inula-tabs-bar-item.inula-tabs-bar-item-active
+  .inula-tabs-bar-item-content
   > .inula-icon,
 .inula-tabs-bar-item-editable-card.inula-tabs-bar-item.inula-tabs-bar-item-active
+  .inula-tabs-bar-item-content
   > .inula-icon {
   background-color: #fff;
   color: var(--inula-color-text);
@@ -266,4 +274,35 @@
 .inula-tabs-bar-item-card.inula-tabs-bar-item.inula-tabs-bar-item-active.inula-tabs-bar-pos-right,
 .inula-tabs-bar-item-editable-card.inula-tabs-bar-item.inula-tabs-bar-item-active.inula-tabs-bar-pos-right {
   border-left: 1px solid #fff;
+}
+
+/** ---type=editable-card--- **/
+.inula-tabs-bar-item-close:hover i {
+  color: #000 !important;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.inula-tabs-bar-item.inula-tabs-bar-item-disabled .inula-tabs-bar-item-close:hover i {
+  color: #8c8c8c!important;
+  cursor: not-allowed;
+}
+
+.inula-tabs-bar-item-add {
+  display: flex;
+  align-items: center;
+  border: 1px solid #f0f0f0;
+  padding: 0 8px;
+  height: 100%;
+  border-radius: 8px 8px 0 0;
+}
+
+.inula-tabs-bar-item-add i {
+  color: #000;
+}
+
+.inula-tabs-bar-item-add:hover i {
+  color: var(--inula-color-primary-hover);
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
 }

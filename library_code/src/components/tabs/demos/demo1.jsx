@@ -7,7 +7,7 @@ const RightExtraContent = <Button type="primary">rightextra</Button>;
 
 const TabsDemo = () => {
   let pos = "top";
-  let type = "line"; // line | card | editable-card
+  let type = "editable-card"; // line | card | editable-card
   let tabBarExtraContent = { left: LeftExtraContent, right: RightExtraContent };
   const items = [
     {

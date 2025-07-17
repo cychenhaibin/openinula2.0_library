@@ -1,6 +1,5 @@
 import "./index.css";
 import Icon from "../icon/index.jsx";
-import { didMount } from "@openinula/next";
 
 /** 
 TabProps: {
@@ -21,9 +20,9 @@ const Tabs = ({
   size = "default", // default | large | small
   tabPosition = "top", // top | bottom | left | right
   centered = false, // true | false
-  animated = false, // true | false
-  destoryOnHide = false, // true | false
-  addIcon = <Icon value="plus" />, // ReactNode，只在 type="editable-card" 时有效
+  // animated = false, // true | false
+  // destoryOnHide = false, // true | false
+  addIcon = <Icon value="plus" size={16} />, // ReactNode，只在 type="editable-card" 时有效
   hideAdd = false, // true | false 只在 type="editable-card" 时有效
   removeIcon = <Icon value="close" size={14} />, // ReactNode，只在 type="editable-card" 时有效
   indicator, //{ size?: number | (origin: number) => number; align: start | center | end; } 自定义指示器长度和对齐方式
@@ -39,16 +38,39 @@ const Tabs = ({
   onTabClick, // (key: string, e: React.MouseEvent) => void; 选项卡点击时的回调函数
   onEdit, // (targetKey: string, action: 'add' | 'remove') => void; 选项卡编辑时的回调函数, 只在 type="editable-card" 时有效
   onTabScroll, // ({ direction: left | right | top | bottom }) => void 选项卡滚动时的回调函数
+  initialActiveKey = activeKey || defaultActiveKey, // string; 初始选中的选项卡的 key
+  initialItems = items || [], // TabProps[]; 选项卡列表
 }) => {
-  let customActiveKey = activeKey || defaultActiveKey;
+  let customState = {
+    activeKey: initialActiveKey,
+    items: initialItems,
+  }
 
-  didMount(() => {
-    items.map((item) => {
-      if (!item.closeIcon) {
-        item.closeIcon = removeIcon;
-      }
-      return item;
-    });
+  function addItem(item) {
+    customState = {
+      ...customState,
+      items: [...customState.items, item],
+      activeKey: item.key,
+    }
+  }
+
+  function removeItem(key) {
+    customState = {
+      ...customState,
+      items: customState.items.filter((item) => item.key !== key),
+      activeKey: customState.items.length > 0 ? customState.items[0].key : undefined,
+    }
+  }
+
+  function setActiveKey(key) {
+    customState = {
+     ...customState,
+      activeKey: key,
+    }
+  } 
+
+  watch(() => {
+    console.log("items", customState.items);
   });
 
   const classNames = [
@@ -80,13 +102,30 @@ const Tabs = ({
   const handleTabClick = (item) => {
     if (item.disabled) return;
     if (activeKey) {
-      customActiveKey = activeKey;
+      setActiveKey(item.key);
       onChange && onChange(item.key);
       onTabClick && onTabClick(item.key);
     } else {
-      customActiveKey = item.key;
+      setActiveKey(item.key);
       onChange && onChange(item.key);
       onTabClick && onTabClick(item.key);
+    }
+  };
+
+  const handleEdit = (targetKey, action, isDisabled = false) => {
+    if (isDisabled) return;
+    if (onEdit) {
+      onEdit(targetKey, action);
+      return;
+    }
+    if (action === "add") {
+      addItem({
+        key: `tab_${Date.now()}`, // 使用时间戳生成唯一key
+        label: "New Tab",
+        children: "New Tab Content",
+      })
+    } else if (action === "remove") {
+      removeItem(targetKey);
     }
   };
 
@@ -104,26 +143,42 @@ const Tabs = ({
         )}
 
         {/* 标签项 */}
-        <for each={items}>
+        <for each={customState.items}>
           {(item) => {
             return (
               <div
                 key={item.key}
                 className={`inula-tabs-bar-item ${
-                  customActiveKey === item.key
-                    ? "inula-tabs-bar-item-active"
+                  customState.activeKey === item.key
+                    ? // customActiveKey === item.key
+                      "inula-tabs-bar-item-active"
                     : ""
                 } 
                 ${item.disabled ? "inula-tabs-bar-item-disabled" : ""} 
                 ${`inula-tabs-bar-pos-${tabPosition}`} 
                 ${`inula-tabs-bar-item-${type}`}`}
-                onClick={() => handleTabClick(item)}
               >
-                {item.icon}
-                <text>{item.label}</text>
+                <div
+                  className="inula-tabs-bar-item-content"
+                  onClick={() => handleTabClick(item)}
+                >
+                  {item.icon}
+                  <text>{item.label}</text>
+                </div>
                 <if cond={type === "editable-card" && item.closable !== false}>
-                  <div className="inula-tabs-bar-item-close">
-                    {item.closeIcon}
+                  <div
+                    className="inula-tabs-bar-item-close"
+                    onClick={() =>
+                      handleEdit(item.key, "remove", item.disabled)
+                    }
+                  >
+                    {item.closeIcon
+                      ? item.closeIcon
+                      : new Icon({
+                          value: "close",
+                          size: 16,
+                          color: "#8c8c8c",
+                        })}
                   </div>
                 </if>
               </div>
@@ -133,7 +188,12 @@ const Tabs = ({
 
         {/* 可编辑卡片类型时，添加按钮位置在最后一个标签后面 */}
         {type === "editable-card" && !hideAdd && (
-          <div className="inula-tabs-bar-item-add">{addIcon}</div>
+          <div
+            className="inula-tabs-bar-item-add"
+            onClick={() => handleEdit(`${customState.items.length + 1}`, "add")}
+          >
+            {addIcon}
+          </div>
         )}
 
         {/* tabBar右侧额外内容 */}
@@ -148,10 +208,10 @@ const Tabs = ({
 
       {/* 内容区域 */}
       <div className="inula-tabs-content">
-        <for each={items}>
+        <for each={customState.items}>
           {(item) => {
             return (
-              <if cond={customActiveKey === item.key}>
+              <if cond={customState.activeKey === item.key}>
                 <div className="inula-tabs-content-item">{item.children}</div>
               </if>
             );
