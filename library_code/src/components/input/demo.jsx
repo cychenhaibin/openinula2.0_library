@@ -1,60 +1,59 @@
-import Input from "./index.jsx";
+// import Button from './index.jsx';
+import demo1 from './demos/demo1.jsx';
+import demo2 from './demos/demo2.jsx';
+import demo3 from './demos/demo3.jsx';
+import demo4 from './demos/demo4.jsx';
+import demo5 from './demos/demo5.jsx';
+import demo6 from './demos/demo6.jsx';
+import demo9 from './demos/demo9.jsx';
+// import demo7 from './demos/demo7.jsx';
 
-function Demo1() {
-  let value = "111";
-  let value2 = "222";
+function InputDemo() {
+    return (
+        <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'column', gap: 32 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <h2>基础输入框</h2>
+                <div>演示基础输入框的用法。</div>
+            </div>
+            <div style={{ display: 'flex' }}><demo1 /></div>
 
-  function handleInput(e) {
-    value = e.target.value;
-    console.log("val", value);
-  }
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <h2>不同尺寸</h2>
+                <div>演示不同尺寸的输入框。</div>
+            </div>
+            <div style={{ display: 'flex' }}><demo2 /></div>
 
-  function handleInput2(e) {
-    value2 = e.target.value;
-    console.log("val2", value2);
-  }
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <h2>不同形态</h2>
+                <div>演示不同形态的输入框。</div>
+            </div>
+            <div style={{ display: 'flex' }}><demo3 /></div>
 
-  return (
-    <div>
-      <Input />
-      <Input
-        size="large"
-        defaultValue="hello"
-        variant="filled"
-        value={value}
-        onInput={(e) => (value = e.target.value)}
-      />
-      <Input size="default" variant="filled" />
-      <Input size="small" variant="filled" />
-      <Input size="large" variant="outlined" />
-      <Input size="default" variant="outlined" />
-      <Input size="small" variant="outlined" />
-      <Input size="large" variant="borderless" />
-      <Input size="default" variant="borderless" />
-      <Input addonBefore="http://" addonAfter=".com" />
-      <div>
-        <Input
-          value={value}
-          onInput={handleInput}
-          showCount
-          maxLength={20}
-          placeholder="请输入内容1"
-        />
-        <Input
-          value={value2}
-          onInput={handleInput2}
-          placeholder="请输入内容2"
-        />
-        <Input
-          defaultValue="111"
-          // onInput={handleInput2}
-          showCount
-          placeholder="请输入内容2"
-        />
-        {/* <div style={{marginTop: 8, color: '#888'}}>当前内容：{val}</div> */}
-      </div>
-    </div>
-  );
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <h2>前后缀</h2>
+                <div>演示带前后缀的输入框。</div>
+            </div>
+            <div style={{ display: 'flex' }}><demo4 /></div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <h2>清除按钮</h2>
+                <div>演示带清除按钮的输入框。</div>
+            </div>
+            <div style={{ display: 'flex' }}><demo5 /></div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <h2>字数统计</h2>
+                <div>演示带字数统计的输入框。</div>
+            </div>
+            <div style={{ display: 'flex' }}><demo6 /></div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <h2>Textarea 自动调整高度</h2>
+                <div>演示 textarea 的自动调整高度功能。</div>
+            </div>
+            <div style={{ display: 'flex' }}><demo9 /></div>
+        </div>
+    );
 }
 
-export default Demo1;
+export default InputDemo;

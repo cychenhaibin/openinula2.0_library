@@ -12,6 +12,7 @@ import Spin from './components/spin/demo.jsx';
 import Card from './components/card/demo.jsx';
 import Select from './components/select/demo.jsx';
 import Input from './components/input/demo.jsx';
+import Modal from './components/modal/demo.jsx';
 window.render = render;
 
 function App() {
@@ -62,6 +63,10 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Input 输入框组件</p>
         <div className="hero-content">
           <Input />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Modal 模态框组件</p>
+        <div className="hero-content">
+          <Modal />
         </div>
       </div>
     </div>

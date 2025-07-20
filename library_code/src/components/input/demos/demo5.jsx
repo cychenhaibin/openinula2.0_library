@@ -1,0 +1,29 @@
+import Input from "../index.jsx";
+
+function Demo5() {
+  let value = "";
+
+  function handleInput(e) {
+    console.log("handleInput111", e.target.value);
+    value = e.target.value;
+  }
+
+  return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <Input
+          value={value}
+          onInput={handleInput}
+          showCount
+          maxLength={20}
+          placeholder="请输入内容"
+        />
+        <Input
+          defaultValue="这是一个输入框"
+          showCount
+          placeholder="请输入内容"
+        />
+      </div>
+  );
+}
+
+export default Demo5;
