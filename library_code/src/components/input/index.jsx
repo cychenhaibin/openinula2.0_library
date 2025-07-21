@@ -32,18 +32,18 @@ const Input = ({
   // 处理 autoSize 配置
   const getAutoSizeConfig = () => {
     if (!autoSize) return null;
-    
+
     if (typeof autoSize === 'boolean') {
       return { minRows: 2, maxRows: 6 };
     }
-    
+
     if (typeof autoSize === 'object') {
       return {
         minRows: autoSize.minRows || 2,
         maxRows: autoSize.maxRows || 6
       };
     }
-    
+
     return null;
   };
 
@@ -53,14 +53,14 @@ const Input = ({
   // 计算 textarea 的样式
   const getTextareaStyle = () => {
     if (!isTextarea || !autoSizeConfig) return {};
-    
+
     const lineHeight = size === 'large' ? 24 : size === 'small' ? 18 : 20;
     const padding = size === 'large' ? 12 : size === 'small' ? 8 : 10;
     const borderWidth = 1;
-    
+
     const minHeight = autoSizeConfig.minRows * lineHeight + padding * 2 + borderWidth * 2;
     const maxHeight = autoSizeConfig.maxRows * lineHeight + padding * 2 + borderWidth * 2;
-    
+
     return {
       minHeight: `${minHeight}px`,
       maxHeight: `${maxHeight}px`,
@@ -72,20 +72,20 @@ const Input = ({
   // 自动调整 textarea 高度的函数
   const adjustTextareaHeight = (element) => {
     if (!isTextarea || !autoSizeConfig || !element) return;
-    
+
     // 重置高度以获取正确的 scrollHeight
     element.style.height = 'auto';
-    
+
     const lineHeight = size === 'large' ? 24 : size === 'small' ? 18 : 20;
     const padding = size === 'large' ? 12 : size === 'small' ? 8 : 10;
     const borderWidth = 1;
-    
+
     const minHeight = autoSizeConfig.minRows * lineHeight + padding * 2 + borderWidth * 2;
     const maxHeight = autoSizeConfig.maxRows * lineHeight + padding * 2 + borderWidth * 2;
-    
+
     const scrollHeight = element.scrollHeight;
     const newHeight = Math.max(minHeight, Math.min(scrollHeight, maxHeight));
-    
+
     element.style.height = `${newHeight}px`;
   };
 
@@ -100,7 +100,7 @@ const Input = ({
       onInput && onInput(e);
       onChange && onChange(e.target.value);
     }
-    
+
     // 如果是 textarea 且启用了 autoSize，调整高度
     if (isTextarea && autoSizeConfig) {
       adjustTextareaHeight(e.target);
@@ -218,7 +218,6 @@ const Input = ({
           {addonAfter}
         </span>
       )}
-      {count}
     </span>
   );
 };

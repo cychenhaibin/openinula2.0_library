@@ -22,6 +22,14 @@ function Demo5() {
           showCount
           placeholder="请输入内容"
         />
+          <Input
+              type="textarea"
+              placeholder="带字数统计的自动调整"
+              autoSize={true}
+              showCount={true}
+              maxLength={200}
+              style={{ marginBottom: '10px' }}
+          />
       </div>
   );
 }
