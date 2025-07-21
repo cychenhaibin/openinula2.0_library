@@ -1,11 +1,7 @@
+import Button from "../../button/index.jsx";
 import Tabs from "../index.jsx";
 
 const TabsDemo = () => {
-
-  const onChange = (key) => {
-    console.log(key);
-  };
-
   const items = [
     {
       key: "1",
@@ -17,11 +13,19 @@ const TabsDemo = () => {
       label: "Tab 2",
       children: "Content of Tab Pane 2",
     },
-    { key: "3", label: "Tab 3", children: "Content of Tab Pane 3" },
+    {
+      key: "3",
+      label: "Tab 3",
+      children: "Content of Tab Pane 3",
+      closable: false,
+    },
   ];
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24, width: "80%" }}>
+      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+        <Button>ADD</Button>
+      </div>
       <div
         style={{
           display: "flex",
@@ -30,7 +34,7 @@ const TabsDemo = () => {
           width: "100%",
         }}
       >
-        <Tabs items={items} defaultActiveKey="1" onChange={onChange} />
+        <Tabs items={items} defaultActiveKey="1" type="editable-card" hideAdd />
       </div>
     </div>
   );

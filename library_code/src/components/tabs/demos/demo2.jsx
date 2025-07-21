@@ -1,7 +1,6 @@
 import Tabs from "../index.jsx";
 
 const TabsDemo = () => {
-
   const onChange = (key) => {
     console.log(key);
   };
@@ -16,6 +15,7 @@ const TabsDemo = () => {
       key: "2",
       label: "Tab 2",
       children: "Content of Tab Pane 2",
+      disabled: true,
     },
     { key: "3", label: "Tab 3", children: "Content of Tab Pane 3" },
   ];

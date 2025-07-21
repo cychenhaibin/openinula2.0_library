@@ -24,9 +24,9 @@ const Tabs = ({
   // destoryOnHide = false, // true | false
   addIcon = <Icon value="plus" size={16} />, // ReactNode，只在 type="editable-card" 时有效
   hideAdd = false, // true | false 只在 type="editable-card" 时有效
-  removeIcon = <Icon value="close" size={14} />, // ReactNode，只在 type="editable-card" 时有效
+  // removeIcon = <Icon value="close" size={14} />, // ReactNode，只在 type="editable-card" 时有效
   indicator, //{ size?: number | (origin: number) => number; align: start | center | end; } 自定义指示器长度和对齐方式
-  renderTabBar, // (props: TabBarProps) => ReactNode; 自定义 TabBar 内容
+  // renderTabBar, // (props: TabBarProps) => ReactNode; 自定义 TabBar 内容
   items, // TabProps[]; 选项卡列表
   activeKey, // string; 当前选中的选项卡的 key
   defaultActiveKey = items[0].key, // string; 默认选中的选项卡的 key
@@ -34,6 +34,7 @@ const Tabs = ({
   tabBarGutter, // number; TabBar 的间隔距离，单位为 px
   tabBarStyle, // CSSProperties; TabBar 的样式
   className, // string
+  style, // CSSProperties; 选项卡的样式
   onChange, // (key: string) => void; 选项卡切换时的回调函数
   onTabClick, // (key: string, e: React.MouseEvent) => void; 选项卡点击时的回调函数
   onEdit, // (targetKey: string, action: 'add' | 'remove') => void; 选项卡编辑时的回调函数, 只在 type="editable-card" 时有效
@@ -44,34 +45,35 @@ const Tabs = ({
   let customState = {
     activeKey: initialActiveKey,
     items: initialItems,
-  }
+  };
 
   function addItem(item) {
     customState = {
       ...customState,
       items: [...customState.items, item],
       activeKey: item.key,
-    }
+    };
   }
 
   function removeItem(key) {
     customState = {
       ...customState,
       items: customState.items.filter((item) => item.key !== key),
-      activeKey: customState.items.length > 0 ? customState.items[0].key : undefined,
-    }
+      activeKey:
+        customState.items.length > 0 ? customState.items[0].key : undefined,
+    };
   }
 
   function setActiveKey(key) {
     customState = {
-     ...customState,
+      ...customState,
       activeKey: key,
-    }
-  } 
+    };
+  }
 
-  watch(() => {
-    console.log("items", customState.items);
-  });
+  // watch(() => {
+  //   console.log("items", customState.items);
+  // });
 
   const classNames = [
     "inula-tabs",
@@ -87,9 +89,6 @@ const Tabs = ({
     `inula-tabs-bar-${type}`,
     `inula-tabs-bar-${size}`,
     centered ? "inula-tabs-bar-center" : "",
-    indicator && indicator.align
-      ? `inula-tabs-bar-indicator-${indicator.align}`
-      : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -97,6 +96,20 @@ const Tabs = ({
   const tabBarStyles = {
     ...tabBarStyle,
     ...{ gap: `${tabBarGutter}px` },
+  };
+
+  const indictorSize = () => {
+    if (indicator && indicator.size) {
+      if (typeof indicator.size === "number") {
+        return `${indicator.size}px`;
+      } else if (typeof indicator.size === "function") {
+        const value = indicator.size(0);
+        const sign = value > 0 ? '+' : value < 0 ? '- ' : '';
+        return `calc(100% ${sign} ${Math.abs(value)}px)`;
+      }
+    } else {
+      return "100%";
+    }
   };
 
   const handleTabClick = (item) => {
@@ -123,14 +136,14 @@ const Tabs = ({
         key: `tab_${Date.now()}`, // 使用时间戳生成唯一key
         label: "New Tab",
         children: "New Tab Content",
-      })
+      });
     } else if (action === "remove") {
       removeItem(targetKey);
     }
   };
 
   return (
-    <div className={classNames}>
+    <div className={classNames} style={style}>
       {/* tabBar */}
       <div className={tabBarClassNames} style={tabBarStyles}>
         {/* tabBar左侧额外内容 */}
@@ -156,7 +169,13 @@ const Tabs = ({
                 } 
                 ${item.disabled ? "inula-tabs-bar-item-disabled" : ""} 
                 ${`inula-tabs-bar-pos-${tabPosition}`} 
-                ${`inula-tabs-bar-item-${type}`}`}
+                ${`inula-tabs-bar-item-${type}`} 
+                ${
+                  indicator && indicator.align
+                    ? `inula-tabs-bar-indicator-${indicator.align}`
+                    : ""
+                }`}
+                style={{ "--indicator-size": indictorSize() }}
               >
                 <div
                   className="inula-tabs-bar-item-content"
