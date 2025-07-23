@@ -13,7 +13,7 @@
   outline: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .inula-input-affix-wrapper:hover {
@@ -39,6 +39,7 @@
   padding: 0 16px;
   color: var(--inula-color-default-text);
   transition: all 0.3s ease;
+  border-radius: 4px;
 }
 
 .inula-input::placeholder {
@@ -105,6 +106,7 @@
   border: none !important;
   box-shadow: none !important;
   background: var(--inula-color-disabled-bg);
+  border-radius: 4px;
 }
 
 .inula-input-affix-wrapper-borderless.inula-input-disabled:focus-within,
@@ -112,6 +114,7 @@
   border: none !important;
   box-shadow: none !important;
   background: var(--inula-color-disabled-bg);
+  border-radius: 4px;
 }
 
 .inula-input-filled:hover {
@@ -258,6 +261,7 @@
   align-items: stretch;
   vertical-align: middle;
   width: 100%;
+  border-radius: 4px;
 }
 
 /* 前后缀标签 */
@@ -386,14 +390,17 @@
 @media (max-width: 768px) {
   .inula-input {
     font-size: 16px; /* 防止iOS缩放 */
+    border-radius: 4px;
   }
   
   .inula-input-large {
     font-size: 16px;
+    border-radius: 4px;
   }
   
   .inula-input-small {
     font-size: 16px;
+    border-radius: 4px;
   }
 }
 
@@ -448,6 +455,11 @@
   resize: vertical;
 }
 
+.inula-textarea, textarea {
+  height: auto;
+  box-sizing: border-box;
+}
+
 .inula-textarea::placeholder {
   color: #999;
   font-size: 14px;
@@ -480,7 +492,7 @@
 /* textarea 自动调整高度样式 */
 .inula-textarea.inula-input-auto-size {
   resize: none;
-  overflow: hidden;
+  overflow: auto;
   transition: height 0.3s ease;
 }
 
@@ -520,4 +532,83 @@
   .inula-textarea::placeholder {
     color: #666;
   }
+}
+
+/* 滚动条美化 */
+.inula-input,
+.inula-textarea {
+  scrollbar-width: thin;
+  scrollbar-color: #b3b3b3 transparent;
+}
+
+.inula-input::-webkit-scrollbar,
+.inula-textarea::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+  border-radius: 8px;
+}
+
+.inula-input::-webkit-scrollbar-thumb,
+.inula-textarea::-webkit-scrollbar-thumb {
+  background: #b3b3b3;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.inula-input::-webkit-scrollbar-thumb:hover,
+.inula-textarea::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+.inula-input::-webkit-scrollbar-corner,
+.inula-textarea::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .inula-input,
+  .inula-textarea {
+    scrollbar-color: #444 transparent;
+  }
+  .inula-input::-webkit-scrollbar,
+  .inula-textarea::-webkit-scrollbar {
+    background: transparent;
+  }
+  .inula-input::-webkit-scrollbar-thumb,
+  .inula-textarea::-webkit-scrollbar-thumb {
+    background: #444;
+  }
+  .inula-input::-webkit-scrollbar-thumb:hover,
+  .inula-textarea::-webkit-scrollbar-thumb:hover {
+    background: #888;
+  }
+  .inula-input::-webkit-scrollbar-corner,
+  .inula-textarea::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+/* error 状态 */
+.inula-input-error,
+.inula-input-affix-wrapper.inula-input-error {
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px rgba(255,77,79,0.1) !important;
+}
+.inula-input-error:focus,
+.inula-input-affix-wrapper.inula-input-error:focus-within {
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 3px rgba(255,77,79,0.15) !important;
+}
+
+/* warning 状态 */
+.inula-input-warning,
+.inula-input-affix-wrapper.inula-input-warning {
+  border-color: #faad14 !important;
+  box-shadow: 0 0 0 2px rgba(250,173,20,0.1) !important;
+}
+.inula-input-warning:focus,
+.inula-input-affix-wrapper.inula-input-warning:focus-within {
+  border-color: #faad14 !important;
+  box-shadow: 0 0 0 3px rgba(250,173,20,0.15) !important;
 }

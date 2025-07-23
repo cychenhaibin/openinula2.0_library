@@ -4,7 +4,6 @@ function Demo5() {
   let value = "";
 
   function handleInput(e) {
-    console.log("handleInput111", e.target.value);
     value = e.target.value;
   }
 

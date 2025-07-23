@@ -8,11 +8,17 @@ function Demo6() {
   }
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
       <Input
         defaultValue="这是一个输入框"
         allowClear
         placeholder="请输入内容"
+      />
+      <Input
+        type="textarea"
+        allowClear
+        placeholder="请输入内容"
+        autoSize={true}
       />
     </div>
   );
