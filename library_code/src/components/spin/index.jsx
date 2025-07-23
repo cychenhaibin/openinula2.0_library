@@ -62,7 +62,9 @@ const Spin = ({
         clearInterval(interval);
       };
     }
+  });
 
+  watch(() => {
     if (spinning && delay) {
       const showSpinning = debounce(delay, () => {
         customSpinning = true;

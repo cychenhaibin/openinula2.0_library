@@ -78,4 +78,21 @@
   --inula-radio-readonly-border: #b3c6e6;
   --inula-radio-readonly-label: #bfbfbf;
   --inula-radio-readonly-dot: #b3d4fc;
+
+  /* Select 颜色 */
+  --inula-select-bg: #fff;
+  --inula-select-border: #d9d9d9;
+  --inula-select-option-hover-bg: #f5faff;
+  --inula-select-border-top: #e8e8e8;
+  --inula-select-hover-border: #4096ff;
+  --inula-select-hover-bg: #f0f7ff;
+  --inula-select-active-bg: #e6f4ff;
+  --inula-select-disabled-bg: #f5f5f5;
+  --inula-select-disabled-text: #bfbfbf;
+  --inula-select-disabled-border: #d9d9d9;
+  --inula-select-readonly-bg: #eaf4ff;
+  --inula-select-tag-hover-bg: #e6f4ff;
+  --inula-select-tag-hover-text: #1677ff;
+  --inula-select-arrow-color: #999;
+  --inula-select-tag-text: #333;
 } 

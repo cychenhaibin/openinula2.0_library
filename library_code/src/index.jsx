@@ -7,12 +7,18 @@ import Checkbox from './components/checkbox/demo.jsx';
 import Switch from './components/switch/demo.jsx';
 import Radio from './components/radio/demo.jsx';
 import Tooltip from './components/tooltip/demo.jsx';
-import Notification from './components/Notification/demo.jsx';
+import Notification from './components/notification/demo.jsx';
 import Spin from './components/spin/demo.jsx';
 import Card from './components/card/demo.jsx';
 import Tabs from './components/tabs/demo.jsx';
 import Tree from './components/tree/demo.jsx';
 window.render = render; 
+import Select from './components/select/demo.jsx';
+import Input from './components/input/demo.jsx';
+import Modal from './components/modal/demo.jsx';
+import DatePicker from './components/datepicker/demo.jsx';
+
+window.render = render;
 
 function App() {
   return (
@@ -62,7 +68,23 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Tree 组件</p>
         <div className="hero-content">
           <Tree />
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Select 选择器组件</p>
+        <div className="hero-content">
+          <Select />
         </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Input 输入框组件</p>
+        <div className="hero-content">
+          <Input />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Modal 模态框组件</p>
+        <div className="hero-content">
+          <Modal />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">DatePicker 日期选择器组件</p>
+        <div className="hero-content">
+          <DatePicker />
+        </div>
+      </div>
       </div>
     </div>
   );
