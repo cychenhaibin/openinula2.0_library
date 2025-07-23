@@ -11,6 +11,7 @@ import Notification from './components/Notification/demo.jsx';
 import Spin from './components/spin/demo.jsx';
 import Card from './components/card/demo.jsx';
 import Tabs from './components/tabs/demo.jsx';
+import Tree from './components/tree/demo.jsx';
 window.render = render; 
 
 function App() {
@@ -57,6 +58,10 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Tabs 组件</p>
         <div className="hero-content">
           <Tabs />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Tree 组件</p>
+        <div className="hero-content">
+          <Tree />
         </div>
       </div>
     </div>
