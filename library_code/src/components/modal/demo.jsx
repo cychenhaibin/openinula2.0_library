@@ -45,14 +45,14 @@ function ModalDemo() {
                 <div style={{ display: 'flex' }}><demo5 /></div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <h2>全屏弹窗</h2>
-                    <div>演示如何设置全屏弹窗。</div>
+                    <h2>异步关闭弹窗</h2>
+                    <div>演示如何设置异步关闭弹窗。</div>
                 </div>
                 <div style={{ display: 'flex' }}><demo6 /></div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <h2>异步关闭弹窗</h2>
-                    <div>演示如何设置异步关闭弹窗。</div>
+                    <h2>全屏弹窗</h2>
+                    <div>演示如何设置全屏弹窗。</div>   
                 </div>
                 <div style={{ display: 'flex' }}><demo7 /></div>
             </div>
