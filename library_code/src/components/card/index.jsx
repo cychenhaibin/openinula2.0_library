@@ -1,4 +1,5 @@
 import "./index.css";
+import Tabs from "../tabs";
 
 const Card = ({
   type = "default",
@@ -47,6 +48,14 @@ const Card = ({
     "inula-card-header",
     `inula-card-header-${size}`,
     `inula-card-header-${type}`,
+    tabList && "inula-card-header-tabs",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const headerContentClassName = [
+    "inula-card-header-content",
+    tabList && "inula-card-header-content-tabs",
   ]
     .filter(Boolean)
     .join(" ");
@@ -59,10 +68,20 @@ const Card = ({
     if (!isShowHeader) return <></>;
     return (
       <div className={headerClassName}>
-        <div className="inula-card-header-content">
+        <div className={headerContentClassName}>
           {title && <div className="inula-card-header-title">{title}</div>}
           {extra && <div className="inula-card-header-extra">{extra}</div>}
         </div>
+        {tabList && (
+          <Tabs
+            items={tabList}
+            activeKey={activeTabKey}
+            defaultActiveKey={defaultActiveTabKey}
+            onChange={onTabChange}
+            isCardItem
+            {...tabProps}
+          />
+        )}
       </div>
     );
   };

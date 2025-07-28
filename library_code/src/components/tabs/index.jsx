@@ -145,7 +145,7 @@ const Tabs = ({
   return (
     <div className={classNames} style={style}>
       {/* tabBar */}
-      <div className={tabBarClassNames} style={tabBarStyles}>
+      <div className={tabBarClassNames} style={tabBarStyles} onScroll={onTabScroll}>
         {/* tabBar左侧额外内容 */}
         {tabBarExtraContent && tabBarExtraContent.left && (
           <div
@@ -182,7 +182,7 @@ const Tabs = ({
                   onClick={() => handleTabClick(item)}
                 >
                   {item.icon}
-                  <text>{item.label}</text>
+                  <text>{item.label || item.tab}</text>
                 </div>
                 <if cond={type === "editable-card" && item.closable !== false}>
                   <div
