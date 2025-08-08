@@ -456,12 +456,35 @@ const DatePicker = ({
       weekNumbersContainer.innerHTML = '';
       weeksContainer.innerHTML = '';
       
+      // 获取当月第一天
+      const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+      
+      // 获取当月第一天所在周的周一
+      const firstMonday = new Date(firstDayOfMonth);
+      const dayOfWeek = firstDayOfMonth.getDay();
+      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // 如果是周日，则往前推6天；否则，往前推(1-dayOfWeek)天
+      firstMonday.setDate(firstDayOfMonth.getDate() + diff);
+      
+      // 计算当月有多少天
       const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-      const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
-      const totalWeeks = Math.ceil((daysInMonth + firstDayOfMonth) / 7);
+      
+      // 计算当月最后一天
+      const lastDayOfMonth = new Date(currentYear, currentMonth, daysInMonth);
+      
+      // 计算当月最后一天所在周的周日
+      const lastSunday = new Date(lastDayOfMonth);
+      const lastDayOfWeek = lastDayOfMonth.getDay();
+      lastSunday.setDate(lastDayOfMonth.getDate() + (lastDayOfWeek === 0 ? 0 : 7 - lastDayOfWeek));
+      
+      // 计算总周数
+      const totalDays = Math.round((lastSunday - firstMonday) / (24 * 60 * 60 * 1000)) + 1;
+      const totalWeeks = Math.ceil(totalDays / 7);
+      
+      // 从第一个周一开始，生成每周的日期
+      let currentDate = new Date(firstMonday);
       
       for (let week = 0; week < totalWeeks; week++) {
-        const weekStartDate = new Date(currentYear, currentMonth, 1 - firstDayOfMonth + week * 7);
+        const weekStartDate = new Date(currentDate);
         const weekNumber = getWeekNumber(weekStartDate);
         
         // 创建周号
@@ -476,12 +499,14 @@ const DatePicker = ({
         
         // 为这一周添加7天
         for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-          const currentDate = new Date(weekStartDate);
-          currentDate.setDate(weekStartDate.getDate() + dayOfWeek);
+          const dayDate = new Date(currentDate);
+          dayDate.setDate(currentDate.getDate() + dayOfWeek);
           
-          const day = currentDate.getDate();
-          const isCurrentMonth = currentDate.getMonth() === currentMonth;
-          const isToday = formatDate(currentDate) === formatDate(new Date());
+          const day = dayDate.getDate();
+          const month = dayDate.getMonth();
+          const year = dayDate.getFullYear();
+          const isCurrentMonth = month === currentMonth && year === currentYear;
+          const isToday = formatDate(dayDate) === formatDate(new Date());
           let isInSelectedWeek = false;
           let isWeekStart = false;
           let isWeekEnd = false;
@@ -490,10 +515,10 @@ const DatePicker = ({
             const selectedWeek = parseDate(selectedDate);
             if (selectedWeek) {
               const selectedWeekDates = getWeekDates(selectedWeek);
-              isInSelectedWeek = currentDate >= selectedWeekDates.start && currentDate <= selectedWeekDates.end;
+              isInSelectedWeek = dayDate >= selectedWeekDates.start && dayDate <= selectedWeekDates.end;
               
               if (isInSelectedWeek) {
-                const dayOfWeekNum = currentDate.getDay();
+                const dayOfWeekNum = dayDate.getDay();
                 isWeekStart = dayOfWeekNum === 1;
                 isWeekEnd = dayOfWeekNum === 0;
               }
@@ -519,6 +544,9 @@ const DatePicker = ({
         }
         
         weeksContainer.appendChild(weekRowElement);
+        
+        // 移动到下一周的周一
+        currentDate.setDate(currentDate.getDate() + 7);
       }
     }
   }
@@ -726,41 +754,64 @@ const DatePicker = ({
   // Render week view
   function renderWeekView() {
     // 当mode为week时，按周来渲染
-    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-    const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
     const weeks = [];
     const weekNumbers = [];
-
+    
+    // 获取当月第一天
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+    
+    // 获取当月第一天所在周的周一
+    const firstMonday = new Date(firstDayOfMonth);
+    const dayOfWeek = firstDayOfMonth.getDay();
+    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // 如果是周日，则往前推6天；否则，往前推(1-dayOfWeek)天
+    firstMonday.setDate(firstDayOfMonth.getDate() + diff);
+    
+    // 计算当月有多少天
+    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+    
+    // 计算当月最后一天
+    const lastDayOfMonth = new Date(currentYear, currentMonth, daysInMonth);
+    
+    // 计算当月最后一天所在周的周日
+    const lastSunday = new Date(lastDayOfMonth);
+    const lastDayOfWeek = lastDayOfMonth.getDay();
+    lastSunday.setDate(lastDayOfMonth.getDate() + (lastDayOfWeek === 0 ? 0 : 7 - lastDayOfWeek));
+    
     // 计算总周数
-    const totalWeeks = Math.ceil((daysInMonth + firstDayOfMonth) / 7);
+    const totalDays = Math.round((lastSunday - firstMonday) / (24 * 60 * 60 * 1000)) + 1;
+    const totalWeeks = Math.ceil(totalDays / 7);
+    
+    // 从第一个周一开始，生成每周的日期
+    let currentDate = new Date(firstMonday);
     
     for (let week = 0; week < totalWeeks; week++) {
       const weekDays = [];
-      const weekStartDate = new Date(currentYear, currentMonth, 1 - firstDayOfMonth + week * 7);
+      const weekStartDate = new Date(currentDate);
       const weekNumber = getWeekNumber(weekStartDate);
       
       // 为这一周添加7天
       for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-        const currentDate = new Date(weekStartDate);
-        currentDate.setDate(weekStartDate.getDate() + dayOfWeek);
+        const dayDate = new Date(currentDate);
+        dayDate.setDate(currentDate.getDate() + dayOfWeek);
         
-        const day = currentDate.getDate();
-        const isCurrentMonth = currentDate.getMonth() === currentMonth;
-        const isToday = formatDate(currentDate) === formatDate(new Date());
-        let isSelected = false;
+        const day = dayDate.getDate();
+        const month = dayDate.getMonth();
+        const year = dayDate.getFullYear();
+        const isCurrentMonth = month === currentMonth && year === currentYear;
+        const isToday = formatDate(dayDate) === formatDate(new Date());
         let isInSelectedWeek = false;
         let isWeekStart = false;
         let isWeekEnd = false;
         
-        if (mode === 'week' && selectedDate) {
+        if (selectedDate) {
           const selectedWeek = parseDate(selectedDate);
           if (selectedWeek) {
             const selectedWeekDates = getWeekDates(selectedWeek);
-            isInSelectedWeek = currentDate >= selectedWeekDates.start && currentDate <= selectedWeekDates.end;
+            isInSelectedWeek = dayDate >= selectedWeekDates.start && dayDate <= selectedWeekDates.end;
             
             // 判断是否是周的开始和结束
             if (isInSelectedWeek) {
-              const dayOfWeekNum = currentDate.getDay();
+              const dayOfWeekNum = dayDate.getDay();
               isWeekStart = dayOfWeekNum === 1; // 周一
               isWeekEnd = dayOfWeekNum === 0; // 周日
             }
@@ -772,7 +823,7 @@ const DatePicker = ({
         weekDays.push(
           <div
             key={`week-${week}-day-${dayOfWeek}`}
-            className={`inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'week-start' : ''} ${isWeekEnd ? 'week-end' : ''} ${isDisabled ? 'disabled' : ''}`}
+            className={`inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'week-start' : ''} ${isWeekEnd ? 'week-end' : ''} ${isDisabled ? 'disabled' : ''}`}
             onClick={isDisabled ? undefined : () => handleDateSelect(day)}
             style={!isCurrentMonth ? {color: '#ccc'} : {}}
           >
@@ -792,6 +843,9 @@ const DatePicker = ({
           {weekNumber}
         </div>
       );
+      
+      // 移动到下一周的周一
+      currentDate.setDate(currentDate.getDate() + 7);
     }
 
     return { weeks, weekNumbers };
