@@ -506,6 +506,11 @@ const DatePicker = ({
           dayElement.className = `inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'week-start' : ''} ${isWeekEnd ? 'week-end' : ''} ${isDisabled ? 'disabled' : ''}`;
           dayElement.textContent = day;
           
+          // 为不在当前月的日期添加样式
+          if (!isCurrentMonth) {
+            dayElement.style.color = '#ccc';
+          }
+          
           if (!isDisabled) {
             dayElement.addEventListener('click', () => handleDateSelect(day));
           }
@@ -769,6 +774,7 @@ const DatePicker = ({
             key={`week-${week}-day-${dayOfWeek}`}
             className={`inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'week-start' : ''} ${isWeekEnd ? 'week-end' : ''} ${isDisabled ? 'disabled' : ''}`}
             onClick={isDisabled ? undefined : () => handleDateSelect(day)}
+            style={!isCurrentMonth ? {color: '#ccc'} : {}}
           >
             {day}
           </div>
