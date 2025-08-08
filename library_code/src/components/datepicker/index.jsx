@@ -283,6 +283,16 @@ const DatePicker = ({
     
     // 强制重新渲染日历
     forceUpdate();
+    
+    // 确保周视图正确更新
+    if (mode === 'week') {
+      setTimeout(() => {
+        const dropdown = document.querySelector('.inula-datepicker-dropdown');
+        if (dropdown) {
+          updateWeekView(dropdown);
+        }
+      }, 0);
+    }
   }
 
   function handleNextMonth() {
@@ -295,6 +305,16 @@ const DatePicker = ({
     
     // 强制重新渲染日历
     forceUpdate();
+    
+    // 确保周视图正确更新
+    if (mode === 'week') {
+      setTimeout(() => {
+        const dropdown = document.querySelector('.inula-datepicker-dropdown');
+        if (dropdown) {
+          updateWeekView(dropdown);
+        }
+      }, 0);
+    }
   }
 
   // Handle year navigation
@@ -303,6 +323,16 @@ const DatePicker = ({
     
     // 强制重新渲染日历
     forceUpdate();
+    
+    // 确保周视图正确更新
+    if (mode === 'week') {
+      setTimeout(() => {
+        const dropdown = document.querySelector('.inula-datepicker-dropdown');
+        if (dropdown) {
+          updateWeekView(dropdown);
+        }
+      }, 0);
+    }
   }
 
   function handleNextYear() {
@@ -310,6 +340,16 @@ const DatePicker = ({
     
     // 强制重新渲染日历
     forceUpdate();
+    
+    // 确保周视图正确更新
+    if (mode === 'week') {
+      setTimeout(() => {
+        const dropdown = document.querySelector('.inula-datepicker-dropdown');
+        if (dropdown) {
+          updateWeekView(dropdown);
+        }
+      }, 0);
+    }
   }
   
   // 强制更新组件
@@ -320,7 +360,7 @@ const DatePicker = ({
       // 更新标题显示
       const headerView = dropdown.querySelector('.inula-datepicker-header-view');
       if (headerView) {
-        if (mode === 'date') {
+        if (mode === 'date' || mode === 'week') {
           headerView.textContent = `${currentYear}年 ${monthNames[currentMonth]}`;
         } else if (mode === 'year') {
           headerView.textContent = `${currentYear - 5}年-${currentYear + 4}年`;
@@ -682,7 +722,7 @@ const DatePicker = ({
   function renderWeekView() {
     // 当mode为week时，按周来渲染
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-    const firstDayOfMonth = getFirstDayOfMonth(currentYear - 1, currentMonth);
+    const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
     const weeks = [];
     const weekNumbers = [];
 
@@ -888,19 +928,19 @@ const DatePicker = ({
             <button className="inula-datepicker-prev-year" onClick={handlePrevYear}>
               <span>«</span>
             </button>
-            {mode === 'date' && (
+            {(mode === 'date' || mode === 'week') && (
               <button className="inula-datepicker-prev-month" onClick={handlePrevMonth}>
                 <span>‹</span>
               </button>
             )}
             <span className="inula-datepicker-header-view">
               {mode === 'date' && `${currentYear}年 ${monthNames[currentMonth]}`}
-              {mode === 'week' && `${currentYear}年`}
+              {mode === 'week' && `${currentYear}年 ${monthNames[currentMonth]}`}
               {mode === 'month' && `${currentYear}年`}
               {mode === 'quarter' && `${currentYear}年`}
               {mode === 'year' && `${currentYear - 5}年-${currentYear + 4}年`}
             </span>
-            {mode === 'date' && (
+            {(mode === 'date' || mode === 'week') && (
               <button className="inula-datepicker-next-month" onClick={handleNextMonth}>
                 <span>›</span>
               </button>
