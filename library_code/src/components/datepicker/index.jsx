@@ -1,364 +1,980 @@
+import './index.css';
+import Icon from '../icon';
 
-
-function getDays(year, month) {
-  return new Date(year, month + 1, 0).getDate();
-}
-function pad(n) {
-  return n < 10 ? "0" + n : n;
-}
-function formatDate(y, m, d) {
-  return `${y}-${pad(m + 1)}-${pad(d)}`;
-}
-function parseDate(str) {
-  if (!str) return null;
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(str);
-  if (!m) return null;
-  return { y: +m[1], m: +m[2] - 1, d: +m[3] };
-}
-function isToday(y, m, d) {
-  const now = new Date();
-  return now.getFullYear() === y && now.getMonth() === m && now.getDate() === d;
-}
-
-function DatePicker({ disabled = false, placeholder = "请选择日期" }) {
-  let show = false;
-  let date = "";
-  let inputHover = false;
-  let inputFocus = false;
-
-  // 日历面板当前年月
-  let panelYear = new Date().getFullYear();
-  let panelMonth = new Date().getMonth();
-
-  function openPanel() {
-    if (disabled) return;
-    show = true;
-    inputFocus = true;
+const DatePicker = ({
+  value,
+  defaultValue,
+  placeholder = '请选择日期',
+  onChange,
+  disabled = false,
+  size = 'default', // small, default, large
+  clearable = true,
+  showToday = true,
+  needConfirm = false,
+  style = {},
+  hoverIcon = false,
+  className = '',
+  mode = 'date', // date, week, month, quarter, year
+  ...rest
+}) => {
+  // State variables
+  let isOpen = false;
+  let selectedDate = value !== undefined ? value : defaultValue || '';
+  let currentMonth = new Date().getMonth();
+  let currentYear = new Date().getFullYear();
+  let currentView = mode; // date, week, month, quarter, year
+  
+  // If selectedDate is provided, set currentMonth and currentYear to match it
+  if (selectedDate) {
+    const date = parseDate(selectedDate);
     if (date) {
-      const parsed = parseDate(date);
-      if (parsed) {
-        panelYear = parsed.y;
-        panelMonth = parsed.m;
+      currentMonth = date.getMonth();
+      currentYear = date.getFullYear();
+    }
+  }
+
+  // Format date as YYYY-MM-DD
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // Format week as YYYY-WW
+  function formatWeek(date) {
+    const year = date.getFullYear();
+    const week = getWeekNumber(date);
+    return `${year}-${String(week).padStart(2, '0')}周`;
+  }
+
+  // Format month as YYYY-MM
+  function formatMonth(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  }
+
+  // Format quarter as YYYY-QN
+  function formatQuarter(date) {
+    const year = date.getFullYear();
+    const quarter = Math.floor(date.getMonth() / 3) + 1;
+    return `${year}-Q${quarter}`;
+  }
+
+  // Format year as YYYY
+  function formatYear(date) {
+    return `${date.getFullYear()}`;
+  }
+
+  // Get week number of the year
+  function getWeekNumber(date) {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+  }
+
+  // Get week start and end dates (修正版本)
+  function getWeekDates(date) {
+    const day = date.getDay();
+    // 计算本周的周一
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(date.getFullYear(), date.getMonth(), diff);
+    // 计算本周的周日
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    return { start: monday, end: sunday };
+  }
+
+  const onIconHover = () => {
+    hoverIcon = true;
+  }
+
+  const onIconLeave = () => {
+    hoverIcon = false;
+  }
+
+  // Parse date string to Date object
+  function parseDate(dateString) {
+    if (!dateString) return null;
+    
+    if (mode === 'week' && dateString.includes('周')) {
+      const match = dateString.match(/(\d{4})-(\d{2})周/);
+      if (match) {
+        const year = parseInt(match[1]);
+        const week = parseInt(match[2]);
+        // 计算该周的第一天
+        const firstDayOfYear = new Date(year, 0, 1);
+        const daysToAdd = (week - 1) * 7;
+        const weekStart = new Date(firstDayOfYear);
+        weekStart.setDate(firstDayOfYear.getDate() + daysToAdd);
+        return weekStart;
+      }
+    } else if (mode === 'month' && dateString.includes('-')) {
+      const [year, month] = dateString.split('-').map(Number);
+      return new Date(year, month - 1, 1);
+    } else if (mode === 'quarter' && dateString.includes('Q')) {
+      const match = dateString.match(/(\d{4})-Q(\d)/);
+      if (match) {
+        const year = parseInt(match[1]);
+        const quarter = parseInt(match[2]);
+        const month = (quarter - 1) * 3;
+        return new Date(year, month, 1);
+      }
+    } else if (mode === 'year') {
+      const year = parseInt(dateString);
+      return new Date(year, 0, 1);
+    } else {
+      const [year, month, day] = dateString.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    }
+    return null;
+  }
+
+  // Get days in month
+  function getDaysInMonth(year, month) {
+    return new Date(year, month + 1, 0).getDate();
+  }
+
+  // Get day of week for first day of month (0 = Sunday, 6 = Saturday)
+  function getFirstDayOfMonth(year, month) {
+    return new Date(year, month, 1).getDay();
+  }
+
+  // Handle date selection
+  function handleDateSelect(day) {
+    const newDate = new Date(currentYear, currentMonth, day);
+    let formattedValue;
+    
+    switch (mode) {
+      case 'date':
+        formattedValue = formatDate(newDate);
+        break;
+      case 'week':
+        // 在周模式下，选择日期时应该选择该日期所在的整周
+        formattedValue = formatWeek(newDate);
+        break;
+      case 'month':
+        formattedValue = formatMonth(newDate);
+        break;
+      case 'quarter':
+        formattedValue = formatQuarter(newDate);
+        break;
+      case 'year':
+        formattedValue = formatYear(newDate);
+        break;
+      default:
+        formattedValue = formatDate(newDate);
+    }
+    
+    if (!needConfirm) {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+      if (onChange) {
+        onChange(formattedValue);
+      }
+      setTimeout(() => {
+        isOpen = false;
+      }, 100);
+    } else {
+      if (value === undefined) {
+        selectedDate = formattedValue;
       }
     }
   }
-  function closePanel() {
-    show = false;
-    inputFocus = false;
+
+  // Handle week selection
+  function handleWeekSelect(weekStart) {
+    const formattedValue = formatWeek(weekStart);
+    
+    if (!needConfirm) {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+      if (onChange) {
+        onChange(formattedValue);
+      }
+      setTimeout(() => {
+        isOpen = false;
+      }, 100);
+    } else {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+    }
   }
-  function selectDate(y, m, d) {
-    date = formatDate(y, m, d);
-    closePanel();
+
+  // Handle month selection
+  function handleMonthSelect(month) {
+    const newDate = new Date(currentYear, month, 1);
+    const formattedValue = formatMonth(newDate);
+    
+    if (!needConfirm) {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+      if (onChange) {
+        onChange(formattedValue);
+      }
+      setTimeout(() => {
+        isOpen = false;
+      }, 100);
+    } else {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+    }
   }
-  function onInput(e) {
-    date = e.target.value;
+
+  // Handle quarter selection
+  function handleQuarterSelect(quarter) {
+    const month = (quarter - 1) * 3;
+    const newDate = new Date(currentYear, month, 1);
+    const formattedValue = formatQuarter(newDate);
+    
+    if (!needConfirm) {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+      if (onChange) {
+        onChange(formattedValue);
+      }
+      setTimeout(() => {
+        isOpen = false;
+      }, 100);
+    } else {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+    }
   }
-  function clearDate(e) {
+
+  // Handle year selection
+  function handleYearSelect(year) {
+    const newDate = new Date(year, 0, 1);
+    const formattedValue = formatYear(newDate);
+    
+    if (!needConfirm) {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+      if (onChange) {
+        onChange(formattedValue);
+      }
+      setTimeout(() => {
+        isOpen = false;
+      }, 100);
+    } else {
+      if (value === undefined) {
+        selectedDate = formattedValue;
+      }
+    }
+  }
+
+  // Handle month navigation
+  function handlePrevMonth() {
+    if (currentMonth === 0) {
+      currentMonth = 11;
+      currentYear = currentYear - 1;
+    } else {
+      currentMonth = currentMonth - 1;
+    }
+    
+    // 强制重新渲染日历
+    forceUpdate();
+  }
+
+  function handleNextMonth() {
+    if (currentMonth === 11) {
+      currentMonth = 0;
+      currentYear = currentYear + 1;
+    } else {
+      currentMonth = currentMonth + 1;
+    }
+    
+    // 强制重新渲染日历
+    forceUpdate();
+  }
+
+  // Handle year navigation
+  function handlePrevYear() {
+    currentYear = currentYear - 1;
+    
+    // 强制重新渲染日历
+    forceUpdate();
+  }
+
+  function handleNextYear() {
+    currentYear = currentYear + 1;
+    
+    // 强制重新渲染日历
+    forceUpdate();
+  }
+  
+  // 强制更新组件
+  function forceUpdate() {
+    // 直接更新日历内容，而不是关闭再打开
+    const dropdown = document.querySelector('.inula-datepicker-dropdown');
+    if (dropdown) {
+      // 更新标题显示
+      const headerView = dropdown.querySelector('.inula-datepicker-header-view');
+      if (headerView) {
+        if (mode === 'date') {
+          headerView.textContent = `${currentYear}年 ${monthNames[currentMonth]}`;
+        } else if (mode === 'year') {
+          headerView.textContent = `${currentYear - 5}年-${currentYear + 4}年`;
+        } else {
+          headerView.textContent = `${currentYear}年`;
+        }
+      }
+      
+      // 根据当前模式更新内容
+      updateCalendarContent(dropdown);
+    }
+  }
+  
+  // 根据当前模式更新日历内容
+  function updateCalendarContent(dropdown) {
+    switch (mode) {
+      case 'date':
+        updateDateView(dropdown);
+        break;
+      case 'week':
+        updateWeekView(dropdown);
+        break;
+      case 'month':
+        updateMonthView(dropdown);
+        break;
+      case 'quarter':
+        updateQuarterView(dropdown);
+        break;
+      case 'year':
+        updateYearView(dropdown);
+        break;
+    }
+  }
+  
+  // 更新日期视图
+  function updateDateView(dropdown) {
+    const daysContainer = dropdown.querySelector('.inula-datepicker-days:last-child');
+    if (daysContainer) {
+      // 清空现有内容
+      daysContainer.innerHTML = '';
+      
+      // 重新生成日期
+      const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+      const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
+      
+      // 添加空白单元格
+      for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'inula-datepicker-day empty';
+        daysContainer.appendChild(emptyDay);
+      }
+      
+      // 添加日期单元格
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const isToday = formatDate(date) === formatDate(new Date());
+        let isSelected = false;
+        let isInSelectedWeek = false;
+        
+        if (mode === 'date') {
+          isSelected = selectedDate === formatDate(date);
+        } else if (mode === 'week' && selectedDate) {
+          const selectedWeek = parseDate(selectedDate);
+          if (selectedWeek) {
+            const selectedWeekDates = getWeekDates(selectedWeek);
+            const currentDate = new Date(currentYear, currentMonth, day);
+            isInSelectedWeek = currentDate >= selectedWeekDates.start && currentDate <= selectedWeekDates.end;
+          }
+        }
+        
+        const isDisabled = disabled;
+        
+        const dayElement = document.createElement('div');
+        dayElement.className = `inula-datepicker-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isDisabled ? 'disabled' : ''}`;
+        dayElement.textContent = day;
+        
+        if (!isDisabled) {
+          dayElement.addEventListener('click', () => handleDateSelect(day));
+        }
+        
+        daysContainer.appendChild(dayElement);
+      }
+    }
+  }
+  
+  // 更新周视图
+  function updateWeekView(dropdown) {
+    const weekNumbersContainer = dropdown.querySelector('.inula-datepicker-week-numbers');
+    const weeksContainer = dropdown.querySelector('.inula-datepicker-weeks');
+    
+    if (weekNumbersContainer && weeksContainer) {
+      // 清空现有内容
+      weekNumbersContainer.innerHTML = '';
+      weeksContainer.innerHTML = '';
+      
+      const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+      const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
+      const totalWeeks = Math.ceil((daysInMonth + firstDayOfMonth) / 7);
+      
+      for (let week = 0; week < totalWeeks; week++) {
+        const weekStartDate = new Date(currentYear, currentMonth, 1 - firstDayOfMonth + week * 7);
+        const weekNumber = getWeekNumber(weekStartDate);
+        
+        // 创建周号
+        const weekNumberElement = document.createElement('div');
+        weekNumberElement.className = 'inula-datepicker-week-number';
+        weekNumberElement.textContent = weekNumber;
+        weekNumbersContainer.appendChild(weekNumberElement);
+        
+        // 创建周行
+        const weekRowElement = document.createElement('div');
+        weekRowElement.className = 'inula-datepicker-week-row';
+        
+        // 为这一周添加7天
+        for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+          const currentDate = new Date(weekStartDate);
+          currentDate.setDate(weekStartDate.getDate() + dayOfWeek);
+          
+          const day = currentDate.getDate();
+          const isCurrentMonth = currentDate.getMonth() === currentMonth;
+          const isToday = formatDate(currentDate) === formatDate(new Date());
+          let isInSelectedWeek = false;
+          let isWeekStart = false;
+          let isWeekEnd = false;
+          
+          if (selectedDate) {
+            const selectedWeek = parseDate(selectedDate);
+            if (selectedWeek) {
+              const selectedWeekDates = getWeekDates(selectedWeek);
+              isInSelectedWeek = currentDate >= selectedWeekDates.start && currentDate <= selectedWeekDates.end;
+              
+              if (isInSelectedWeek) {
+                const dayOfWeekNum = currentDate.getDay();
+                isWeekStart = dayOfWeekNum === 1;
+                isWeekEnd = dayOfWeekNum === 0;
+              }
+            }
+          }
+          
+          const isDisabled = disabled;
+          
+          const dayElement = document.createElement('div');
+          dayElement.className = `inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'week-start' : ''} ${isWeekEnd ? 'week-end' : ''} ${isDisabled ? 'disabled' : ''}`;
+          dayElement.textContent = day;
+          
+          if (!isDisabled) {
+            dayElement.addEventListener('click', () => handleDateSelect(day));
+          }
+          
+          weekRowElement.appendChild(dayElement);
+        }
+        
+        weeksContainer.appendChild(weekRowElement);
+      }
+    }
+  }
+  
+  // 更新月份视图
+  function updateMonthView(dropdown) {
+    const monthsContainer = dropdown.querySelector('.inula-datepicker-months');
+    
+    if (monthsContainer) {
+      // 清空现有内容
+      monthsContainer.innerHTML = '';
+      
+      for (let month = 0; month < 12; month++) {
+        const date = new Date(currentYear, month, 1);
+        const isSelected = selectedDate === formatMonth(date);
+        
+        const monthElement = document.createElement('div');
+        monthElement.className = `inula-datepicker-month ${isSelected ? 'selected' : ''}`;
+        monthElement.textContent = monthNames[month];
+        monthElement.addEventListener('click', () => handleMonthSelect(month));
+        
+        monthsContainer.appendChild(monthElement);
+      }
+    }
+  }
+  
+  // 更新季度视图
+  function updateQuarterView(dropdown) {
+    const quartersContainer = dropdown.querySelector('.inula-datepicker-quarters');
+    
+    if (quartersContainer) {
+      // 清空现有内容
+      quartersContainer.innerHTML = '';
+      
+      for (let quarter = 1; quarter <= 4; quarter++) {
+        const date = new Date(currentYear, (quarter - 1) * 3, 1);
+        const isSelected = selectedDate === formatQuarter(date);
+        
+        const quarterElement = document.createElement('div');
+        quarterElement.className = `inula-datepicker-quarter ${isSelected ? 'selected' : ''}`;
+        quarterElement.textContent = `Q${quarter}`;
+        quarterElement.addEventListener('click', () => handleQuarterSelect(quarter));
+        
+        quartersContainer.appendChild(quarterElement);
+      }
+    }
+  }
+  
+  // 更新年份视图
+  function updateYearView(dropdown) {
+    const yearsContainer = dropdown.querySelector('.inula-datepicker-years');
+    
+    if (yearsContainer) {
+      // 清空现有内容
+      yearsContainer.innerHTML = '';
+      
+      const startYear = currentYear - 5;
+      
+      for (let year = startYear; year <= startYear + 9; year++) {
+        const date = new Date(year, 0, 1);
+        const isSelected = selectedDate === formatYear(date);
+        
+        const yearElement = document.createElement('div');
+        yearElement.className = `inula-datepicker-year ${isSelected ? 'selected' : ''}`;
+        yearElement.textContent = year;
+        yearElement.addEventListener('click', () => handleYearSelect(year));
+        
+        yearsContainer.appendChild(yearElement);
+      }
+    }
+  }
+
+  // Handle today button click
+  function handleTodayClick() {
+    const today = new Date();
+    let formattedToday;
+    
+    switch (mode) {
+      case 'date':
+        formattedToday = formatDate(today);
+        break;
+      case 'week':
+        formattedToday = formatWeek(today);
+        break;
+      case 'month':
+        formattedToday = formatMonth(today);
+        break;
+      case 'quarter':
+        formattedToday = formatQuarter(today);
+        break;
+      case 'year':
+        formattedToday = formatYear(today);
+        break;
+      default:
+        formattedToday = formatDate(today);
+    }
+    
+    if (value === undefined) {
+      selectedDate = formattedToday;
+    }
+    
+    currentMonth = today.getMonth();
+    currentYear = today.getFullYear();
+    
+    if (!needConfirm) {
+      if (onChange) {
+        onChange(formattedToday);
+      }
+      setTimeout(() => {
+        isOpen = false;
+      }, 100);
+    }
+  }
+
+  // Handle confirm button click
+  function handleConfirm() {
+    isOpen = false;
+    if (onChange) {
+      onChange(selectedDate);
+    }
+  }
+
+  // Handle clear button click
+  function handleClear(e) {
     e.stopPropagation();
-    date = "";
-  }
-  function prevMonth() {
-    if (panelMonth === 0) {
-      panelYear--;
-      panelMonth = 11;
-    } else {
-      panelMonth--;
+    if (value === undefined) {
+      selectedDate = '';
     }
-  }
-  function nextMonth() {
-    if (panelMonth === 11) {
-      panelYear++;
-      panelMonth = 0;
-    } else {
-      panelMonth++;
+    if (onChange) {
+      onChange('');
     }
-  }
-  function prevYear() {
-    panelYear--;
-  }
-  function nextYear() {
-    panelYear++;
-  }
-  function selectToday() {
-    const now = new Date();
-    selectDate(now.getFullYear(), now.getMonth(), now.getDate());
-  }
-  function onDocClick(e) {
-    if (
-      !e.target.closest(".inula-datepicker-root") &&
-      !e.target.closest(".inula-datepicker-panel")
-    ) {
-      show = false;
-      inputFocus = false;
-    }
-  }
-  if (show) {
-    document.addEventListener("mousedown", onDocClick);
-  } else {
-    document.removeEventListener("mousedown", onDocClick);
   }
 
-  // 渲染日历面板
-  function renderCalendar() {
-    // 计算日历面板的日期分布（含上月、下月溢出天数）
-    const firstDay = new Date(panelYear, panelMonth, 1).getDay();
-    const daysInMonth = getDays(panelYear, panelMonth);
-    const daysInPrevMonth = getDays(panelYear, panelMonth - 1 < 0 ? 11 : panelMonth - 1);
-    const prevMonth = panelMonth - 1 < 0 ? 11 : panelMonth - 1;
-    const prevYear = panelMonth - 1 < 0 ? panelYear - 1 : panelYear;
-    const nextMonth = panelMonth + 1 > 11 ? 0 : panelMonth + 1;
-    const nextYear = panelMonth + 1 > 11 ? panelYear + 1 : panelYear;
+  // Toggle calendar visibility
+  function handleToggle(e) {
+    e.stopPropagation();
+    if (!disabled) {
+      isOpen = !isOpen;
+      
+      // 如果打开日历，确保使用最新的年月数据渲染
+      if (isOpen) {
+        // 如果有选中日期，使用选中日期的年月
+        if (selectedDate) {
+          const date = parseDate(selectedDate);
+          if (date) {
+            currentMonth = date.getMonth();
+            currentYear = date.getFullYear();
+          }
+        }
+      }
+    }
+  }
 
-    let cells = [];
-    // 上月溢出
-    for (let i = 0; i < firstDay; i++) {
-      cells.push({
-        y: prevYear,
-        m: prevMonth,
-        d: daysInPrevMonth - firstDay + i + 1,
-        type: "prev"
-      });
+  // Handle click outside
+  function handleBlur() {
+    isOpen = false;
+  }
+
+  // Render calendar days
+  function renderCalendarDays() {
+    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+    const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
+    const days = [];
+
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      days.push(<div key={`empty-${i}`} className="inula-datepicker-day empty"></div>);
     }
-    // 本月
-    for (let d = 1; d <= daysInMonth; d++) {
-      cells.push({
-        y: panelYear,
-        m: panelMonth,
-        d,
-        type: "current"
-      });
+
+    // Add cells for each day of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const isToday = formatDate(date) === formatDate(new Date());
+      let isSelected = false;
+      let isInSelectedWeek = false;
+      
+      if (mode === 'date') {
+        isSelected = selectedDate === formatDate(date);
+      } else if (mode === 'week' && selectedDate) {
+        const selectedWeek = parseDate(selectedDate);
+        if (selectedWeek) {
+          const selectedWeekDates = getWeekDates(selectedWeek);
+          // 比较日期是否在选中周内
+          const currentDate = new Date(currentYear, currentMonth, day);
+          isInSelectedWeek = currentDate >= selectedWeekDates.start && currentDate <= selectedWeekDates.end;
+        }
+      }
+      
+      const isDisabled = disabled;
+
+      days.push(
+        <div
+          key={day}
+          className={`inula-datepicker-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isDisabled ? 'disabled' : ''}`}
+          onClick={isDisabled ? undefined : () => handleDateSelect(day)}
+        >
+          {day}
+        </div>
+      );
     }
-    // 下月溢出
-    while (cells.length % 7 !== 0) {
-      cells.push({
-        y: nextYear,
-        m: nextMonth,
-        d: cells.length - (firstDay + daysInMonth) + 1,
-        type: "next"
-      });
-    }
-    // 6行
-    while (cells.length < 42) {
-      cells.push({
-        y: nextYear,
-        m: nextMonth,
-        d: cells.length - (firstDay + daysInMonth) + 1,
-        type: "next"
-      });
-    }
+
+    return days;
+  }
+
+  // Render week view
+  function renderWeekView() {
+    // 当mode为week时，按周来渲染
+    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+    const firstDayOfMonth = getFirstDayOfMonth(currentYear - 1, currentMonth);
     const weeks = [];
-    for (let i = 0; i < 6; i++) {
-      weeks.push(cells.slice(i * 7, (i + 1) * 7));
-    }
-    const selected = parseDate(date);
+    const weekNumbers = [];
 
-    return (
-      <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "center", background: "none" }}>
-        <thead>
-          <tr style={{ color: "#999", fontWeight: 400, fontSize: "13px" }}>
-            <th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th>
-          </tr>
-        </thead>
-        <tbody>
-          <for each={weeks}>
-            {(week, i) => (
-              <tr key={i}>
-                <for each={week}>
-                  {(cell, j) => {
-                    const isSelected =
-                      selected &&
-                      selected.y === cell.y &&
-                      selected.m === cell.m &&
-                      selected.d === cell.d;
-                    const isTodayCell = isToday(cell.y, cell.m, cell.d);
-                    return (
-                      <td
-                        key={j}
-                        style={{
-                          padding: "0",
-                          height: "36px",
-                          cursor: cell.type === "current" ? "pointer" : "default",
-                          borderRadius: "6px",
-                          background: isSelected
-                            ? "#fff"
-                            : isTodayCell && cell.type === "current"
-                            ? "#fff"
-                            : "none",
-                          border: isSelected
-                            ? "2px solid #1677ff"
-                            : isTodayCell && cell.type === "current"
-                            ? "1.5px solid #1677ff"
-                            : "1.5px solid transparent",
-                          color:
-                            cell.type === "prev" || cell.type === "next"
-                              ? "#d9d9d9"
-                              : "#222",
-                          fontWeight: isSelected ? 600 : 400,
-                          transition: "background 0.2s, border 0.2s",
-                          position: "relative",
-                        }}
-                        onClick={() => cell.type === "current" && selectDate(cell.y, cell.m, cell.d)}
-                        onMouseEnter={e => {
-                          if (cell.type === "current" && !isSelected)
-                            e.target.style.background = "#e6f4ff";
-                        }}
-                        onMouseLeave={e => {
-                          if (cell.type === "current" && !isSelected)
-                            e.target.style.background = "none";
-                        }}
-                      >
-                        {cell.d}
-                      </td>
-                    );
-                  }}
-                </for>
-              </tr>
-            )}
-          </for>
-        </tbody>
-      </table>
-    );
+    // 计算总周数
+    const totalWeeks = Math.ceil((daysInMonth + firstDayOfMonth) / 7);
+    
+    for (let week = 0; week < totalWeeks; week++) {
+      const weekDays = [];
+      const weekStartDate = new Date(currentYear, currentMonth, 1 - firstDayOfMonth + week * 7);
+      const weekNumber = getWeekNumber(weekStartDate);
+      
+      // 为这一周添加7天
+      for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+        const currentDate = new Date(weekStartDate);
+        currentDate.setDate(weekStartDate.getDate() + dayOfWeek);
+        
+        const day = currentDate.getDate();
+        const isCurrentMonth = currentDate.getMonth() === currentMonth;
+        const isToday = formatDate(currentDate) === formatDate(new Date());
+        let isSelected = false;
+        let isInSelectedWeek = false;
+        let isWeekStart = false;
+        let isWeekEnd = false;
+        
+        if (mode === 'week' && selectedDate) {
+          const selectedWeek = parseDate(selectedDate);
+          if (selectedWeek) {
+            const selectedWeekDates = getWeekDates(selectedWeek);
+            isInSelectedWeek = currentDate >= selectedWeekDates.start && currentDate <= selectedWeekDates.end;
+            
+            // 判断是否是周的开始和结束
+            if (isInSelectedWeek) {
+              const dayOfWeekNum = currentDate.getDay();
+              isWeekStart = dayOfWeekNum === 1; // 周一
+              isWeekEnd = dayOfWeekNum === 0; // 周日
+            }
+          }
+        }
+        
+        const isDisabled = disabled;
+
+        weekDays.push(
+          <div
+            key={`week-${week}-day-${dayOfWeek}`}
+            className={`inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'week-start' : ''} ${isWeekEnd ? 'week-end' : ''} ${isDisabled ? 'disabled' : ''}`}
+            onClick={isDisabled ? undefined : () => handleDateSelect(day)}
+          >
+            {day}
+          </div>
+        );
+      }
+      
+      weeks.push(
+        <div key={`week-${week}`} className="inula-datepicker-week-row">
+          {weekDays}
+        </div>
+      );
+      
+      weekNumbers.push(
+        <div key={`week-number-${week}`} className="inula-datepicker-week-number">
+          {weekNumber}
+        </div>
+      );
+    }
+
+    return { weeks, weekNumbers };
   }
+
+  // Render month view
+  function renderMonthView() {
+    const months = [];
+    
+    for (let month = 0; month < 12; month++) {
+      const date = new Date(currentYear, month, 1);
+      const isSelected = selectedDate === formatMonth(date);
+      
+      months.push(
+        <div
+          key={month}
+          className={`inula-datepicker-month ${isSelected ? 'selected' : ''}`}
+          onClick={() => handleMonthSelect(month)}
+        >
+          {monthNames[month]}
+        </div>
+      );
+    }
+
+    return months;
+  }
+
+  // Render quarter view
+  function renderQuarterView() {
+    const quarters = [];
+    
+    for (let quarter = 1; quarter <= 4; quarter++) {
+      const date = new Date(currentYear, (quarter - 1) * 3, 1);
+      const isSelected = selectedDate === formatQuarter(date);
+      
+      quarters.push(
+        <div
+          key={quarter}
+          className={`inula-datepicker-quarter ${isSelected ? 'selected' : ''}`}
+          onClick={() => handleQuarterSelect(quarter)}
+        >
+          Q{quarter}
+        </div>
+      );
+    }
+
+    return quarters;
+  }
+
+  // Render year view
+  function renderYearView() {
+    const years = [];
+    const startYear = currentYear - 5;
+    
+    for (let year = startYear; year <= startYear + 9; year++) {
+      const date = new Date(year, 0, 1);
+      const isSelected = selectedDate === formatYear(date);
+      
+      years.push(
+        <div
+          key={year}
+          className={`inula-datepicker-year ${isSelected ? 'selected' : ''}`}
+          onClick={() => handleYearSelect(year)}
+        >
+          {year}
+        </div>
+      );
+    }
+
+    return years;
+  }
+
+  // Month names for display
+  const monthNames = [
+    '1月', '2月', '3月', '4月', '5月', '6月',
+    '7月', '8月', '9月', '10月', '11月', '12月'
+  ];
+
+  // Day names for display
+  const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+
+  // Week names for display
+  const weekNames = ['一', '二', '三', '四', '五', '六', '日'];
+
+  // Determine size class
+  const sizeClass = size === 'small' ? 'inula-datepicker-small' : 
+                   size === 'large' ? 'inula-datepicker-large' : '';
+
+  // Get placeholder based on mode
+  const getPlaceholder = () => {
+    switch (mode) {
+      case 'week':
+        return '请选择周';
+      case 'month':
+        return '请选择月份';
+      case 'quarter':
+        return '请选择季度';
+      case 'year':
+        return '请选择年份';
+      default:
+        return placeholder;
+    }
+  };
 
   return (
-    <div
-      className="inula-datepicker-root"
-      style={{ position: "relative", display: "inline-block" }}
-      onMouseEnter={() => (inputHover = true)}
-      onMouseLeave={() => (inputHover = false)}
+    <div 
+      className={`inula-datepicker ${disabled ? 'inula-datepicker-disabled' : ''} ${sizeClass} ${className}`}
+      tabIndex={0}
+      onBlur={handleBlur}
+      style={style}
+      {...rest}
     >
-      {/* 日历icon */}
-      <span
-        style={{
-          position: "absolute",
-          left: "12px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          color: disabled ? "#bfbfbf" : "#bfbfbf",
-          pointerEvents: "none",
-          fontSize: "18px",
-        }}
+      <div 
+        className="inula-datepicker-input"
+        onClick={(e) => handleToggle(e)}
       >
-        <svg width="18" height="18" fill="none" viewBox="0 0 1024 1024">
-          <rect x="160" y="192" width="704" height="672" rx="48" fill="#fff" stroke="#d9d9d9" strokeWidth="40"/>
-          <rect x="160" y="288" width="704" height="576" rx="0" fill="#fafafa"/>
-        </svg>
-      </span>
-      <input
-        type="text"
-        value={date}
-        placeholder={placeholder}
-        disabled={disabled}
-        onFocus={openPanel}
-        onInput={onInput}
-        style={{
-          width: "220px",
-          padding: "8px 12px 8px 38px",
-          border: "1px solid " + (show ? "#1677ff" : inputHover ? "#4096ff" : "#d9d9d9"),
-          borderRadius: "6px",
-          fontSize: "16px",
-          outline: show ? "2px solid #1677ff" : "none",
-          boxShadow: show ? "0 0 0 2px rgba(22,119,255,0.2)" : "none",
-          transition: "all 0.2s",
-          background: disabled ? "#f5f5f5" : "#fff",
-          color: disabled ? "#bfbfbf" : "#222",
-          cursor: disabled ? "not-allowed" : "pointer",
-        }}
-      />
-      {/* 清除按钮 */}
-      <if cond={date && !disabled}>
-        <span
-          onClick={clearDate}
-          style={{
-            position: "absolute",
-            right: "36px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            color: "#bfbfbf",
-            fontSize: "16px",
-            cursor: "pointer",
-            userSelect: "none",
-          }}
-        >
-          ×
-        </span>
-      </if>
-      {/* 浮层日历面板 */}
-      <if cond={show && !disabled}>
-        <div
-          className="inula-datepicker-panel"
-          style={{
-            position: "absolute",
-            top: "48px",
-            left: 0,
-            background: "#fff",
-            border: "1px solid #f0f0f0",
-            borderRadius: "12px",
-            boxShadow: "0 6px 24px rgba(0,0,0,0.12)",
-            padding: "0 0 12px 0",
-            zIndex: 100,
-            minWidth: "320px",
-            width: "320px",
-            userSelect: "none",
-          }}
-        >
-          {/* 头部：切换年/月 */}
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "16px 24px 8px 24px",
-            borderBottom: "1px solid #f0f0f0"
-          }}>
-            <div>
-              <button onClick={prevYear} style={{
-                border: "none", background: "none", fontSize: "18px", cursor: "pointer", color: "#bfbfbf", marginRight: "2px"
-              }} tabIndex={-1} type="button">{"<<"}</button>
-              <button onClick={prevMonth} style={{
-                border: "none", background: "none", fontSize: "18px", cursor: "pointer", color: "#bfbfbf"
-              }} tabIndex={-1} type="button">{"<"}</button>
-            </div>
-            <span style={{ fontWeight: 600, fontSize: "18px" }}>
-              {panelYear}年 {pad(panelMonth + 1)}月
+        <input
+          type="text"
+          placeholder={getPlaceholder()}
+          value={selectedDate}
+          readOnly
+          disabled={disabled}
+          onMouseEnter={onIconHover} 
+          onMouseLeave={onIconLeave}
+        />
+        <if cond={selectedDate && clearable && !disabled && hoverIcon}>
+          <span onMouseEnter={onIconHover} 
+          onMouseLeave={onIconLeave} className="inula-datepicker-icon" onClick={handleClear}><Icon value="xmark" size={14} color="#999" /></span>
+        </if>
+        <else>
+          <span onMouseEnter={onIconHover} 
+          onMouseLeave={onIconLeave} className="inula-datepicker-icon" ><Icon value="calendar" size={16} color="#999" /></span>
+        </else>
+        
+      </div>
+      
+      {isOpen && (
+        <div className="inula-datepicker-dropdown" onClick={(e) => e.stopPropagation()}>
+          <div className="inula-datepicker-header">
+            <button className="inula-datepicker-prev-year" onClick={handlePrevYear}>
+              <span>«</span>
+            </button>
+            {mode === 'date' && (
+              <button className="inula-datepicker-prev-month" onClick={handlePrevMonth}>
+                <span>‹</span>
+              </button>
+            )}
+            <span className="inula-datepicker-header-view">
+              {mode === 'date' && `${currentYear}年 ${monthNames[currentMonth]}`}
+              {mode === 'week' && `${currentYear}年`}
+              {mode === 'month' && `${currentYear}年`}
+              {mode === 'quarter' && `${currentYear}年`}
+              {mode === 'year' && `${currentYear - 5}年-${currentYear + 4}年`}
             </span>
+            {mode === 'date' && (
+              <button className="inula-datepicker-next-month" onClick={handleNextMonth}>
+                <span>›</span>
+              </button>
+            )}
+            <button className="inula-datepicker-next-year" onClick={handleNextYear}>
+              <span>»</span>
+            </button>
+          </div>
+          
+          <div className="inula-datepicker-body">
+            {mode === 'date' && (
+              <>
+                <div className="inula-datepicker-days">
+                  {dayNames.map((day, index) => (
+                    <div key={index} className="inula-datepicker-day">{day}</div>
+                  ))}
+                </div>
+                <div className="inula-datepicker-days">
+                  {renderCalendarDays()}
+                </div>
+              </>
+            )}
+            {mode === 'week' && (
+              <>
+                <div className="inula-datepicker-weekdays">
+                  {weekNames.map((day, index) => (
+                    <div key={index} className="inula-datepicker-weekday">{day}</div>
+                  ))}
+                </div>
+                <div className="inula-datepicker-week-numbers">
+                  {renderWeekView().weekNumbers}
+                </div>
+                <div className="inula-datepicker-weeks">
+                  {renderWeekView().weeks}
+                </div>
+              </>
+            )}
+            {mode === 'month' && (
+              <div className="inula-datepicker-months">
+                {renderMonthView()}
+              </div>
+            )}
+            {mode === 'quarter' && (
+              <div className="inula-datepicker-quarters">
+                {renderQuarterView()}
+              </div>
+            )}
+            {mode === 'year' && (
+              <div className="inula-datepicker-years">
+                {renderYearView()}
+              </div>
+            )}
+          </div>
+          
+          <div className="inula-datepicker-footer">
             <div>
-              <button onClick={nextMonth} style={{
-                border: "none", background: "none", fontSize: "18px", cursor: "pointer", color: "#bfbfbf"
-              }} tabIndex={-1} type="button">{">"}</button>
-              <button onClick={nextYear} style={{
-                border: "none", background: "none", fontSize: "18px", cursor: "pointer", color: "#bfbfbf", marginLeft: "2px"
-              }} tabIndex={-1} type="button">{">>"}</button>
+              {showToday && (
+                <button className="inula-datepicker-today" onClick={handleTodayClick}>
+                  今天
+                </button>
+              )}
             </div>
-          </div>
-          {/* 日历表格 */}
-          <div style={{ padding: "0 24px" }}>
-            {renderCalendar()}
-          </div>
-          {/* 今天按钮 */}
-          <div style={{
-            textAlign: "center",
-            padding: "8px 0 0 0",
-            fontSize: "15px"
-          }}>
-            <button
-              onClick={selectToday}
-              style={{
-                border: "none",
-                background: "none",
-                color: "#1677ff",
-                cursor: "pointer",
-                fontWeight: 500,
-                borderRadius: "6px",
-                padding: "4px 16px",
-                transition: "background 0.2s"
-              }}
-              type="button"
-            >今天</button>
+            <div>
+              {needConfirm && (
+                <button className="inula-datepicker-confirm" onClick={handleConfirm}>
+                  确定
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </if>
+      )}
     </div>
   );
-}
+};
 
 export default DatePicker;
