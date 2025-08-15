@@ -1,30 +1,20 @@
-import DatePicker from "../index.jsx";
-import dayjs from 'dayjs';
-const defaultValue = [dayjs('2000-01-01'), dayjs('2000-01-03'), dayjs('2000-01-05')];
-function Demo1() {
-    let date = "";
-    function onChange(date, dateString) {
-        console.log(date, dateString);
-    }
-    return (
-        <div>
-            <DatePicker
-                multiple
-                onChange={onChange}
-                maxTagCount="responsive"
-                defaultValue={defaultValue}
-                size="small"
-            />
-            <DatePicker multiple onChange={onChange} maxTagCount="responsive" defaultValue={defaultValue} />
-            <DatePicker
-                multiple
-                onChange={onChange}
-                maxTagCount="responsive"
-                defaultValue={defaultValue}
-                size="large"
-            />
-        </div>
-    )
+/**
+ * 多选，不支持 showTime 以及 picker="time"。
+ * @returns 
+ */
+import DatePicker from '../index.jsx';
+
+function Demo3() {
+  return (
+    <div style={{ padding: '20px' }}>
+      <h3 style={{ marginBottom: '20px', color: '#333' }}>受控组件</h3>
+      <DatePicker 
+        value="2024-01-15"
+        onChange={(value) => console.log('受控组件值变化:', value)}
+        placeholder="受控组件"
+      />
+    </div>
+  );
 }
 
-export default Demo1;
+export default Demo3;
