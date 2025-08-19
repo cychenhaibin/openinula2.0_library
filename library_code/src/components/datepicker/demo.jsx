@@ -4,6 +4,7 @@ import Demo3 from './demos/demo3.jsx';
 import Demo4 from './demos/demo4.jsx';
 import Demo5 from './demos/demo5.jsx';
 import Demo6 from './demos/demo6.jsx';
+import WeekRangeDemo from './demos/week-range-demo.jsx';
 
 function DatePickerDemo() {
   return (
@@ -22,6 +23,14 @@ function DatePickerDemo() {
           <div>通过设置 picker 属性，指定范围选择器类型。</div>
         </div>
         <div><Demo2 /></div>
+      </div>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <h2>周范围选择器</h2>
+          <div>专门测试周范围选择器的功能和样式。</div>
+        </div>
+        <div><WeekRangeDemo /></div>
       </div>
     </div>
   );
