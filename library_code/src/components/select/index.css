@@ -21,9 +21,9 @@
   justify-content: space-between;
   border: 1px solid var(--inula-select-border);
   background: var(--inula-select-bg);
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 0 12px;
-  height: 36px;
+  height: 32px;
   cursor: pointer;
   transition: border 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
