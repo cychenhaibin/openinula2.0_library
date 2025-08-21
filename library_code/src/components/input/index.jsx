@@ -22,7 +22,7 @@ const Input = ({
   addonBefore, // 前置标签
   addonAfter, // 后置标签
   showCount = false, // 是否显示字数统计
-  maxLength = 100000000000, // 最大长度
+  maxLength = 5000, // 最大长度
   autoSize = false, // 自动调整大小，可以是布尔值或对象 { minRows: 2, maxRows: 6 }
   status, // 新增：输入框状态 error/warning
   ...rest
@@ -211,17 +211,17 @@ const Input = ({
         {/* 清除按钮（可选） */}
         {allowClear && !disabled && (value !== undefined ? value : defaultValue) && (
           <span className="inula-input-clear" onClick={handleClear}>
-            <Icon value="xmark" theme="filled" size={14} style={{ color: '#666', cursor: 'pointer' }} />
+            <Icon value="xmark" theme="filled" size={14} color="#666" />
           </span>
         )}
         {/* 密码显示/隐藏切换按钮 */}
         {type === 'password' && !disabled && (
           <span className="inula-input-password-toggle" onClick={handleTogglePassword} style={{ marginRight: 12, cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
             <if cond={showPassword}>
-              <Icon value='eye' theme="filled" size={12} />
+              <Icon value='eye' theme="filled" size={12} color="#999" />
             </if>
             <else>
-              <Icon value='eye-slash' theme="filled" size={12} />
+              <Icon value='eye-slash' theme="filled" size={12} color="#999" />
             </else>
           </span>
         )}
