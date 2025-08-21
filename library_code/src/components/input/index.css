@@ -87,6 +87,12 @@
   border: 1px solid transparent;
 }
 
+/* 让 textarea 与 input 的 filled 形态一致：把样式下沉到外层包装器 */
+.inula-input-affix-wrapper:has(.inula-input-filled) {
+  background: #f8f9fa;
+  /* border-color: transparent; */
+}
+
 /* borderless 形态的特殊处理 */
 .inula-input-affix-wrapper-borderless {
   border: none !important;
@@ -123,8 +129,14 @@
 .inula-input-filled:hover {
   background: #f0f2f5;
 }
+.inula-input-affix-wrapper:has(.inula-input-filled):hover {
+  background: #f0f2f5;
+}
 
 .inula-input-filled:focus-within {
+  background: var(--inula-color-default-bg);
+}
+.inula-input-affix-wrapper:has(.inula-input-filled):focus-within {
   background: var(--inula-color-default-bg);
 }
 
