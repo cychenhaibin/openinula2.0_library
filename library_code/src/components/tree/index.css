@@ -1,0 +1,16 @@
+.inula-tree {
+    list-style: none;
+}
+
+.inula-tree li {
+    list-style: none;
+}
+
+.inula-tree-node {
+    display: flex;
+    flex-direction: column;
+}
+
+.inula-tree-node-content {
+    display: flex;
+}

@@ -2,6 +2,7 @@ import demo1 from "./demos/demo1.jsx";
 import demo2 from "./demos/demo2.jsx";
 import demo3 from "./demos/demo3.jsx";
 import demo4 from "./demos/demo4.jsx";
+import demo5 from "./demos/demo5.jsx";
 const CardDemo = () => {
     return (
         <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'column', gap: 16 }}>
@@ -24,6 +25,11 @@ const CardDemo = () => {
                 <div>网格布局内容组件，支持悬停浮空</div>
             </div>
             <div><demo4 /></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <h2>带tabs的Card组件</h2>
+                <div>带tabs的Card组件，支持更多内容</div>
+            </div>
+            <div><demo5 /></div>
          </div>
     )
 }

@@ -70,6 +70,30 @@
   color: rgba(0, 0, 0, 0.88);
 }
 
+/* 带tabs的卡片头部 */
+.inula-card-header.inula-card-header-tabs {
+  padding: 0;
+  border-bottom: none;
+}
+
+.inula-card-header .inula-tabs {
+  min-height: unset;
+  height: 100%;
+  width: 100%;
+}
+
+.inula-card-header .inula-tabs-bar {
+  padding-left: 24px;
+}
+
+.inula-card-header-content.inula-card-header-content-tabs
+  .inula-card-header-title,
+.inula-card-header-content.inula-card-header-content-tabs
+  .inula-card-header-extra {
+  padding: 24px;
+  padding-bottom: 0px;
+}
+
 /* 卡片封面 */
 .inula-card-cover {
   width: 100%;
