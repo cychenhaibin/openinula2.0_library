@@ -10,6 +10,9 @@ import Tooltip from './components/tooltip/demo.jsx';
 import Notification from './components/notification/demo.jsx';
 import Spin from './components/spin/demo.jsx';
 import Card from './components/card/demo.jsx';
+import Tabs from './components/tabs/demo.jsx';
+import Tree from './components/tree/demo.jsx';
+window.render = render; 
 import Select from './components/select/demo.jsx';
 import Input from './components/input/demo.jsx';
 import Modal from './components/modal/demo.jsx';
@@ -59,6 +62,13 @@ function App() {
         <div className="hero-content">
           <Card />
         </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Tabs 组件</p>
+        <div className="hero-content">
+          <Tabs />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Tree 组件</p>
+        <div className="hero-content">
+          <Tree />
         <p className="hero-subtitle animate__animated animate__fadeInUp">Select 选择器组件</p>
         <div className="hero-content">
           <Select />
@@ -79,6 +89,7 @@ function App() {
         <div className="hero-content">
           <Form />
         </div>
+      </div>
       </div>
     </div>
   );

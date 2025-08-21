@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@openinula/next": "^0.0.5"
+    "@openinula/next": "0.0.8"
   },
   "devDependencies": {
-    "@openinula/unplugin": "^0.0.2",
+    "@openinula/unplugin": "0.0.4",
     "vite": "^4.4.9"
   },
   "keywords": [
