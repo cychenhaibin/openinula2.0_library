@@ -2,13 +2,14 @@ import { render } from '@openinula/next';
 import './index.css';
 
 const Button = ({
-  type = 'default', // primary, dashed, text, link
+  type = 'default', // 样式类型：primary, dashed, text, link
   danger = false,
   ghost = false,
   disabled = false,
   loading = false,
   children,
   onClick,
+  htmlType = 'button', // 原生 button 类型：button | submit | reset（默认 button，避免表单内默认 submit）
   ...rest
 }) => {
   const classNames = [
@@ -27,6 +28,7 @@ const Button = ({
       className={classNames}
       disabled={disabled || loading}
       onClick={onClick}
+      type={htmlType}
       {...rest}
     >
       {loading ? <span className="inula-btn-spinner" /> : null}
