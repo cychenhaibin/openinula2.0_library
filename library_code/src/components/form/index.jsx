@@ -31,6 +31,8 @@ const setValueByPath = (obj, path, value) => {
 
 // 每个表单模型对应的字段校验注册表（model -> Map<name, triggerValidate>）
 const fieldValidatorsRegistry = new WeakMap();
+// 每个表单模型对应的表单级规则（model -> rules 对象）
+const formRulesRegistry = new WeakMap();
 
 const runRules = (value, model, rules = []) => {
   if (!Array.isArray(rules)) rules = [rules].filter(Boolean);
@@ -84,12 +86,14 @@ const Form = ({
 }) => {
   let submitting = false;
   let formRef = ref;
+  // 记录当前表单的表单级规则
+  formRulesRegistry.set(model, rules || {});
 
   // 表单方法
   const validate = (fieldNames) => {
     const errors = {};
     const values = model;
-    
+
     const fieldsToValidate = fieldNames || Object.keys(rules || {});
     for (let i = 0; i < fieldsToValidate.length; i++) {
       const name = fieldsToValidate[i];
@@ -100,7 +104,7 @@ const Form = ({
         if (msg) errors[name] = msg;
       }
     }
-    
+
     return {
       valid: Object.keys(errors).length === 0,
       errors,
@@ -111,10 +115,10 @@ const Form = ({
   const validateField = (fieldName) => {
     const fieldRules = rules[fieldName];
     if (!fieldRules) return { valid: true, error: '', value: getValueByPath(model, fieldName) };
-    
+
     const value = getValueByPath(model, fieldName);
     const error = runRules(value, model, fieldRules);
-    
+
     return {
       valid: !error,
       error,
@@ -138,7 +142,7 @@ const Form = ({
 
   const getFieldsValue = (fieldNames) => {
     if (!fieldNames) return model;
-    
+
     const result = {};
     fieldNames.forEach(name => {
       result[name] = getValueByPath(model, name);
@@ -228,9 +232,12 @@ const FormItem = ({
   const fieldValue = getValueByPath(model, name);
 
   const triggerValidate = (val) => {
+    const formLevelRules = formRulesRegistry.get(model) || {};
+    const nameRules = formLevelRules ? formLevelRules[name] : undefined;
     const mergedRules = [
       required ? { required: true, message: '该字段为必填项' } : null,
-      ...(Array.isArray(rules) ? rules : [rules])
+      ...(Array.isArray(rules) ? rules : [rules]),
+      ...(Array.isArray(nameRules) ? nameRules : (nameRules ? [nameRules] : []))
     ].filter(Boolean);
     error = runRules(val, model, mergedRules);
   };
