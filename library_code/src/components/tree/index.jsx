@@ -57,9 +57,11 @@ const Tree = ({
    * icon: 自定义图标，ReactNode
    * disableCheckbox: 是否禁用复选框，默认false
    */
-  const TreeNode = (node) => {
+  const TreeNode = ({ node }) => {
     console.log("TreeNode props:", node);
-    console.log((node.isLeaf !==true && node.children && node.children.length > 0));
+    console.log(
+      node.isLeaf !== true && node.children && node.children.length > 0
+    );
     const Switcher = () => {
       if (node.isLeaf || !node.children) return <></>;
       if (switcherIcon) {
@@ -77,10 +79,12 @@ const Tree = ({
           {titleRender ? titleRender(node) : <>{node.title}</>}
         </div>
         <ul>
-          {!node.isLeaf &&
+          {/* {!node.isLeaf &&
             node.children &&
-            node.children.length > 0 &&
-            node.children.map((child) => <TreeNode node={child} />)}
+            node.children.length > 0 && */}
+          {node.children.map((child) => (
+            <TreeNode key={child.key} node={child} />
+          ))}
         </ul>
       </li>
     );
@@ -89,7 +93,9 @@ const Tree = ({
   return (
     <li className={classNames} style={styles}>
       <ul>
-        <for each={treeData}>{(node) => <TreeNode node={node} />}</for>
+        {treeData.map((node) => (
+          <TreeNode key={node.ksy} node={node} />
+        ))}
       </ul>
     </li>
   );
