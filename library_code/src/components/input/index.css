@@ -28,8 +28,11 @@
 
 /* 输入框本体 */
 .inula-input {
-  flex: 1;
-  width: 100%;
+  flex: 1 1 auto;
+  /* 关键：允许在有清除/统计/后缀时可收缩，避免把右侧元素挤没 */
+  min-width: 0;
+  /* 不强制占满 100%，交给 flex 分配剩余空间 */
+  width: auto;
   font-size: 14px;
   line-height: 1.5;
   background: transparent;
@@ -334,7 +337,8 @@
 }
 
 .inula-input-has-count {
-  /* padding-right: 60px !important; */
+  /* 为右侧预留最小空间，避免计数器被挤压隐藏 */
+  padding-right: 0;
 }
 
 .inula-input-count-inside {
