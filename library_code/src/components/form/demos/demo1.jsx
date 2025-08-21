@@ -9,8 +9,7 @@ const Demo1 = () => {
   let user = {
     username: '',
     password: '',
-    age: 18,
-    intro: ''
+    remember: false,
   };
 
   const rules = {
@@ -22,10 +21,6 @@ const Demo1 = () => {
       { required: true, message: '请输入密码' },
       { min: 6, message: '至少 6 位' }
     ],
-    age: [
-      { required: true, message: '请输入年龄' },
-      { pattern: /^\d+$/, message: '必须为数字' }
-    ]
   };
 
   const handleFinish = (values) => {
@@ -35,7 +30,7 @@ const Demo1 = () => {
 
   const handleFailed = ({ errors }) => {
     console.log('提交失败：', errors);
-    alert('提交失败: ' + JSON.stringify(errors));
+    // alert('提交失败: ' + JSON.stringify(errors));
   };
 
   return (
@@ -63,11 +58,18 @@ const Demo1 = () => {
         </FormItem>
 
         <FormItem name="remember" label={null} model={user}>
-          <Checkbox>Remember me</Checkbox>
+          <Checkbox 
+            defaultChecked={user.remember}
+            onChange={(e) => {
+              user.remember = e.target.checked;
+            }}
+          >
+            Remember me
+          </Checkbox>
         </FormItem>
 
         <FormItem name="remember" label={null} model={user}>
-          <Button type="primary">Submit</Button>
+          <Button type="primary" htmlType="submit">Submit</Button>
         </FormItem>
       </Form>
     </div>

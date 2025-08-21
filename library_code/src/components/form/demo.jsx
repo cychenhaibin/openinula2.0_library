@@ -1,5 +1,5 @@
 import demo1 from './demos/demo1.jsx';
-// import demo2 from './demos/demo2.jsx';
+import demo2 from './demos/demo2.jsx';
 // import demo3 from './demos/demo3.jsx';
 // import demo4 from './demos/demo4.jsx';
 // import demo5 from './demos/demo5.jsx';
@@ -16,10 +16,10 @@ function FormDemo() {
             <div><demo1 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>危险</h2>
-                <div>展示五种类型按钮的'危险'状态用法。</div>
+                <h2>表单方法调用</h2>
+                <div>展示表单的各种方法调用，包括校验、重置、设置值等。</div>
             </div>
-            {/* <div><demo2 /></div> */}
+            <div><demo2 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
                 <h2>幽灵</h2>

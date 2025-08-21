@@ -29,6 +29,9 @@ const setValueByPath = (obj, path, value) => {
   cur[segments[segments.length - 1]] = value;
 };
 
+// 每个表单模型对应的字段校验注册表（model -> Map<name, triggerValidate>）
+const fieldValidatorsRegistry = new WeakMap();
+
 const runRules = (value, model, rules = []) => {
   if (!Array.isArray(rules)) rules = [rules].filter(Boolean);
   for (let i = 0; i < rules.length; i++) {
@@ -76,33 +79,104 @@ const Form = ({
   className = '',
   style = {},
   children,
+  ref,
   ...rest
 }) => {
   let submitting = false;
+  let formRef = ref;
+
+  // 表单方法
+  const validate = (fieldNames) => {
+    const errors = {};
+    const values = model;
+    
+    const fieldsToValidate = fieldNames || Object.keys(rules || {});
+    for (let i = 0; i < fieldsToValidate.length; i++) {
+      const name = fieldsToValidate[i];
+      const fieldRules = rules[name];
+      if (fieldRules) {
+        const value = getValueByPath(model, name);
+        const msg = runRules(value, model, fieldRules);
+        if (msg) errors[name] = msg;
+      }
+    }
+    
+    return {
+      valid: Object.keys(errors).length === 0,
+      errors,
+      values
+    };
+  };
+
+  const validateField = (fieldName) => {
+    const fieldRules = rules[fieldName];
+    if (!fieldRules) return { valid: true, error: '', value: getValueByPath(model, fieldName) };
+    
+    const value = getValueByPath(model, fieldName);
+    const error = runRules(value, model, fieldRules);
+    
+    return {
+      valid: !error,
+      error,
+      value
+    };
+  };
+
+  const resetFields = (fieldNames) => {
+    const fieldsToReset = fieldNames || Object.keys(model);
+    for (let i = 0; i < fieldsToReset.length; i++) {
+      const name = fieldsToReset[i];
+      setValueByPath(model, name, '');
+    }
+  };
+
+  const setFieldsValue = (values) => {
+    Object.keys(values).forEach(name => {
+      setValueByPath(model, name, values[name]);
+    });
+  };
+
+  const getFieldsValue = (fieldNames) => {
+    if (!fieldNames) return model;
+    
+    const result = {};
+    fieldNames.forEach(name => {
+      result[name] = getValueByPath(model, name);
+    });
+    return result;
+  };
+
+  const clearValidate = (fieldNames) => {
+    // 清除校验状态，这里可以通过触发重新渲染来实现
+    // 在 openinula2.0 中，直接修改响应式变量即可
+    if (fieldNames) {
+      fieldNames.forEach(name => {
+        // 可以在这里添加清除校验状态的逻辑
+      });
+    }
+  };
 
   const handleSubmit = (e) => {
     e && e.preventDefault && e.preventDefault();
     if (submitting) return;
     submitting = true;
 
-    const errors = {};
-    const values = model;
-
-    const fieldNames = Object.keys(rules || {});
-    for (let i = 0; i < fieldNames.length; i++) {
-      const name = fieldNames[i];
-      const fieldRules = rules[name];
-      const value = getValueByPath(model, name);
-      const msg = runRules(value, model, fieldRules);
-      if (msg) errors[name] = msg;
-    }
-
-    const hasError = Object.keys(errors).length > 0;
-    if (hasError) {
-      onFinishFailed && onFinishFailed({ errors, values });
+    const result = validate();
+    if (result.valid) {
+      onFinish && onFinish(result.values);
     } else {
-      onFinish && onFinish(values);
+      onFinishFailed && onFinishFailed({ errors: result.errors, values: result.values });
     }
+    // 提交后触发当前表单内各字段的校验以更新错误提示
+    try {
+      const registry = fieldValidatorsRegistry.get(model);
+      if (registry) {
+        registry.forEach((fn, fieldName) => {
+          const currentVal = getValueByPath(model, fieldName);
+          if (typeof fn === 'function') fn(currentVal);
+        });
+      }
+    } catch (err) {}
     submitting = false;
   };
 
@@ -113,6 +187,19 @@ const Form = ({
     disabled ? 'inula-form-disabled' : '',
     className,
   ].filter(Boolean).join(' ');
+
+  // 暴露表单方法给 ref
+  if (formRef) {
+    formRef.current = {
+      validate,
+      validateField,
+      resetFields,
+      setFieldsValue,
+      getFieldsValue,
+      clearValidate,
+      submit: handleSubmit
+    };
+  }
 
   return (
     <form className={formClassNames} style={style} onSubmit={handleSubmit} {...rest}>
@@ -147,6 +234,16 @@ const FormItem = ({
     ].filter(Boolean);
     error = runRules(val, model, mergedRules);
   };
+
+  // 注册字段的提交时触发校验函数（按当前表单 model 作用域）
+  if (name && model) {
+    let registry = fieldValidatorsRegistry.get(model);
+    if (!registry) {
+      registry = new Map();
+      fieldValidatorsRegistry.set(model, registry);
+    }
+    registry.set(name, (val) => triggerValidate(val));
+  }
 
   const onInputCapture = (e) => {
     if (validateOn === 'change') {
@@ -202,5 +299,3 @@ const FormItem = ({
 
 export { Form, FormItem, getValueByPath, setValueByPath };
 export default Form;
-
-
