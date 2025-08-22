@@ -72,7 +72,7 @@ const runRules = (value, model, rules = []) => {
 const Form = ({
   model = {},
   rules = {},
-  layout = 'horizontal', // horizontal | vertical
+  layout = 'horizontal', // horizontal | vertical | inline
   labelAlign = 'right', // left | right
   colon = true,
   disabled = false,
