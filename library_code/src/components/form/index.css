@@ -10,6 +10,55 @@
   display: flex;
 }
 
+.inula-form-inline .inula-form-item {
+  display: inline-flex;
+  margin-right: 16px;
+  margin-bottom: 16px;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.inula-form-inline .inula-form-item:last-child {
+  margin-right: 0;
+}
+
+.inula-form-inline .inula-form-item-label {
+  flex: 0 0 auto;
+  margin-right: 8px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  height: 32px;
+}
+
+.inula-form-inline .inula-form-item-label label {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  margin: 0;
+}
+
+.inula-form-inline .inula-form-item-control {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.inula-form-inline .inula-form-item-control-input {
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.inula-form-inline .inula-form-item-control-input > * {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .inula-form-label-left .inula-form-item-label {
   text-align: left;
 }
@@ -67,8 +116,7 @@
 }
 
 .inula-form-disabled {
-  opacity: 0.6;
-  pointer-events: none;
+  /* 表单禁用状态，具体禁用效果由各个控件自己处理 */
 }
 
 

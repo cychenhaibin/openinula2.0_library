@@ -1,7 +1,7 @@
 import demo1 from './demos/demo1.jsx';
 import demo2 from './demos/demo2.jsx';
 import demo3 from './demos/demo3.jsx';
-// import demo4 from './demos/demo4.jsx';
+import demo4 from './demos/demo4.jsx';
 // import demo5 from './demos/demo5.jsx';
 // import demo6 from './demos/demo6.jsx';
 
@@ -28,10 +28,10 @@ function FormDemo() {
             <div><demo3 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>禁用</h2>
-                <div>展示五种类型按钮的'禁用'状态用法。</div>
+                <h2>表单禁用</h2>
+                <div>展示表单的禁用功能，包括禁用状态切换、表单重置等。</div>
             </div>
-            {/* <div><demo4 /></div> */}
+            <div><demo4 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
                 <h2>加载中</h2>

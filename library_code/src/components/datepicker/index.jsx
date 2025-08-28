@@ -378,8 +378,8 @@ const DatePicker = ({
     // 强制重新渲染日历
     forceUpdate();
 
-    // 确保周视图正确更新
-    if (mode === 'week') {
+    // 确保周视图正确更新（非范围模式才单面板刷新）
+    if (mode === 'week' && picker !== 'range') {
       setTimeout(() => {
         const dropdown = document.querySelector('.inula-datepicker-dropdown');
         if (dropdown) {
@@ -400,8 +400,8 @@ const DatePicker = ({
     // 强制重新渲染日历
     forceUpdate();
 
-    // 确保周视图正确更新
-    if (mode === 'week') {
+    // 确保周视图正确更新（非范围模式才单面板刷新）
+    if (mode === 'week' && picker !== 'range') {
       setTimeout(() => {
         const dropdown = document.querySelector('.inula-datepicker-dropdown');
         if (dropdown) {
@@ -418,8 +418,8 @@ const DatePicker = ({
     // 强制重新渲染日历
     forceUpdate();
 
-    // 确保周视图正确更新
-    if (mode === 'week') {
+    // 确保周视图正确更新（非范围模式才单面板刷新）
+    if (mode === 'week' && picker !== 'range') {
       setTimeout(() => {
         const dropdown = document.querySelector('.inula-datepicker-dropdown');
         if (dropdown) {
@@ -435,8 +435,8 @@ const DatePicker = ({
     // 强制重新渲染日历
     forceUpdate();
 
-    // 确保周视图正确更新
-    if (mode === 'week') {
+    // 确保周视图正确更新（非范围模式才单面板刷新）
+    if (mode === 'week' && picker !== 'range') {
       setTimeout(() => {
         const dropdown = document.querySelector('.inula-datepicker-dropdown');
         if (dropdown) {
@@ -463,6 +463,16 @@ const DatePicker = ({
         }
       }
 
+      // 更新双面板标题（范围模式）
+      if (picker === 'range') {
+        const panelTitles = dropdown.querySelectorAll('.inula-datepicker-panel-title');
+        if (panelTitles && panelTitles.length >= 2) {
+          panelTitles[0].textContent = `${currentYear}年 ${monthNames[currentMonth]}`;
+          const next = getNextMonthYear();
+          panelTitles[1].textContent = `${next.year}年 ${monthNames[next.month]}`;
+        }
+      }
+
       // 根据当前模式更新内容
       updateCalendarContent(dropdown);
     }
@@ -475,7 +485,13 @@ const DatePicker = ({
         updateDateView(dropdown);
         break;
       case 'week':
-        updateWeekView(dropdown);
+        if (picker === 'range') {
+          const next = getNextMonthYear();
+          updateWeekViewWithParams(dropdown, 0, currentYear, currentMonth, false);
+          updateWeekViewWithParams(dropdown, 1, next.year, next.month, true);
+        } else {
+          updateWeekView(dropdown);
+        }
         break;
       case 'month':
         updateMonthView(dropdown);
@@ -491,51 +507,53 @@ const DatePicker = ({
 
   // 更新日期视图
   function updateDateView(dropdown) {
-    const daysContainer = dropdown.querySelector('.inula-datepicker-days:last-child');
-    if (daysContainer) {
-      // 清空现有内容
-      daysContainer.innerHTML = '';
+    const daysContainers = dropdown.querySelectorAll('.inula-datepicker-panel .inula-datepicker-days:last-child');
 
-      // 重新生成日期
+    // 左侧（当前月）
+    const leftContainer = daysContainers[0] || dropdown.querySelector('.inula-datepicker-days:last-child');
+    if (leftContainer) {
+      leftContainer.innerHTML = '';
       const daysInMonth = getDaysInMonth(currentYear, currentMonth);
       const firstDayOfMonth = getFirstDayOfMonth(currentYear, currentMonth);
-
-      // 添加空白单元格
       for (let i = 0; i < firstDayOfMonth; i++) {
         const emptyDay = document.createElement('div');
         emptyDay.className = 'inula-datepicker-day empty';
-        daysContainer.appendChild(emptyDay);
+        leftContainer.appendChild(emptyDay);
       }
-
-      // 添加日期单元格
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(currentYear, currentMonth, day);
         const isToday = formatDate(date) === formatDate(new Date());
-        let isSelected = false;
-        let isInSelectedWeek = false;
-
-        if (mode === 'date') {
-          isSelected = selectedDate === formatDate(date);
-        } else if (mode === 'week' && selectedDate) {
-          const selectedWeek = parseDate(selectedDate);
-          if (selectedWeek) {
-            const selectedWeekDates = getWeekDates(selectedWeek);
-            const currentDate = new Date(currentYear, currentMonth, day);
-            isInSelectedWeek = currentDate >= selectedWeekDates.start && currentDate <= selectedWeekDates.end;
-          }
-        }
-
-        const isDisabled = disabled;
-
+        let isSelected = mode === 'date' ? selectedDate === formatDate(date) : false;
         const dayElement = document.createElement('div');
-        dayElement.className = `inula-datepicker-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isDisabled ? 'disabled' : ''}`;
+        dayElement.className = `inula-datepicker-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${disabled ? 'disabled' : ''}`;
         dayElement.textContent = day;
+        if (!disabled) dayElement.addEventListener('click', () => handleDateSelect(day));
+        leftContainer.appendChild(dayElement);
+      }
+    }
 
-        if (!isDisabled) {
-          dayElement.addEventListener('click', () => handleDateSelect(day));
+    // 右侧（下一月）
+    if (picker === 'range') {
+      const next = getNextMonthYear();
+      const rightContainer = daysContainers[1];
+      if (rightContainer) {
+        rightContainer.innerHTML = '';
+        const daysInMonth = getDaysInMonth(next.year, next.month);
+        const firstDayOfMonth = getFirstDayOfMonth(next.year, next.month);
+        for (let i = 0; i < firstDayOfMonth; i++) {
+          const emptyDay = document.createElement('div');
+          emptyDay.className = 'inula-datepicker-day empty';
+          rightContainer.appendChild(emptyDay);
         }
-
-        daysContainer.appendChild(dayElement);
+        for (let day = 1; day <= daysInMonth; day++) {
+          const date = new Date(next.year, next.month, day);
+          const isToday = formatDate(date) === formatDate(new Date());
+          const dayElement = document.createElement('div');
+          dayElement.className = `inula-datepicker-day ${isToday ? 'today' : ''} ${disabled ? 'disabled' : ''}`;
+          dayElement.textContent = day;
+          if (!disabled) rightContainer.appendChild(dayElement);
+          if (!disabled) rightContainer.lastChild.addEventListener('click', () => handleNextMonthDateSelect(day));
+        }
       }
     }
   }
@@ -641,6 +659,95 @@ const DatePicker = ({
 
         // 移动到下一周的周一
         currentDate.setDate(currentDate.getDate() + 7);
+      }
+    }
+  }
+
+  // 更新指定索引的周视图（用于范围双面板）
+  function updateWeekViewWithParams(dropdown, targetIndex, year, month, useNextHandler = false) {
+    const weekNumbersContainers = dropdown.querySelectorAll('.inula-datepicker-week-numbers');
+    const weeksContainers = dropdown.querySelectorAll('.inula-datepicker-weeks');
+
+    const weekNumbersContainer = weekNumbersContainers[targetIndex];
+    const weeksContainer = weeksContainers[targetIndex];
+
+    if (weekNumbersContainer && weeksContainer) {
+      weekNumbersContainer.innerHTML = '';
+      weeksContainer.innerHTML = '';
+
+      const firstDayOfMonth = new Date(year, month, 1);
+      const firstMonday = new Date(firstDayOfMonth);
+      const dayOfWeek = firstDayOfMonth.getDay();
+      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      firstMonday.setDate(firstDayOfMonth.getDate() + diff);
+
+      const daysInMonth = getDaysInMonth(year, month);
+      const lastDayOfMonth = new Date(year, month, daysInMonth);
+      const lastSunday = new Date(lastDayOfMonth);
+      const lastDayOfWeek = lastDayOfMonth.getDay();
+      lastSunday.setDate(lastDayOfMonth.getDate() + (lastDayOfWeek === 0 ? 0 : 7 - lastDayOfWeek));
+
+      const totalDays = Math.round((lastSunday - firstMonday) / (24 * 60 * 60 * 1000)) + 1;
+      const totalWeeks = Math.ceil(totalDays / 7);
+
+      let currentDateLocal = new Date(firstMonday);
+
+      for (let week = 0; week < totalWeeks; week++) {
+        const weekStartDate = new Date(currentDateLocal);
+        const weekNumber = getWeekNumber(weekStartDate);
+
+        const weekNumberElement = document.createElement('div');
+        weekNumberElement.className = 'inula-datepicker-week-number';
+        weekNumberElement.textContent = weekNumber;
+        weekNumbersContainer.appendChild(weekNumberElement);
+
+        const weekRowElement = document.createElement('div');
+        weekRowElement.className = 'inula-datepicker-week-row';
+
+        for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+          const dayDate = new Date(currentDateLocal);
+          dayDate.setDate(currentDateLocal.getDate() + dayOfWeek);
+
+          const day = dayDate.getDate();
+          const m = dayDate.getMonth();
+          const y = dayDate.getFullYear();
+          const isCurrentMonth = m === month && y === year;
+          const isToday = formatDate(dayDate) === formatDate(new Date());
+          let isInSelectedWeek = false;
+          let isWeekStart = false;
+          let isWeekEnd = false;
+
+          if (selectedDate) {
+            const selectedWeek = parseDate(selectedDate);
+            if (selectedWeek) {
+              const selectedWeekDates = getWeekDates(selectedWeek);
+              isInSelectedWeek = dayDate >= selectedWeekDates.start && dayDate <= selectedWeekDates.end;
+              if (isInSelectedWeek) {
+                const dayOfWeekNum = dayDate.getDay();
+                isWeekStart = dayOfWeekNum === 1;
+                isWeekEnd = dayOfWeekNum === 0;
+              }
+            }
+          }
+
+          const dayElement = document.createElement('div');
+          dayElement.className = `inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'week-start' : ''} ${isWeekEnd ? 'week-end' : ''} ${disabled ? 'disabled' : ''}`;
+          dayElement.textContent = day;
+
+          if (!disabled) {
+            const handler = useNextHandler ? () => handleNextMonthDateSelect(day) : () => handleDateSelect(day);
+            dayElement.addEventListener('click', handler);
+          }
+
+          if (!isCurrentMonth) {
+            dayElement.style.color = '#ccc';
+          }
+
+          weekRowElement.appendChild(dayElement);
+        }
+
+        weeksContainer.appendChild(weekRowElement);
+        currentDateLocal.setDate(currentDateLocal.getDate() + 7);
       }
     }
   }
@@ -1152,6 +1259,16 @@ const DatePicker = ({
             key={`week-${week}-day-${dayOfWeek}`}
             className={`inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'range-start' : ''} ${isWeekEnd ? 'range-end' : ''} ${isDisabled ? 'disabled' : ''}`}
             onClick={isDisabled ? undefined : () => handleDateSelect(day)}
+            onMouseEnter={() => {
+              if (picker === 'range' && rangeStart && !rangeEnd) {
+                hoverDate = dayDate;
+              }
+            }}
+            onMouseLeave={() => {
+              if (picker === 'range') {
+                hoverDate = null;
+              }
+            }}
             style={!isCurrentMonth ? { color: '#ccc' } : {}}
           >
             {day}
@@ -1172,6 +1289,124 @@ const DatePicker = ({
       );
 
       // 移动到下一周的周一
+      currentDate.setDate(currentDate.getDate() + 7);
+    }
+
+    return { weeks, weekNumbers };
+  }
+
+  // Render next month week view for range picker
+  function renderNextMonthWeekView() {
+    const { month: nextMonth, year: nextYear } = getNextMonthYear();
+    const weeks = [];
+    const weekNumbers = [];
+
+    const firstDayOfMonth = new Date(nextYear, nextMonth, 1);
+    const firstMonday = new Date(firstDayOfMonth);
+    const dayOfWeek = firstDayOfMonth.getDay();
+    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    firstMonday.setDate(firstDayOfMonth.getDate() + diff);
+
+    const daysInMonth = getDaysInMonth(nextYear, nextMonth);
+    const lastDayOfMonth = new Date(nextYear, nextMonth, daysInMonth);
+    const lastSunday = new Date(lastDayOfMonth);
+    const lastDayOfWeek = lastDayOfMonth.getDay();
+    lastSunday.setDate(lastDayOfMonth.getDate() + (lastDayOfWeek === 0 ? 0 : 7 - lastDayOfWeek));
+
+    const totalDays = Math.round((lastSunday - firstMonday) / (24 * 60 * 60 * 1000)) + 1;
+    const totalWeeks = Math.ceil(totalDays / 7);
+
+    let currentDate = new Date(firstMonday);
+
+    for (let week = 0; week < totalWeeks; week++) {
+      const weekDays = [];
+      const weekStartDate = new Date(currentDate);
+      const weekNumber = getWeekNumber(weekStartDate);
+
+      for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+        const dayDate = new Date(currentDate);
+        dayDate.setDate(currentDate.getDate() + dayOfWeek);
+
+        const day = dayDate.getDate();
+        const month = dayDate.getMonth();
+        const year = dayDate.getFullYear();
+        const isCurrentMonth = month === nextMonth && year === nextYear;
+        const isToday = formatDate(dayDate) === formatDate(new Date());
+        let isInSelectedWeek = false;
+        let isWeekStart = false;
+        let isWeekEnd = false;
+
+        if (picker === 'range' && Array.isArray(selectedDate)) {
+          if (selectedDate.length === 2) {
+            const startDate = parseDate(selectedDate[0]);
+            const endDate = parseDate(selectedDate[1]);
+            if (startDate && endDate) {
+              const startWeekDates = getWeekDates(startDate);
+              const endWeekDates = getWeekDates(endDate);
+              isInSelectedWeek = (dayDate >= startWeekDates.start && dayDate <= endWeekDates.end);
+              if (isInSelectedWeek) {
+                const dayOfWeekNum = dayDate.getDay();
+                isWeekStart = dayOfWeekNum === 1 && dayDate >= startWeekDates.start && dayDate <= startWeekDates.end;
+                isWeekEnd = dayOfWeekNum === 0 && dayDate >= endWeekDates.start && dayDate <= endWeekDates.end;
+              }
+            }
+          } else if (selectedDate.length === 1 && rangeStart) {
+            const startWeekDates = getWeekDates(rangeStart);
+            isInSelectedWeek = dayDate >= startWeekDates.start && dayDate <= startWeekDates.end;
+            if (hoverDate) {
+              const hoverWeekDates = getWeekDates(hoverDate);
+              isInSelectedWeek = isInSelectedWeek || (dayDate >= startWeekDates.start && dayDate <= hoverWeekDates.end);
+            }
+          }
+        } else if (picker === 'single' && selectedDate) {
+          const selectedWeek = parseDate(selectedDate);
+          if (selectedWeek) {
+            const selectedWeekDates = getWeekDates(selectedWeek);
+            isInSelectedWeek = dayDate >= selectedWeekDates.start && dayDate <= selectedWeekDates.end;
+            if (isInSelectedWeek) {
+              const dayOfWeekNum = dayDate.getDay();
+              isWeekStart = dayOfWeekNum === 1;
+              isWeekEnd = dayOfWeekNum === 0;
+            }
+          }
+        }
+
+        const isDisabled = disabled;
+
+        weekDays.push(
+          <div
+            key={`next-week-${week}-day-${dayOfWeek}`}
+            className={`inula-datepicker-week ${!isCurrentMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${isInSelectedWeek ? 'week-selected' : ''} ${isWeekStart ? 'range-start' : ''} ${isWeekEnd ? 'range-end' : ''} ${isDisabled ? 'disabled' : ''}`}
+            onClick={isDisabled ? undefined : () => handleNextMonthDateSelect(day)}
+            onMouseEnter={() => {
+              if (picker === 'range' && rangeStart && !rangeEnd) {
+                hoverDate = dayDate;
+              }
+            }}
+            onMouseLeave={() => {
+              if (picker === 'range') {
+                hoverDate = null;
+              }
+            }}
+            style={!isCurrentMonth ? { color: '#ccc' } : {}}
+          >
+            {day}
+          </div>
+        );
+      }
+
+      weeks.push(
+        <div key={`next-week-${week}`} className="inula-datepicker-week-row">
+          {weekDays}
+        </div>
+      );
+
+      weekNumbers.push(
+        <div key={`next-week-number-${week}`} className="inula-datepicker-week-number">
+          {weekNumber}
+        </div>
+      );
+
       currentDate.setDate(currentDate.getDate() + 7);
     }
 
@@ -1519,6 +1754,66 @@ const DatePicker = ({
                   </div>
                 </div>
               </>
+            ) : picker === 'range' && mode === 'week' ? (
+              <>
+                {/* 左侧周面板 */}
+                <div className="inula-datepicker-panel inula-datepicker-calendar">
+                  <div className="inula-datepicker-panel-header">
+                    <button onClick={handlePrevYear}>
+                      <span>«</span>
+                    </button>
+                    <button onClick={handlePrevMonth}>
+                      <span>‹</span>
+                    </button>
+                    <span className="inula-datepicker-panel-title">
+                      {currentYear}年 {monthNames[currentMonth]}
+                    </span>
+                    <div style={{ width: '48px' }}></div>
+                  </div>
+                  <div className="inula-datepicker-weekdays">
+                    {weekNames.map((day, index) => (
+                      <div key={index} className="inula-datepicker-weekday">{day}</div>
+                    ))}
+                  </div>
+                  <div className="inula-datepicker-week-container">
+                    <div className="inula-datepicker-week-numbers">
+                      {renderWeekView().weekNumbers}
+                    </div>
+                    <div className="inula-datepicker-weeks">
+                      {renderWeekView().weeks}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 右侧周面板 */}
+                <div className="inula-datepicker-panel inula-datepicker-calendar">
+                  <div className="inula-datepicker-panel-header">
+                    <div style={{ width: '48px' }}></div>
+                    <span className="inula-datepicker-panel-title">
+                      {getNextMonthYear().year}年 {monthNames[getNextMonthYear().month]}
+                    </span>
+                    <button className="inula-datepicker-next-month" onClick={handleNextMonth}>
+                      <span>›</span>
+                    </button>
+                    <button className="inula-datepicker-next-year" onClick={handleNextYear}>
+                      <span>»</span>
+                    </button>
+                  </div>
+                  <div className="inula-datepicker-weekdays">
+                    {weekNames.map((day, index) => (
+                      <div key={index} className="inula-datepicker-weekday">{day}</div>
+                    ))}
+                  </div>
+                  <div className="inula-datepicker-week-container">
+                    <div className="inula-datepicker-week-numbers">
+                      {renderNextMonthWeekView().weekNumbers}
+                    </div>
+                    <div className="inula-datepicker-weeks">
+                      {renderNextMonthWeekView().weeks}
+                    </div>
+                  </div>
+                </div>
+              </>
             ) : (
               <>
                 {mode === 'date' && (
@@ -1535,9 +1830,9 @@ const DatePicker = ({
                 )}
                 {mode === 'week' && (
                   <>
-                    <div className="inula-datepicker-days">
+                    <div className="inula-datepicker-weekdays">
                       {weekNames.map((day, index) => (
-                        <div key={index} className="inula-datepicker-day-name">{day}</div>
+                        <div key={index} className="inula-datepicker-weekday">{day}</div>
                       ))}
                     </div>
                     <div className="inula-datepicker-week-container">

@@ -554,7 +554,7 @@
 .inula-input,
 .inula-textarea {
   scrollbar-width: thin;
-  scrollbar-color: #b3b3b3 transparent;
+  scrollbar-color: var(--inula-select-disabled-text);
 }
 
 .inula-input::-webkit-scrollbar,

@@ -4,7 +4,8 @@ import './index.css';
  * Form 组件（openinula2.0）
  * - 使用响应式变量作为表单状态（例如：let form = { username: '' }）
  * - 简易校验：required、min、max、pattern、validator（同步）
- * - 布局：horizontal/vertical
+ * - 布局：horizontal/vertical/inline
+ * - 支持通过props传递disabled状态
  */
 
 const getValueByPath = (obj, path) => {
@@ -225,6 +226,7 @@ const FormItem = ({
   style = {},
   children,
   colon = true,
+  disabled = false, // 新增：接收禁用状态
   ...rest
 }) => {
   let error = '';
