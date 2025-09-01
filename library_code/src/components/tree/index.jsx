@@ -199,7 +199,8 @@ const Tree = ({
    */
   const TreeNode = ({ node }) => {
     const nodeInfo = keyToNodeInfoMap.get(node.key);
-    const isExpanded = customExpandedKeys.includes(node.key);
+    const isExpanded =
+      customExpandedKeys.includes(node.key) || (loadData && !node.isLeaf);
     const isChecked = customCheckedKeys.includes(node.key);
     const isSelected = customSelectedKeys.includes(node.key);
     const isCheckDisabled = node.disabled || node.disableCheckbox;
@@ -213,11 +214,12 @@ const Tree = ({
         getAllRelatedChildKeys(node)
       );
     const isLeafNode = node.isLeaf || !node.children;
+    // const isLeafNode = node.isLeaf || (loadData && !node.children);
     // const isLoading = loadKeys.loadingKeys.includes(node.key);
 
     const Switcher = () => {
       if (isLeafNode) return null;
-      // if (isLoading) {
+      // if (loadKeys.loadingKeys.includes(node.key)) {
       //   return switcherLoadingIcon;
       // }
       if (switcherIcon) {

@@ -40,7 +40,9 @@ const TreeDemo = () => {
           异步加载数据，需设置loadData属性，返回Promise对象，返回值为树节点数据
         </div>
       </div>
-      <div>{/* <demo4 /> */}</div>
+      <div>
+        <demo4 />
+      </div>
     </div>
   );
 };
