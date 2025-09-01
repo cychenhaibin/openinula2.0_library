@@ -1,9 +1,9 @@
 import Demo1 from "./demos/demo1.jsx";
 import Demo2 from "./demos/demo2.jsx";
 import Demo3 from "./demos/demo3.jsx";
-import Demo4 from "./demos/demo4.jsx";
-import Demo5 from "./demos/demo5.jsx";
-import Demo6 from "./demos/demo6.jsx";
+// import Demo4 from "./demos/demo4.jsx";
+// import Demo5 from "./demos/demo5.jsx";
+// import Demo6 from "./demos/demo6.jsx";
 
 function DatePickerDemo() {
   return (

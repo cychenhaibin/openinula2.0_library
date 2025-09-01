@@ -8,7 +8,6 @@ const TreeDemo = () => {
   const onCheck = (checkedKeys, info) => {
     console.log("onCheck", checkedKeys, info);
   };
-
   const treeData = [
     {
       title: "parent 1",
@@ -40,6 +39,7 @@ const TreeDemo = () => {
             },
           ],
         },
+        { title: "parent 1-0", key: "0-0-2" },
       ],
     },
   ];
