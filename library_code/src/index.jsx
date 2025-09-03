@@ -87,12 +87,12 @@ function App() {
         <div className="hero-content">
           <Tabs />
         </div>
-        <p className="hero-subtitle animate__animated animate__fadeInUp">
+        {/* <p className="hero-subtitle animate__animated animate__fadeInUp">
           Tree 组件
         </p>
         <div className="hero-content">
           <Tree />
-        </div>
+        </div> */}
         <p className="hero-subtitle animate__animated animate__fadeInUp">
           Select 选择器组件
         </p>
