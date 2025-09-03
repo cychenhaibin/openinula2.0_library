@@ -37,7 +37,7 @@
   margin-bottom: 12px;
 }
 
-/* 展开按钮样式 */
+/* switcher展开按钮样式 */
 .inula-tree-node .inula-tree-node-content .inula-icon {
   transition: all 0.3s ease-in-out;
 }
@@ -56,8 +56,18 @@
   background-color: rgba(0, 0, 0, 0.04);
 }
 
-.inula-tree-node-content .inula-tree-node-content-switcher.notExpanded {
+.inula-tree-node-content .inula-tree-node-content-switcher.noSwitcher {
   pointer-events: none;
+}
+
+/* 异步switcher加载 */
+.inula-tree-node-content-switcher.isLoading .inula-icon {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* title: checkbox + text */
@@ -69,7 +79,7 @@
   justify-content: center;
 }
 
-.inula-tree-node-content .inula-tree-node-content-title.space {
+.inula-tree-node-content .inula-tree-node-content-title.indent {
   margin-left: 24px;
 }
 
@@ -166,4 +176,16 @@
   z-index: 1;
 
   pointer-events: none;
+}
+
+/* 虚拟列表样式 */
+.virtual-list-container {
+  position: relative;
+  overflow-y: auto;
+  will-change: transform;
+}
+
+.virtual-list-content {
+  position: relative;
+  width: 100%;
 }

@@ -19,6 +19,8 @@ import {
   judgeHalfCheckedKeys,
 } from "./calculateCustomKeys.js";
 
+import { flattenTreeData } from "./flattendTreeData.js";
+
 export {
   getAllChildKeys,
   getAllRelatedChildKeys,
@@ -32,4 +34,5 @@ export {
   calculateCheckedKeys,
   calculateSelectedKeys,
   judgeHalfCheckedKeys,
+  flattenTreeData,
 };

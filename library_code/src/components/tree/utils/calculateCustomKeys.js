@@ -28,7 +28,7 @@ export function calculateExpandKeys(cur = {}, preKeys = []) {
 export function calculateCheckedKeys(
   cur = {},
   preKeys = [],
-  childToParentMap = new Map(),
+  keyToNodeInfoMap = new Map(),
   childKeys = [],
   isCheckStrictly = false
 ) {
@@ -66,7 +66,7 @@ export function calculateCheckedKeys(
   /* 然后根据newKeys处理父节点：*/
   let curr = cur;
   while (true) {
-    const parent = childToParentMap.get(curr).parent ?? null;
+    const parent = keyToNodeInfoMap.get(curr.key).parent ?? null;
     if (!parent) break; //代表第一层都处理完了，结束。
     if (parent.disableCheckbox || parent.disabled) break; //disabled节点不会改变状态，也直接结束
 

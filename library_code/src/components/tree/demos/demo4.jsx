@@ -6,7 +6,6 @@ const initTreeData = [
   { title: "Tree Node", key: "2", isLeaf: true },
 ];
 
-// It's just a simple demo. You can use tree map to optimize update perf.
 const updateTreeData = (list, key, children) =>
   list.map((node) => {
     if (node.key === key) {
@@ -34,12 +33,10 @@ const TreeDemo = () => {
         return;
       }
       setTimeout(() => {
-        treeData = treeData.map((node) =>
-          updateTreeData(node, key, [
-            { title: "Child Node", key: `${key}-0` },
-            { title: "Child Node", key: `${key}-1` },
-          ])
-        );
+        treeData = updateTreeData(treeData, key, [
+          { title: "Child Node", key: `${key}-0` },
+          { title: "Child Node", key: `${key}-1` },
+        ]);
 
         resolve();
       }, 1000);
