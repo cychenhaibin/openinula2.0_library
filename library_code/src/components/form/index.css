@@ -1,0 +1,122 @@
+.inula-form {
+  width: 100%;
+}
+
+.inula-form-vertical .inula-form-item {
+  display: block;
+}
+
+.inula-form-horizontal .inula-form-item {
+  display: flex;
+}
+
+.inula-form-inline .inula-form-item {
+  display: inline-flex;
+  margin-right: 16px;
+  margin-bottom: 16px;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.inula-form-inline .inula-form-item:last-child {
+  margin-right: 0;
+}
+
+.inula-form-inline .inula-form-item-label {
+  flex: 0 0 auto;
+  margin-right: 8px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  height: 32px;
+}
+
+.inula-form-inline .inula-form-item-label label {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  margin: 0;
+}
+
+.inula-form-inline .inula-form-item-control {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.inula-form-inline .inula-form-item-control-input {
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.inula-form-inline .inula-form-item-control-input > * {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.inula-form-label-left .inula-form-item-label {
+  text-align: left;
+}
+
+.inula-form-label-right .inula-form-item-label {
+  text-align: right;
+}
+
+.inula-form-item {
+  margin-bottom: 16px;
+}
+
+.inula-form-item-label {
+  flex: 0 0 120px;
+  line-height: 32px;
+  color: #333;
+  font-size: 14px;
+}
+
+.inula-form-item-required .inula-form-item-label label::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #ff4d4f;
+  content: '*';
+}
+
+.inula-form-item-control {
+  flex: 1;
+}
+
+.inula-form-item-control-input {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.inula-form-item-has-error .inula-form-item-control-input .inula-input,
+.inula-form-item-has-error .inula-form-item-control-input .inula-input-affix-wrapper {
+  border-color: #ff4d4f;
+}
+
+.inula-form-item-explain {
+  color: #ff4d4f;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.inula-form-item-extra {
+  color: #666;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
+.inula-form-disabled {
+  /* 表单禁用状态，具体禁用效果由各个控件自己处理 */
+}
+
+

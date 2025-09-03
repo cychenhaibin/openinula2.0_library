@@ -13,7 +13,7 @@ function Demo1() {
         value = val
     }
 
-    return <Select options={options} onChange={handleChange} />
+    return <Select style={{ width: 200 }} options={options} onChange={handleChange} />
 }
 
 export default Demo1; 

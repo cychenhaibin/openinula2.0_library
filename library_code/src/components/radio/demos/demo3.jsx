@@ -2,9 +2,11 @@ import Radio from '../index.jsx';
 
 function Demo3() {
   let selected = 'a';
+  
   function handleRadioChange(val) {
     selected = val;
   }
+  
   return (
     <div style={{ display: 'flex' }}>
       <Radio label="大号" value="a" checked={selected === 'a'} onChange={handleRadioChange} size="large" />
@@ -13,4 +15,5 @@ function Demo3() {
     </div>
   );
 }
+
 export default Demo3; 

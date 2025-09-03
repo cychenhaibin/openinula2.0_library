@@ -28,8 +28,11 @@
 
 /* 输入框本体 */
 .inula-input {
-  flex: 1;
-  width: 100%;
+  flex: 1 1 auto;
+  /* 关键：允许在有清除/统计/后缀时可收缩，避免把右侧元素挤没 */
+  min-width: 0;
+  /* 不强制占满 100%，交给 flex 分配剩余空间 */
+  width: auto;
   font-size: 14px;
   line-height: 1.5;
   background: transparent;
@@ -84,6 +87,12 @@
   border: 1px solid transparent;
 }
 
+/* 让 textarea 与 input 的 filled 形态一致：把样式下沉到外层包装器 */
+.inula-input-affix-wrapper:has(.inula-input-filled) {
+  background: #f8f9fa;
+  /* border-color: transparent; */
+}
+
 /* borderless 形态的特殊处理 */
 .inula-input-affix-wrapper-borderless {
   border: none !important;
@@ -120,8 +129,14 @@
 .inula-input-filled:hover {
   background: #f0f2f5;
 }
+.inula-input-affix-wrapper:has(.inula-input-filled):hover {
+  background: #f0f2f5;
+}
 
 .inula-input-filled:focus-within {
+  background: var(--inula-color-default-bg);
+}
+.inula-input-affix-wrapper:has(.inula-input-filled):focus-within {
   background: var(--inula-color-default-bg);
 }
 
@@ -334,7 +349,8 @@
 }
 
 .inula-input-has-count {
-  /* padding-right: 60px !important; */
+  /* 为右侧预留最小空间，避免计数器被挤压隐藏 */
+  padding-right: 0;
 }
 
 .inula-input-count-inside {
@@ -538,7 +554,7 @@
 .inula-input,
 .inula-textarea {
   scrollbar-width: thin;
-  scrollbar-color: #b3b3b3 transparent;
+  scrollbar-color: var(--inula-select-disabled-text);
 }
 
 .inula-input::-webkit-scrollbar,

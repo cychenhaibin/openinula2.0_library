@@ -28,7 +28,7 @@ const Input = ({
   ...rest
 }) => {
   let innerValue = value !== undefined ? value : defaultValue;
-  const count = innerValue.length;
+  let count = innerValue.length;
   let showPassword = false; // 密码可见性响应式变量
 
   // 处理 autoSize 配置
@@ -51,6 +51,19 @@ const Input = ({
 
   const autoSizeConfig = getAutoSizeConfig();
   const isTextarea = type === 'textarea';
+
+  // 兼容性查找：从任意子节点向上查找 .inula-input-affix-wrapper（不依赖 Element.closest）
+  const findAffixWrapper = (startNode) => {
+    let node = startNode;
+    // 仅在存在且是元素节点时向上遍历
+    while (node && node !== document) {
+      if (node.classList && node.classList.contains('inula-input-affix-wrapper')) {
+        return node;
+      }
+      node = node.parentNode;
+    }
+    return null;
+  };
 
   // 计算 textarea 的样式
   const getTextareaStyle = () => {
@@ -95,11 +108,14 @@ const Input = ({
   // 事件处理，自动调用父组件传递的 onInput/onChange
   const handleInput = (e) => {
     if (value !== undefined) {
+      // 受控：更新统计基于当前输入值
+      count = (e && e.target ? e.target.value.length : 0);
       onInput && onInput(e);
       onChange && onChange(e);
     } else {
+      // 非受控：同步内部值并更新统计
       innerValue = e.target.value;
-      console.log("innerValue", innerValue);
+      count = innerValue.length;
       onInput && onInput(e);
       onChange && onChange(e.target.value);
     }
@@ -110,19 +126,31 @@ const Input = ({
     }
   }
 
-  const handleClear = () => {
-    console.log("handleClear");
+  const handleClear = (e) => {
     // 区分受控和非受控模式
     if (value !== undefined) {
       // 受控模式：只调用回调，不修改内部状态
+      count = 0;
       onChange && onChange("");
       onInput && onInput({ target: { value: "" } });
     } else {
       // 非受控模式：修改内部状态并调用回调
       innerValue = "";
-      console.log("innerValue111", innerValue);
+      count = 0;
       onChange && onChange("");
       onInput && onInput({ target: { value: "" } });
+    }
+
+    // 无 ref 方案：从事件 target 向上遍历拿到包装器，再定位到对应的 input/textarea
+    const wrapper = e && e.target ? findAffixWrapper(e.target) : null;
+    const el = wrapper ? wrapper.querySelector(isTextarea ? 'textarea' : 'input') : null;
+    if (el) {
+      // 立即同步清空，避免外部受控延迟导致的视觉滞后
+      try { el.value = ""; } catch (_) {}
+      if (isTextarea && autoSizeConfig) {
+        adjustTextareaHeight(el);
+      }
+      try { el.focus(); } catch (_) {}
     }
   }
 
@@ -209,7 +237,7 @@ const Input = ({
           />
         )}
         {/* 清除按钮（可选） */}
-        {allowClear && !disabled && (value !== undefined ? value : defaultValue) && (
+        {allowClear && !disabled && innerValue && (
           <span className="inula-input-clear" onClick={handleClear}>
             <Icon value="xmark" theme="filled" size={14} color="#666" />
           </span>
@@ -227,7 +255,7 @@ const Input = ({
         )}
         {/* 字数统计（可选） */}
         {showCount && (
-          <span className="inula-input-count-inside">
+          <span className="inula-input-count-inside" aria-live="polite">
             {maxLength ? `${count} / ${maxLength}` : count}
           </span>
         )}
