@@ -6,12 +6,14 @@ const Select = ({
     value,
     defaultValue = "",
     disabled = false,
-    placeholder = "请选择",
+    placeholder = "",
     onChange,
     allowClear = false,
     className = "",
     style = {},
     multiple = false,
+    variant = "outlined", // outlined | filled | borderless | underlined
+    size = "default", // small | default | large | medium(等同 default)
     ...rest
 }) => {
     let isOpen = false;
@@ -87,8 +89,11 @@ const Select = ({
         onChange && onChange(newValue);
     }
 
+    const normalizedSize = size === 'medium' ? 'default' : size;
     const classNames = [
         "inula-select",
+        `inula-select-${variant}`,
+        `inula-select-${normalizedSize}`,
         disabled ? "inula-select-disabled" : "",
         multiple ? "inula-select-multiple" : "",
         className,

@@ -14,7 +14,7 @@ function Demo4() {
     value = val;
   }
 
-  return <Select options={options} defaultValue="d" onChange={handleChange} />
+  return <Select options={options} defaultValue="d" onChange={handleChange} placeholder="Select an option" />
 }
 
 export default Demo4; 

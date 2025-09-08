@@ -11,8 +11,8 @@ function Demo3() {
 
   return (
     <div style={{ display: 'flex', gap: 24 }}>
-      <Select options={options} size="small" />
-      <Select options={options} disabled />
+      <Select options={options} placeholder="Select an option" />
+      <Select options={options} disabled placeholder="Select an option" />
     </div>
   )
 }

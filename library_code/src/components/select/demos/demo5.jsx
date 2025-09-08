@@ -14,7 +14,7 @@ function Demo5() {
     value = val;
   }
 
-  return <Select options={options} allowClear onChange={handleChange} />
+  return <Select options={options} allowClear onChange={handleChange} placeholder="Select an option" />
 }
 
 export default Demo5; 

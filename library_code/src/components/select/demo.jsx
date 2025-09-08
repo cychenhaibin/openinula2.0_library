@@ -6,6 +6,7 @@ import demo4 from './demos/demo4.jsx';
 import demo5 from './demos/demo5.jsx';
 import demo6 from './demos/demo6.jsx';
 import demo7 from './demos/demo7.jsx';
+import demo8 from './demos/demo8.jsx';
 
 function SelectDemo() {
   return (
@@ -65,6 +66,13 @@ function SelectDemo() {
           <div style={{ display: 'flex' }}><demo7 /></div>
         </div>
       </div>
+      <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <h2>变体样式</h2>
+            <div>支持变体样式。</div>
+          </div>
+          <div style={{ display: 'flex' }}><demo8 /></div>
+        </div>
     </div>
   );
 }
