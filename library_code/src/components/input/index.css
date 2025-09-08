@@ -61,7 +61,8 @@
   font-size: 16px;
 }
 
-.inula-input-default {
+.inula-input-default,
+.inula-input-medium {
   height: 32px;
   font-size: 14px;
   padding: 0 16px;
@@ -77,36 +78,41 @@
   font-size: 13px;
 }
 
-/* 形态变体 */
+/* 形态变体 - 支持Form传递的CSS变量 */
 .inula-input-outlined {
   background: var(--inula-color-default-bg);
 }
 
 .inula-input-filled {
-  background: #f8f9fa;
-  border: 1px solid transparent;
+  background: var(--inula-form-variant-bg, var(--inula-variant-filled-bg));
+  border: 1px solid var(--inula-form-variant-border, transparent);
+  box-shadow: none !important;
 }
 
 /* 让 textarea 与 input 的 filled 形态一致：把样式下沉到外层包装器 */
 .inula-input-affix-wrapper:has(.inula-input-filled) {
-  background: #f8f9fa;
-  /* border-color: transparent; */
+  background: var(--inula-form-variant-bg, var(--inula-variant-filled-bg));
+  border-color: var(--inula-form-variant-border, transparent);
+  box-shadow: none !important;
 }
 
 /* borderless 形态的特殊处理 */
 .inula-input-affix-wrapper-borderless {
-  border: none !important;
+  border: var(--inula-form-variant-border, none) !important;
   box-shadow: none !important;
+  background: var(--inula-form-variant-bg, transparent);
 }
 
 .inula-input-affix-wrapper-borderless:hover {
-  border: none !important;
+  border: var(--inula-form-variant-border, none) !important;
   box-shadow: none !important;
+  background: var(--inula-form-variant-hover-bg, var(--inula-variant-borderless-hover-bg));
 }
 
 .inula-input-affix-wrapper-borderless:focus-within {
-  border: none !important;
+  border: var(--inula-form-variant-border, none) !important;
   box-shadow: none !important;
+  background: var(--inula-form-variant-focus-bg, var(--inula-variant-borderless-focus-bg));
 }
 
 /* borderless 形态禁用状态 */
@@ -127,17 +133,22 @@
 }
 
 .inula-input-filled:hover {
-  background: #f0f2f5;
+  background: var(--inula-variant-filled-hover-bg);
+  box-shadow: none !important;
 }
 .inula-input-affix-wrapper:has(.inula-input-filled):hover {
-  background: #f0f2f5;
+  background: var(--inula-variant-filled-hover-bg);
+  box-shadow: none !important;
 }
 
 .inula-input-filled:focus-within {
-  background: var(--inula-color-default-bg);
+  background: var(--inula-variant-filled-focus-bg);
+  border: 1px solid var(--inula-color-primary);
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.1);
 }
 .inula-input-affix-wrapper:has(.inula-input-filled):focus-within {
-  background: var(--inula-color-default-bg);
+  background: var(--inula-variant-filled-focus-bg);
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.1);
 }
 
 /* filled 形态禁用状态 */
@@ -158,13 +169,13 @@
 }
 
 .inula-input-borderless:hover {
-  background: rgba(0, 0, 0, 0.02);
+  background: transparent;
   border: none;
   box-shadow: none;
 }
 
 .inula-input-borderless:focus-within {
-  background: rgba(0, 0, 0, 0.04);
+  background: transparent;
   border: none;
   box-shadow: none;
 }
@@ -172,14 +183,14 @@
 /* borderless 形态禁用状态 */
 .inula-input-affix-wrapper.inula-input-disabled .inula-input-borderless:hover,
 .inula-input-affix-wrapper:has(.inula-input:disabled) .inula-input-borderless:hover {
-  background: var(--inula-color-disabled-bg);
+  background: transparent;
   border: none;
   box-shadow: none;
 }
 
 .inula-input-affix-wrapper.inula-input-disabled .inula-input-borderless:focus-within,
 .inula-input-affix-wrapper:has(.inula-input:disabled) .inula-input-borderless:focus-within {
-  background: var(--inula-color-disabled-bg);
+  background: transparent;
   border: none;
   box-shadow: none;
 }
@@ -199,24 +210,27 @@
   box-shadow: none;
 }
 
-/* underlined 形态的特殊处理 */
+/* underlined 形态的特殊处理 - 支持Form传递的CSS变量 */
 .inula-input-affix-wrapper-underlined {
-  border: none !important;
-  border-bottom: 2px solid var(--inula-color-default-border) !important;
+  border: var(--inula-form-variant-border, none) !important;
+  border-bottom: var(--inula-form-variant-bottom-border, 1px solid var(--inula-variant-underlined-border)) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
+  background: var(--inula-form-variant-bg, transparent);
 }
 
 .inula-input-affix-wrapper-underlined:hover {
-  border: none !important;
-  border-bottom: 2px solid var(--inula-color-primary-hover) !important;
+  border: var(--inula-form-variant-border, none) !important;
+  border-bottom: var(--inula-form-variant-bottom-hover-border, 1px solid var(--inula-variant-underlined-hover-border)) !important;
   box-shadow: none !important;
+  background: var(--inula-form-variant-hover-bg, transparent);
 }
 
 .inula-input-affix-wrapper-underlined:focus-within {
-  border: none !important;
-  border-bottom: 2px solid var(--inula-color-primary) !important;
+  border: var(--inula-form-variant-border, none) !important;
+  border-bottom: var(--inula-form-variant-bottom-focus-border, 1px solid var(--inula-variant-underlined-focus-border)) !important;
   box-shadow: none !important;
+  background: var(--inula-form-variant-focus-bg, transparent);
 }
 
 /* underlined 形态禁用状态 */
@@ -334,6 +348,13 @@
   font-size: 13px;
   padding: 0 12px;
   min-height: 32px;
+}
+
+/* 补充 medium 尺寸别名以便与 Form 的 size 对齐 */
+.inula-input-wrapper-medium .inula-input-addon {
+  font-size: 14px;
+  padding: 0 16px;
+  min-height: 40px;
 }
 
 /* 字数统计 */
