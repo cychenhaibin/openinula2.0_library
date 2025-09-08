@@ -7,6 +7,7 @@ const Button = ({
   ghost = false,
   disabled = false,
   loading = false,
+  variant = 'outlined', // outlined | filled | borderless | underlined
   children,
   onClick,
   htmlType = 'button', // 原生 button 类型：button | submit | reset（默认 button，避免表单内默认 submit）
@@ -15,6 +16,7 @@ const Button = ({
   const classNames = [
     'inula-btn',
     `inula-btn-${type}`,
+    `inula-btn-${variant}`,
     danger ? 'inula-btn-danger' : '',
     ghost ? 'inula-btn-ghost' : '',
     disabled ? 'inula-btn-disabled' : '',

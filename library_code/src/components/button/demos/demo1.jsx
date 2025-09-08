@@ -9,6 +9,10 @@ function ButtonDemo() {
             <Button type="dashed">虚线按钮</Button>
             <Button type="text">文本按钮</Button>
             <Button type="link">链接按钮</Button>
+            <Button variant="outlined">outlined</Button>
+            <Button variant="filled">filled</Button>
+            <Button variant="borderless">borderless</Button>
+            <Button variant="underlined">underlined</Button>
         </div>
     );
 } 

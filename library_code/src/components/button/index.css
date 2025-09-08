@@ -229,4 +229,82 @@
   padding: 16px;
   display: inline-block;
   border-radius: 6px;
+}
+
+/* Button 变体样式 */
+
+/* Filled 变体 - 支持Form传递的CSS变量 */
+.inula-btn-filled {
+  background: var(--inula-form-variant-bg, var(--inula-variant-filled-bg));
+  border: 0px solid var(--inula-form-variant-border, transparent);
+}
+
+.inula-btn-filled:hover {
+  background: var(--inula-form-variant-hover-bg, var(--inula-variant-filled-hover-bg));
+  border-color: var(--inula-form-variant-border, transparent);
+}
+
+.inula-btn-filled:focus-within {
+  border: var(--inula-form-variant-border, none) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-focus-bg, var(--inula-variant-borderless-focus-bg));
+}
+
+.inula-btn-filled.inula-btn-disabled {
+  background: var(--inula-color-disabled-bg);
+  border-color: transparent;
+}
+
+/* Borderless 变体 - 支持Form传递的CSS变量 */
+.inula-btn-borderless {
+  border: var(--inula-form-variant-border, none) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-bg, transparent);
+}
+
+.inula-btn-borderless:hover {
+  border: var(--inula-form-variant-border, none) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-hover-bg, var(--inula-variant-borderless-hover-bg));
+}
+
+.inula-btn-borderless:focus-within {
+  border: var(--inula-form-variant-border, none) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-focus-bg, var(--inula-variant-borderless-focus-bg));
+}
+
+.inula-btn-borderless.inula-btn-disabled {
+  background: var(--inula-color-disabled-bg);
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Underlined 变体 - 支持Form传递的CSS变量 */
+.inula-btn-underlined {
+  border: var(--inula-form-variant-border, none) !important;
+  border-bottom: var(--inula-form-variant-bottom-border, 1px solid var(--inula-variant-underlined-border)) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-bg, transparent);
+}
+
+.inula-btn-underlined:hover {
+  border: var(--inula-form-variant-border, none) !important;
+  border-bottom: var(--inula-form-variant-bottom-hover-border, 1px solid var(--inula-variant-underlined-hover-border)) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-hover-bg, transparent);
+}
+
+.inula-btn-underlined:focus-within {
+  border: var(--inula-form-variant-border, none) !important;
+  border-bottom: var(--inula-form-variant-bottom-focus-border, 1px solid var(--inula-variant-underlined-focus-border)) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-focus-bg, transparent);
+}
+
+.inula-btn-underlined.inula-btn-disabled {
+  border: none !important;
+  border-bottom: 1px solid var(--inula-color-disabled-border) !important;
+  box-shadow: none !important;
 } 
