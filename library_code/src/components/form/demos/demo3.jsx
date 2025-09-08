@@ -37,9 +37,9 @@ const Demo3 = () => {
                 style={{ marginBottom: 16, maxWidth: layout === 'inline' ? 'none' : 600 }}
             >
                 <FormItem label="Form Layout" name="layout" style={{display: 'flex'}}>
-                    <Button onClick={() => { layout = 'horizontal'; }}>horizontal</Button>
-                    <Button onClick={() => { layout = 'vertical'; }}>vertical</Button>
-                    <Button onClick={() => { layout = 'inline'; }}>inline</Button>
+                    <Button variant="filled" onClick={() => { layout = 'horizontal'; }}>horizontal</Button>
+                    <Button variant="filled" onClick={() => { layout = 'vertical'; }}>vertical</Button>
+                    <Button variant="filled" onClick={() => { layout = 'inline'; }}>inline</Button>
                 </FormItem>
                 <FormItem name="keyword" label="Field A" model={searchForm}>
                     <Input

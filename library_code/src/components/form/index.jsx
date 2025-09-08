@@ -77,6 +77,8 @@ const Form = ({
   labelAlign = 'right', // left | right
   colon = true,
   disabled = false,
+  variant = 'outlined', // outlined | filled | borderless | underlined
+  size = 'medium', // small | medium | large
   onFinish,
   onFinishFailed,
   className = '',
@@ -189,6 +191,8 @@ const Form = ({
     'inula-form',
     `inula-form-${layout}`,
     `inula-form-label-${labelAlign}`,
+    `inula-form-${variant}`,
+    `inula-form-${size}`,
     disabled ? 'inula-form-disabled' : '',
     className,
   ].filter(Boolean).join(' ');
@@ -208,7 +212,18 @@ const Form = ({
 
   return (
     <form className={formClassNames} style={style} onSubmit={handleSubmit} {...rest}>
-      {children}
+      {(() => {
+        const mappedSize = size === 'medium' ? 'default' : size;
+        return Array.isArray(children) ?
+          children.map((child, index) =>
+            child && typeof child === 'object' && child.type && child.type.name === 'FormItem'
+              ? { ...child, props: { ...child.props, variant, size: mappedSize } }
+              : child
+          ) :
+          (children && typeof children === 'object' && children.type && children.type.name === 'FormItem'
+            ? { ...children, props: { ...children.props, variant, size: mappedSize } }
+            : children);
+      })()}
     </form>
   );
 };
@@ -227,6 +242,8 @@ const FormItem = ({
   children,
   colon = true,
   disabled = false, // 新增：接收禁用状态
+  variant, // 新增：接收变体属性
+  size = 'medium', // 新增：接收尺寸属性 small | medium | large
   ...rest
 }) => {
   let error = '';
@@ -273,6 +290,7 @@ const FormItem = ({
 
   const itemClassNames = [
     'inula-form-item',
+    `inula-form-item-${size === 'medium' ? 'default' : size}`,
     hasError ? 'inula-form-item-has-error' : '',
     required ? 'inula-form-item-required' : '',
     className,
@@ -290,7 +308,29 @@ const FormItem = ({
       ) : (<div className="inula-form-item-label" style={{ height: 0 }}></div>)}
       <div className="inula-form-item-control">
         <div className="inula-form-item-control-input">
-          {children}
+          {variant ? (
+            // 克隆子组件并传递variant和size属性
+            Array.isArray(children) ? 
+              children.map((child, index) => 
+                child && typeof child === 'object' && child.type ? 
+                  { ...child, props: { ...child.props, variant, size: (size === 'medium' ? 'default' : size), disabled: disabled || child.props?.disabled } } : 
+                  child
+              ) :
+              children && typeof children === 'object' && children.type ? 
+                { ...children, props: { ...children.props, variant, size: (size === 'medium' ? 'default' : size), disabled: disabled || children.props?.disabled } } : 
+                children
+          ) : (
+            // 如果没有variant，传递size和disabled状态
+            Array.isArray(children) ? 
+              children.map((child, index) => 
+                child && typeof child === 'object' && child.type ? 
+                  { ...child, props: { ...child.props, size: (size === 'medium' ? 'default' : size), disabled: disabled || child.props?.disabled } } : 
+                  child
+              ) :
+              children && typeof children === 'object' && children.type ? 
+                { ...children, props: { ...children.props, size: (size === 'medium' ? 'default' : size), disabled: disabled || children.props?.disabled } } : 
+                children
+          )}
         </div>
         {help ? (
           <div className="inula-form-item-extra">{help}</div>
