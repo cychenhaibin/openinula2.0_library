@@ -95,4 +95,14 @@
   --inula-select-tag-hover-text: #1677ff;
   --inula-select-arrow-color: #999;
   --inula-select-tag-text: #333;
+
+  /* 变体样式颜色 - 参考 Ant Design 5.0 设计规范 */
+  --inula-variant-filled-bg: #fafafa;
+  --inula-variant-filled-hover-bg: #f0f0f0;
+  --inula-variant-filled-focus-bg: #ffffff;
+  --inula-variant-borderless-hover-bg: rgba(0, 0, 0, 0.04);
+  --inula-variant-borderless-focus-bg: rgba(0, 0, 0, 0.08);
+  --inula-variant-underlined-border: #d9d9d9;
+  --inula-variant-underlined-hover-border: #4096ff;
+  --inula-variant-underlined-focus-border: #1677ff;
 } 
