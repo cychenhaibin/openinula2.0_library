@@ -125,8 +125,8 @@ const Tree = ({
   const hanldleClick = (target, type, e) => {
     switch (type) {
       case "expand": {
-        const isAlreadyLoaded = loadedKeys.includes(target.key);
-        const isLoading = loadedKeys.includes(target.key);
+        const isAlreadyLoaded = customLoadedKeys.includes(target.key);
+        const isLoading = customLoadingKeys.includes(target.key);
         const shouldLoad = loadData && !isAlreadyLoaded && !isLoading;
 
         if (shouldLoad) {

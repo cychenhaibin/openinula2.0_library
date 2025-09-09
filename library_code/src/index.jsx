@@ -16,7 +16,7 @@ window.render = render;
 import Select from "./components/select/demo.jsx";
 import Input from "./components/input/demo.jsx";
 import Modal from "./components/modal/demo.jsx";
-import DatePicker from "./components/datepicker/demo.jsx";
+import DatePicker from "./components/datepicker2/demo.jsx";
 import Form from "./components/form/demo.jsx";
 
 function App() {
@@ -26,18 +26,13 @@ function App() {
         <h1 className="hero-title animate__animated animate__fadeInDown">
           欢迎使用 inula-next 组件库!
         </h1>
-        <p className="hero-subtitle animate__animated animate__fadeInUp">
+        {/* <p className="hero-subtitle animate__animated animate__fadeInUp">
           Button 组件
         </p>
         <div className="hero-content">
           <Button />
         </div>
-        <p className="hero-subtitle animate__animated animate__fadeInUp">
-          Icon 组件
-        </p>
-        <div className="hero-content">
-          <Icon />
-        </div>
+
         <p className="hero-subtitle animate__animated animate__fadeInUp">
           Checkbox 组件
         </p>
@@ -91,7 +86,7 @@ function App() {
         </p>
         <div className="hero-content">
           <Tree />
-        </div> */}
+        </div> 
         <p className="hero-subtitle animate__animated animate__fadeInUp">
           Select 选择器组件
         </p>
@@ -109,12 +104,19 @@ function App() {
         </p>
         <div className="hero-content">
           <Modal />
-        </div>
+        </div>{" "}
+        */}
         <p className="hero-subtitle animate__animated animate__fadeInUp">
           DatePicker 日期选择器组件
         </p>
         <div className="hero-content">
           <DatePicker />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">
+          Icon 组件
+        </p>
+        <div className="hero-content">
+          <Icon />
         </div>
         <p className="hero-subtitle animate__animated animate__fadeInUp">
           Form 表单组件
