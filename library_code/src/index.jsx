@@ -18,6 +18,7 @@ import Input from './components/input/demo.jsx';
 import Modal from './components/modal/demo.jsx';
 import DatePicker from './components/datepicker/demo.jsx';
 import Form from './components/form/demo.jsx';
+import Tag from './components/tag/demo.jsx';  
 
 window.render = render;
 
@@ -89,6 +90,10 @@ function App() {
         <p className="hero-subtitle animate__animated animate__fadeInUp">Form 表单组件</p>
         <div className="hero-content">
           <Form />
+        </div>
+        <p className="hero-subtitle animate__animated animate__fadeInUp">Tag 标签组件</p>
+        <div className="hero-content">
+          <Tag />
         </div>
       </div>
     </div>  

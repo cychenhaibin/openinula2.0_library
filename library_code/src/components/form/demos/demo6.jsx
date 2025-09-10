@@ -43,9 +43,11 @@ const Demo6 = () => {
         size={size}
       >
         <FormItem label="Form Size" name="size" style={{ display: 'flex' }}>
-          <Button variant="filled" onClick={() => { size = 'small'; }}>small</Button>
-          <Button variant="filled" onClick={() => { size = 'medium'; }}>medium</Button>
-          <Button variant="filled" onClick={() => { size = 'large'; }}>large</Button>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <Button type={size === 'small' ? 'primary' : 'default'}  onClick={() => { size = 'small'; }}>small</Button>
+            <Button type={size === 'medium' ? 'primary' : 'default'}  onClick={() => { size = 'medium'; }}>medium</Button>
+            <Button type={size === 'large' ? 'primary' : 'default'}  onClick={() => { size = 'large'; }}>large</Button>
+          </div>
         </FormItem>
         <FormItem name="username" label="Username" required model={user}>
           <Input

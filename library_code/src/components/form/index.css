@@ -1,3 +1,4 @@
+@import '../../colors.css';
 .inula-form {
   width: 100%;
 }
@@ -83,6 +84,63 @@
   margin-right: 4px;
   color: #ff4d4f;
   content: '*';
+}
+
+/* Required Mark 样式 */
+.inula-form-item-required-asterisk {
+  color: #ff4d4f;
+  margin-right: 4px;
+  font-weight: normal;
+}
+
+.inula-form-item-required-text {
+  color: var(--inula-color-disabled-text);
+  font-size: 12px;
+  margin-left: 4px;
+  font-weight: normal;
+}
+
+.inula-form-item-optional {
+  color: #999;
+  font-size: 12px;
+  margin-left: 4px;
+  font-weight: normal;
+  display: inline-block;
+}
+
+.inula-form-item-required-custom {
+  background: #ff4d4f;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 4px;
+  font-weight: normal;
+  display: inline-block;
+}
+
+.inula-form-item-optional-custom {
+  background: #f0f0f0;
+  color: #666;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 4px;
+  font-weight: normal;
+  display: inline-block;
+}
+
+/* Required Mark 模式样式 */
+.inula-form-required-mark-hidden .inula-form-item-required .inula-form-item-label label::before {
+  display: none;
+}
+
+.inula-form-required-mark-optional .inula-form-item-required .inula-form-item-label label::before {
+  display: none;
+}
+
+.inula-form-required-mark-customize .inula-form-item-required .inula-form-item-label label::before {
+  display: none;
 }
 
 .inula-form-item-control {

@@ -9,7 +9,7 @@
   border-radius: 4px;
   border: 1px solid var(--inula-color-default-border);
   background: var(--inula-color-default-bg);
-  color: var(--inula-color-default-text);
+  color: var(--inula-color-primary-text);
   cursor: pointer;
   transition: all 0.2s;
   outline: none;
@@ -36,7 +36,7 @@
 .inula-btn-default {
   background: var(--inula-color-default-bg);
   border-color: var(--inula-color-default-border);
-  color: var(--inula-color-default-text);
+  color: var(--inula-color-primary-text);
 }
 .inula-btn-default:hover {
   color: var(--inula-color-primary);
@@ -54,7 +54,7 @@
   border-style: dashed;
   background: var(--inula-color-default-bg);
   border-color: var(--inula-color-dashed-border);
-  color: var(--inula-color-default-text);
+  color: var(--inula-color-primary-text);
 }
 .inula-btn-dashed:hover {
   color: var(--inula-color-primary);

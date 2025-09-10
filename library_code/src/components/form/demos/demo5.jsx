@@ -45,20 +45,22 @@ function Demo5() {
           onFinishFailed={handleFailed}
         >
           <FormItem label="Form Layout" name="layout" style={{ display: 'flex' }}>
-            <Button variant="filled" onClick={() => { variant = 'outlined'; }}>outlined</Button>
-            <Button variant="filled" onClick={() => { variant = 'filled'; }}>filled</Button>
-            <Button variant="filled" onClick={() => { variant = 'borderless'; }}>borderless</Button>
-            <Button variant="filled" onClick={() => { variant = 'underlined'; }}>underlined</Button>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <Button type={variant === 'outlined' ? 'primary' : 'default'} onClick={() => { variant = 'outlined'; }}>outlined</Button>
+              <Button type={variant === 'filled' ? 'primary' : 'default'} onClick={() => { variant = 'filled'; }}>filled</Button>
+              <Button type={variant === 'borderless' ? 'primary' : 'default'} onClick={() => { variant = 'borderless'; }}>borderless</Button>
+              <Button type={variant === 'underlined' ? 'primary' : 'default'} onClick={() => { variant = 'underlined'; }}>underlined</Button>
+            </div>
           </FormItem>
 
-          <FormItem name="username" label="用户名" model={formData} required>
+          <FormItem name="username" label="Username" model={formData} required>
             <Input
               value={formData.username}
               onInput={(e) => setValueByPath(formData, 'username', e.target.value)}
             />
           </FormItem>
 
-          <FormItem name="email" label="邮箱" model={formData} required>
+          <FormItem name="email" label="Email" model={formData} required>
             <Input
               type="email"
               value={formData.email}
@@ -66,7 +68,7 @@ function Demo5() {
             />
           </FormItem>
 
-          <FormItem name="country" label="国家" model={formData}>
+          <FormItem name="country" label="Country" model={formData}>
             <Select
               options={selectOptions}
               value={formData.country}
@@ -74,7 +76,7 @@ function Demo5() {
             />
           </FormItem>
 
-          <FormItem name="description" label="描述" model={formData}>
+          <FormItem name="description" label="Description" model={formData}>
             <Input
               type="textarea"
               rows={3}

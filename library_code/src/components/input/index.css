@@ -6,7 +6,7 @@
   display: inline-flex;
   align-items: center;
   width: 100%;
-  color: var(--inula-color-default-text);
+  color: var(--inula-color-primary-text);
   background: var(--inula-color-default-bg);
   border: 1px solid var(--inula-color-default-border);
   border-radius: 4px;
@@ -40,7 +40,7 @@
   outline: none;
   height: 40px;
   padding: 0 16px;
-  color: var(--inula-color-default-text);
+  color: var(--inula-color-primary-text);
   transition: all 0.3s ease;
   border-radius: 4px;
 }
@@ -486,7 +486,7 @@
   border: none;
   outline: none;
   padding: 10px 16px;
-  color: var(--inula-color-default-text);
+  color: var(--inula-color-primary-text);
   transition: all 0.3s ease;
   font-family: inherit;
   resize: vertical;
