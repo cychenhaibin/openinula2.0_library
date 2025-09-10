@@ -1,7 +1,13 @@
 {
-  "name": "inula-next-vite-app",
+  "name": "Inula-UI",
   "private": true,
   "version": "0.0.6",
+  "description": "openinula2.0 组件库",
+  "author": "陈海彬、涂宇恒",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cychenhaibin/openinula2.0_library.git" 
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
