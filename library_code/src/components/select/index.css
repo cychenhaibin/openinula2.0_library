@@ -5,7 +5,7 @@
   display: inline-block;
   min-width: 160px;
   font-size: 14px;
-  color: var(--inula-color-default-text);
+  color: var(--inula-color-primary-text);
   background: var(--inula-select-bg);
 }
 
@@ -275,4 +275,19 @@
   border: none !important;
   border-bottom: 1px solid var(--inula-color-disabled-border) !important;
   box-shadow: none !important;
+}
+
+.inula-select-no-data {
+  display: flex;
+  justify-content: center;  
+  align-items: center;
+  padding: 30px;
+  color: var(--inula-select-disabled-text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.inula-select-no-data:hover {
+  background: var(--inula-select-bg);
+  color: var(--inula-select-disabled-text);
 }
