@@ -26,7 +26,7 @@ export function calculateRenderDateItems(year, month) {
       year: preYear,
       month: preMonth,
       day: preMonthDays - i + 1,
-      isThisPage: false,
+      isThisTitleRange: false,
     });
   }
 
@@ -35,7 +35,7 @@ export function calculateRenderDateItems(year, month) {
       year: year,
       month: month,
       day: i,
-      isThisPage: true,
+      isThisTitleRange: true,
     });
   }
 
@@ -44,7 +44,7 @@ export function calculateRenderDateItems(year, month) {
       year: nextYear,
       month: nextMonth,
       day: i,
-      isThisPage: false,
+      isThisTitleRange: false,
     });
   }
 
@@ -73,7 +73,7 @@ export function calculateRenderWeekItems(year, month) {
         month: preMonth,
         week: weekCount,
         day: null,
-        isThisPage: false,
+        isThisTitleRange: false,
       });
       weekCount++;
     }
@@ -82,7 +82,7 @@ export function calculateRenderWeekItems(year, month) {
       month: preMonth,
       week: weekCount - 1,
       day: preMonthDays - i + 1,
-      isThisPage: false,
+      isThisTitleRange: false,
     });
     dayCount++;
   }
@@ -94,7 +94,7 @@ export function calculateRenderWeekItems(year, month) {
         month: month,
         week: weekCount,
         day: null,
-        isThisPage: false,
+        isThisTitleRange: false,
       });
       weekCount++;
     }
@@ -103,7 +103,7 @@ export function calculateRenderWeekItems(year, month) {
       month: month,
       week: weekCount - 1,
       day: i,
-      isThisPage: true,
+      isThisTitleRange: true,
     });
     dayCount++;
   }
@@ -115,7 +115,7 @@ export function calculateRenderWeekItems(year, month) {
         month: nextMonth,
         week: weekCount,
         day: null,
-        isThisPage: false,
+        isThisTitleRange: false,
       });
       weekCount++;
     }
@@ -124,10 +124,12 @@ export function calculateRenderWeekItems(year, month) {
       month: nextMonth,
       week: weekCount - 1,
       day: i,
-      isThisPage: false,
+      isThisTitleRange: false,
     });
     dayCount++;
   }
+
+  // return items;
 
   const ROW = 6,
     COL = 8,
@@ -147,23 +149,23 @@ export function calculateRenderYQMItems(type, year) {
   switch (type) {
     case "year": {
       const curYearStart = Math.floor(year / 10) * 10;
-      items.push({ year: curYearStart - 1, isThisPage: false });
+      items.push({ year: curYearStart - 1, isThisTitleRange: false });
       for (let i = curYearStart; i <= curYearStart + 9; i++) {
-        items.push({ year: i, isThisPage: true });
+        items.push({ year: i, isThisTitleRange: true });
       }
-      items.push({ year: curYearStart + 10, isThisPage: false });
+      items.push({ year: curYearStart + 10, isThisTitleRange: false });
 
       return items;
     }
     case "month": {
       for (let i = 1; i <= 12; i++) {
-        items.push({ month: i, isThisPage: true });
+        items.push({ year: year, month: i, isThisTitleRange: true });
       }
       return items;
     }
     case "quarter": {
       for (let i = 1; i <= 4; i++) {
-        items.push({ quarter: i, isThisPage: true });
+        items.push({ year: year, quarter: i, isThisTitleRange: true });
       }
       return items;
     }
@@ -211,7 +213,20 @@ export function calculateWeekOfYearForFirstDay(year, month) {
   return week;
 }
 
-//计算当前状态的年月日
+//根据年月日，计算当前的周数
+export function calculateDateWeek(date) {
+  const target = new Date(date.valueOf());
+  const day = (date.getDay() + 6) % 7;
+  target.setDate(target.getDate() - day + 3);
+  const firstThursday = target.valueOf();
+  target.setMonth(0, 1);
+  if (target.getDay() !== 4) {
+    target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
+  }
+  return 1 + Math.ceil((firstThursday - target) / 604800000);
+}
+
+//计算当前现实时间的年月日
 export function getTodayDate() {
   const date = new Date();
   return {

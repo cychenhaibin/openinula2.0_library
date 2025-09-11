@@ -5,8 +5,17 @@ import {
   calculateRenderDateItems,
   calculateRenderYQMItems,
   calculateRenderWeekItems,
+  calculateDateWeek,
   getTodayDate,
 } from "./calculateFunc";
+
+import {
+  formatDate,
+  formatDateToYYYYMM,
+  parseDefaultToFormat,
+  formatDateToObject,
+  formatDateToYearMonth,
+} from "./formatFunc";
 
 export {
   calculateDaysInYearMonth,
@@ -15,5 +24,11 @@ export {
   calculateRenderDateItems,
   calculateRenderYQMItems,
   calculateRenderWeekItems,
+  calculateDateWeek,
   getTodayDate,
+  formatDate,
+  formatDateToYYYYMM,
+  parseDefaultToFormat,
+  formatDateToObject,
+  formatDateToYearMonth,
 };

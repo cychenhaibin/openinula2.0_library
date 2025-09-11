@@ -1,6 +1,6 @@
 import DatePicker from "../index.jsx";
 
-function Demo1() {
+function DatePickerDemo() {
   const handleChange = (value) => {
     console.log("选择的值:", value);
   };
@@ -17,7 +17,7 @@ function Demo1() {
     >
       <div>
         <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          基础日期选择器
+          不同picker基础日期选择器
         </h3>
         <div
           style={{
@@ -144,4 +144,4 @@ function Demo1() {
   );
 }
 
-export default Demo1;
+export default DatePickerDemo;
