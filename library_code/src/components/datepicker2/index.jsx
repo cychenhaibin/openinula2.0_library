@@ -1,4 +1,4 @@
-import { didMount, watch } from "@openinula/next";
+import { didMount, watch, createContext, useContext } from "@openinula/next";
 import "./index.css";
 import Icon from "../icon";
 import Button from "../button";
@@ -6,11 +6,27 @@ import {
   calculateRenderDateItems,
   calculateRenderYQMItems,
   calculateRenderWeekItems,
+  calculateNextRange,
   getTodayDate,
   formatDate,
   formatDateToObject,
   formatDateToYearMonth,
+  compareDate,
+  isEqualedDate,
 } from "./utils";
+
+const ValueContext = createContext({
+  confirmValue: "",
+  selectValue: "",
+});
+
+const RangeValueContext = createContext({
+  rangeConfirmValue: ["", ""],
+  rangeSelectValue: "",
+  rangeHoverValue: "",
+  focusState: "00",
+  mode: "range",
+});
 
 const DatePicker = ({
   allowClear, //自定义清除按钮
@@ -52,8 +68,8 @@ const DatePicker = ({
   className, //自定义类名
   style,
 }) => {
-  let selectValue;
-  let confirmValue;
+  let selectValue = "";
+  let confirmValue = "";
   let isOpen = initialOpen;
   let isClearIcon = false;
   let curYear;
@@ -81,10 +97,6 @@ const DatePicker = ({
     if (open !== undefined) {
       isOpen = open;
     }
-  });
-
-  watch(() => {
-    console.log(open, isOpen);
   });
 
   const initialPlaceholder = () => {
@@ -129,7 +141,6 @@ const DatePicker = ({
         break;
       }
       default: {
-        handleChangeOpen("close");
         break;
       }
     }
@@ -151,12 +162,6 @@ const DatePicker = ({
       }
       handleChangeOpen("close");
     }
-    // else {
-    //   console.log(selectValue);
-    //   if (item.year && item.year !== curYear) curYear = item.year;
-    //   if (item.month && type !== "month" && item.month !== curMonth)
-    //     curMonth = item.month;
-    // }
   };
 
   const mouseEnterItem = (type, item) => {
@@ -223,9 +228,10 @@ const DatePicker = ({
     }
   };
 
-  const handleClear = () => {
+  const handleClear = (e) => {
+    e.stopPropagation();
     if (isClearIcon) {
-      selectValue = undefined;
+      selectValue = "";
       confirmValue = "";
       isClearIcon = false;
     }
@@ -238,9 +244,6 @@ const DatePicker = ({
     if (defaultPickerValue) {
       curYear = formatDateToYearMonth(defaultPickerValue, "", picker)?.year;
       curMonth = formatDateToYearMonth(defaultPickerValue, "", picker)?.month;
-    }
-    if (needConfirm && !confirmValue) {
-      selectValue = undefined;
     }
     handleChangeOpen("close");
   };
@@ -255,6 +258,7 @@ const DatePicker = ({
       if (onOpenChange && isOpen === false) onOpenChange(isOpen);
       else isOpen = true;
     } else if (action === "close") {
+      if (selectValue) selectValue = "";
       if (onOpenChange && isOpen === true) onOpenChange(isOpen);
       else isOpen = false;
     }
@@ -312,7 +316,6 @@ const DatePicker = ({
           {...(inputReadOnly && { readOnly: true })}
           autoFocus={autoFocus}
           type="text"
-          prefix={prefix}
           placeholder={initialPlaceholder()}
           value={
             hoverValue ||
@@ -328,7 +331,7 @@ const DatePicker = ({
           }}
           onMouseLeave={() => (isClearIcon = false)}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => handleClear()}
+          onClick={(e) => handleClear(e)}
         >
           <if cond={!isClearIcon}>
             {suffixIcon ? (
@@ -353,44 +356,498 @@ const DatePicker = ({
           </else>
         </div>
       </div>
+      <ValueContext confirmValue={confirmValue} selectValue={selectValue}>
+        <Calendar
+          type={picker}
+          size={size}
+          curYear={curYear}
+          curMonth={curMonth}
+          isOpen={open !== undefined ? open : isOpen}
+          placement={placement}
+          defaultValue={defaultValue}
+          disabledDate={disabledDate}
+          minDate={minDate}
+          maxDate={maxDate}
+          needConfirm={needConfirm}
+          showNow={showNow}
+          prevIcon={prevIcon}
+          nextIcon={nextIcon}
+          superPrevIcon={superPrevIcon}
+          superNextIcon={superNextIcon}
+          onSelect={handleSelect}
+          handleChangeTitle={handleChangeTitle}
+          handleConfirm={handleConfirm}
+          mouseEnterItem={mouseEnterItem}
+          mouseLeaveItem={mouseLeaveItem}
+          onOk={onOk}
+        />
+      </ValueContext>
+    </div>
+  );
+};
 
-      <Calendar
-        type={picker}
-        size={size}
-        curYear={curYear}
-        curMonth={curMonth}
-        isOpen={open !== undefined ? open : isOpen}
-        placement={placement}
-        selectValue={selectValue}
-        defaultValue={defaultValue}
-        disabledDate={disabledDate}
-        minDate={minDate}
-        maxDate={maxDate}
-        needConfirm={needConfirm}
-        showNow={showNow}
-        prevIcon={prevIcon}
-        nextIcon={nextIcon}
-        superPrevIcon={superPrevIcon}
-        superNextIcon={superNextIcon}
-        onSelect={handleSelect}
-        handleChangeTitle={handleChangeTitle}
-        handleConfirm={handleConfirm}
-        mouseEnterItem={mouseEnterItem}
-        mouseLeaveItem={mouseLeaveItem}
-        onOk={onOk}
-      />
+const RangePicker = ({
+  allowClear, //自定义清除按钮
+  showNow = true, //是否展示“今天”按钮
+  autoFocus = false, //自动获取焦点
+  inputReadOnly = false, //设置输入框只读
+  defaultOpen = false, //是否默认展开控制弹层
+  disabled = false, //禁用
+  disabledDate, //不可选择的日期
+  format, //设置日期格式
+  onChange, //时间变化回调
+  onOk, //点击确定回调
+  open, //控制弹层是否展开
+  initialOpen = open !== undefined ? open : defaultOpen || false,
+  order = true,
+  defaultPickerValue, //默认面板日期，每次打开面板会被重置到该日期，格式为YYYY-MM-DD
+  defaultValue, //默认值，与format对应，如果开始或结束时间为null或undefined，日期范围将是一个开区间
+  minDate, //最小日期
+  maxDate, //最大日期
+  needConfirm, //是否需要确认按钮 // panekRender, //自定义渲染面板
+  picker = "date", //设置选择器类型, date | week | month | quarter | year
+  placeholder, //输入框提示文字
+  placement = "bottomLeft", //选择器弹出的位置bottomLeft | bottomRight | toLeft | toRight
+  prefix, //自定义前缀
+  prevIcon, //自定义上一个图标-月
+  nextIcon, //自定义下一个图标-月
+  suffixIcon, //自定义后缀
+  superNextIcon, //自定义下一个图标-年
+  superPrevIcon, //自定义上一个图标-年
+  size = "middle", //input大小，large高40px,small24px,default32px
+  variant = "outlined", // outlined | borderless | filled | underlined
+  status, //设置校验状态
+  onOpenChange,
+  onPanleChange,
+  onBlur,
+  onFocus,
+  className, //自定义类名
+  style,
+}) => {
+  let selectValue = "";
+  let hoverValue;
+  let confirmValue = ["", ""];
+  let focusState = "00";
+  let isOpen = initialOpen;
+  let isClearIcon = false;
+  let curYear;
+  let curMonth;
+  let startInputRef;
+  let endInputRef;
+
+  watch(() => {
+    if (defaultPickerValue || defaultValue) {
+      const parsedYearMonth = formatDateToYearMonth(
+        defaultPickerValue || defaultValue,
+        "",
+        picker
+      );
+      curYear = parsedYearMonth?.year || new Date().getFullYear();
+      curMonth = parsedYearMonth?.month || new Date().getMonth() + 1;
+      if (defaultValue) confirmValue = defaultValue;
+    } else {
+      curYear = new Date().getFullYear();
+      curMonth = new Date().getMonth() + 1;
+    }
+  });
+
+  watch(() => {
+    if (open !== undefined) {
+      isOpen = open;
+    }
+  });
+
+  const initialPlaceholder = () => {
+    if (placeholder) return placeholder;
+
+    switch (picker) {
+      case "date":
+        return "请选择日期";
+      case "week":
+        return "请选择周";
+      case "month":
+        return "请选择月份";
+      case "quarter":
+        return "请选择季度";
+      case "year":
+        return "请选择年份";
+      default:
+        return "请选择日期";
+    }
+  }; //选择某个日期
+
+  const handleSelect = (type, item) => {
+    switch (type) {
+      case "date": {
+        selectValue = `${item.year}-${item.month}-${item.day}`;
+        break;
+      }
+      case "week": {
+        selectValue = `${item.year}-${item.week}周`;
+        break;
+      }
+      case "month": {
+        selectValue = `${item.year}-${item.month}`;
+        break;
+      }
+      case "quarter": {
+        selectValue = `${item.year}-Q${item.quarter}`;
+        break;
+      }
+      case "year": {
+        selectValue = `${item.year}`;
+        break;
+      }
+      default: {
+        handleChangeOpen("close");
+        break;
+      }
+    }
+
+    if (!needConfirm) {
+      hoverValue = "";
+
+      if (focusState === "10") {
+        confirmValue[0] = formatDate(selectValue, defaultValue, format, picker);
+        focusState = "01";
+        endInputRef.focus();
+      } else if (focusState === "01") {
+        confirmValue[1] = formatDate(selectValue, defaultValue, format, picker);
+        focusState = "10";
+        startInputRef.focus();
+      }
+
+      if (onChange) onChange(selectValue);
+      if (confirmValue[0] && confirmValue[1]) handleChangeOpen("close", item);
+    }
+  };
+
+  const mouseEnterItem = (type, item) => {
+    let tempValue;
+
+    switch (type) {
+      case "date": {
+        tempValue = `${item.year}-${item.month}-${item.day}`;
+        break;
+      }
+      case "week": {
+        tempValue = `${item.year}-${item.week}周`;
+        break;
+      }
+      case "month": {
+        tempValue = `${item.year}-${item.month}`;
+        break;
+      }
+      case "quarter": {
+        tempValue = `${item.year}-Q${item.quarter}`;
+        break;
+      }
+      case "year": {
+        tempValue = `${item.year}`;
+        break;
+      }
+
+      default: {
+        handleChangeOpen("close");
+        break;
+      }
+    }
+
+    hoverValue = formatDate(tempValue, defaultValue, format, picker);
+  };
+
+  const mouseLeaveItem = () => {
+    hoverValue = "";
+  };
+
+  const handleConfirm = () => {
+    hoverValue = "";
+
+    if (focusState === "10") {
+      confirmValue[0] = formatDate(selectValue, defaultValue, format, picker);
+      focusState = "01";
+      endInputRef.focus();
+    } else if (focusState === "01") {
+      confirmValue[1] = formatDate(selectValue, defaultValue, format, picker);
+      focusState = "10";
+      startInputRef.focus();
+    }
+
+    if (onChange) onChange(selectValue);
+
+    if (confirmValue[0] && confirmValue[1]) handleChangeOpen("close");
+  };
+
+  //target: year | month， action: add minus
+  const handleChangeTitle = (target, action, type = "date") => {
+    if (onPanleChange) onPanleChange({ curYear, curMonth }, picker);
+
+    if (target === "year") {
+      if (type === "year")
+        curYear = action === "add" ? curYear + 10 : curYear - 10;
+      else curYear = action === "add" ? curYear + 1 : curYear - 1;
+    } else {
+      if (action === "add") {
+        if (curMonth === 12) {
+          curMonth = 1;
+          curYear += 1;
+        } else curMonth += 1;
+      } else {
+        if (curMonth === 1) {
+          curMonth = 12;
+          curYear -= 1;
+        } else curMonth -= 1;
+      }
+    }
+  };
+
+  const handleClear = (e) => {
+    e.stopPropagation();
+    if (isClearIcon) {
+      selectValue = undefined;
+      confirmValue = [undefined, undefined];
+      isClearIcon = false;
+    }
+  };
+
+  const handleOnBlur = (curRef) => {
+    if (onBlur) {
+      onBlur();
+    }
+
+    if (defaultPickerValue) {
+      curYear = formatDateToYearMonth(defaultPickerValue, "", picker)?.year;
+      curMonth = formatDateToYearMonth(defaultPickerValue, "", picker)?.month;
+    }
+
+    if (curRef === "start" && focusState === "10") {
+      focusState = "00";
+      handleChangeOpen("close");
+    } else if (curRef === "end" && focusState === "01") {
+      focusState = "00";
+      handleChangeOpen("close");
+    }
+  };
+
+  const handleOnFocus = (curRef) => {
+    if (onFocus) onFocus();
+    handleChangeOpen("open");
+
+    if (curRef === "start") {
+      focusState = "10";
+    } else {
+      focusState = "01";
+    }
+  };
+
+  const handleOnClickContainer = () => {
+    handleChangeOpen("open");
+
+    if (focusState === "00") {
+      startInputRef.focus();
+    }
+  };
+
+  const handleChangeOpen = (action) => {
+    if (action === "open") {
+      if (onOpenChange && isOpen === false) onOpenChange(isOpen);
+      else isOpen = true;
+    } else if (action === "close") {
+      if (selectValue) selectValue = "";
+      if (onOpenChange && isOpen === true) onOpenChange(isOpen);
+      else isOpen = false;
+    }
+  };
+
+  const inputContainerClassNames = [
+    "inula-datepicker-input-container",
+    "range-container",
+    size === "large" && "inula-datepicker-input-container-large",
+    size === "small" && "inula-datepicker-input-container-small",
+    disabled && "inula-datepicker-input-container-disabled",
+    variant === "filled" && "inula-datepicker-input-container-filled",
+    variant === "outlined" && "inula-datepicker-input-container-outlined",
+    variant === "borderless" && "inula-datepicker-input-container-borderless",
+    variant === "underline" && "inula-datepicker-input-container-underline",
+    status === "error" && "inula-datepicker-input-container-error",
+    status === "warning" && "inula-datepicker-input-container-warning",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const startInputClassNames = [
+    "inula-datepicker-input",
+    "range-input",
+    size === "large" && "inula-datepicker-input-large",
+    size === "small" && "inula-datepicker-input-small",
+    focusState === "10" && hoverValue && "inula-datepicker-input-hover-value",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const endInputClassNames = [
+    "inula-datepicker-input",
+    "range-input",
+    size === "large" && "inula-datepicker-input-large",
+    size === "small" && "inula-datepicker-input-small",
+    focusState === "01" && hoverValue && "inula-datepicker-input-hover-value",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const inputIconClassNames = [
+    "inula-datepicker-input-icon",
+    disabled && "icon-disabled",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <div className="inula-datepicker">
+      <div
+        className={inputContainerClassNames}
+        style={style}
+        onClick={() => handleOnClickContainer()}
+      >
+        <if cond={prefix}>
+          <div className={inputIconClassNames}>{prefix}</div>
+        </if>
+        {/* start */}
+        <input
+          className={startInputClassNames}
+          ref={startInputRef}
+          disabled={disabled}
+          {...(inputReadOnly && { readOnly: true })}
+          autoFocus={autoFocus}
+          type="text"
+          placeholder={initialPlaceholder()}
+          value={
+            focusState === "10"
+              ? hoverValue || (confirmValue[0] !== "" ? confirmValue[0] : "")
+              : confirmValue[0] !== ""
+              ? confirmValue[0]
+              : ""
+          }
+          onClick={(e) => e.stopPropagation()}
+          onBlur={() => handleOnBlur("start")}
+          onFocus={() => handleOnFocus("start")}
+        ></input>
+
+        <Icon
+          value="arrow-right-long"
+          theme="filled"
+          color="rgba(0,0,0,0.25)"
+          size={12}
+          style={{ margin: "0 4px" }}
+        />
+        {/* end */}
+        <input
+          className={endInputClassNames}
+          ref={endInputRef}
+          disabled={disabled}
+          {...(inputReadOnly && { readOnly: true })}
+          autoFocus={autoFocus}
+          type="text"
+          placeholder={initialPlaceholder()}
+          value={
+            focusState === "01"
+              ? hoverValue || (confirmValue[1] !== "" ? confirmValue[1] : "")
+              : confirmValue[1] !== ""
+              ? confirmValue[1]
+              : ""
+          }
+          onClick={(e) => e.stopPropagation()}
+          onBlur={() => handleOnBlur("end")}
+          onFocus={() => handleOnFocus("end")}
+        ></input>
+
+        <div
+          className={inputIconClassNames}
+          onMouseEnter={() => {
+            if (confirmValue) isClearIcon = true;
+          }}
+          onMouseLeave={() => (isClearIcon = false)}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={(e) => handleClear(e)}
+        >
+          <div
+            className={inputIconClassNames}
+            onMouseEnter={() => {
+              if (confirmValue) isClearIcon = true;
+            }}
+            onMouseLeave={() => (isClearIcon = false)}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => handleClear()}
+          ></div>
+
+          <if cond={!isClearIcon}>
+            {suffixIcon ? (
+              suffixIcon
+            ) : (
+              <Icon
+                value="calendar"
+                theme="filled"
+                size={14}
+                color="rgba(0,0,0,0.25)"
+              />
+            )}
+          </if>
+          <else>
+            {allowClear ? (
+              allowClear
+            ) : (
+              <div className="clear">
+                <Icon value="xmark" theme="filled" size={8} color="#fff" />
+              </div>
+            )}
+          </else>
+        </div>
+      </div>
+      <RangeValueContext
+        rangeConfirmValue={confirmValue}
+        rangeSelectValue={selectValue}
+        rangeHoverValue={hoverValue}
+        focusState={focusState}
+      >
+        <Calendar
+          type={picker}
+          mode="range"
+          size={size}
+          curYear={curYear}
+          curMonth={curMonth}
+          isOpen={open !== undefined ? open : isOpen}
+          placement={placement}
+          defaultValue={defaultValue}
+          disabledDate={disabledDate}
+          minDate={minDate}
+          maxDate={maxDate}
+          needConfirm={needConfirm}
+          showNow={showNow}
+          prevIcon={prevIcon}
+          nextIcon={nextIcon}
+          superPrevIcon={superPrevIcon}
+          superNextIcon={superNextIcon}
+          onSelect={handleSelect}
+          handleChangeTitle={handleChangeTitle}
+          handleConfirm={handleConfirm}
+          mouseEnterItem={mouseEnterItem}
+          mouseLeaveItem={mouseLeaveItem}
+          onOk={onOk}
+        />
+      </RangeValueContext>
     </div>
   );
 };
 
 const Calendar = ({
   type = "date",
+  mode = "date",
   size = "default",
   curYear = new Date().getFullYear(),
   curMonth = new Date().getMonth() + 1,
   isOpen = false,
   placement,
-  selectValue,
   defaultValue,
   disabledDate,
   minDate,
@@ -408,6 +865,12 @@ const Calendar = ({
   mouseLeaveItem,
   onOk,
 }) => {
+  const { selectValue, confirmValue } = useContext(ValueContext);
+  const { rangeSelectValue, rangeConfirmValue, rangeHoverValue, focusState } =
+    useContext(RangeValueContext);
+
+  // watch(() => console.log(rangeConfirmValue, rangeSelectValue));
+
   const today = `${new Date().getFullYear()}-${
     new Date().getMonth() + 1
   }-${new Date().getDate()}`;
@@ -550,36 +1013,6 @@ const Calendar = ({
     return false;
   };
 
-  //通过minDate、maxDate判断是否翻页
-  // const isDisabledChangeTitle = (target, action) => {
-  //   const miniDate = formatDateToObject(minDate, "", type);
-  //   const maxiDate = formatDateToObject(maxDate, "", type);
-  //   if (action === "minus") {
-  //     if (!miniDate) return false;
-  //     if (target === "year") {
-  //       if (type !== "year")
-  //         if (miniDate.year >= curYear) return true;
-  //         else return miniDate.year >= Math.floor(curYear / 10) * 10 - 1;
-  //     } else {
-  //       //日期和周选择器是一样的，年月季度不会有翻月的情况
-  //       if (miniDate.year > curYear) return true;
-  //       if (miniDate.year === curYear && miniDate.month >= curMonth)
-  //         return true;
-  //     }
-  //   } else {
-  //     if (!maxiDate) return false;
-  //     if (target === "year") {
-  //       if (type === "year")
-  //         if (maxiDate.year <= curYear) return true;
-  //         else return maxiDate.year <= Math.floor(curYear / 10) * 10 + 10;
-  //     } else {
-  //       if (maxiDate.year < curYear) return true;
-  //       if (maxiDate.year === curYear && maxiDate.month <= curMonth)
-  //         return true;
-  //     }
-  //   }
-  // };
-
   const getGridColumns = () => {
     switch (type) {
       case "date":
@@ -656,16 +1089,47 @@ const Calendar = ({
             ))}
         </div>
 
-        <div className="inula-calendar-header-title">
-          <if cond={type === "date" || type === "week"}>
-            {`${curYear}年   ${curMonth}月`}
+        <div
+          className={[
+            "inula-calendar-header-title",
+            mode === "range" && "range-title",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <text>
+            <if cond={type === "date" || type === "week"}>
+              {`${curYear}年   ${curMonth}月`}
+            </if>
+            <else-if cond={type === "month" || type === "quarter"}>
+              {`${curYear}年`}
+            </else-if>
+            <else>{`${Math.floor(curYear / 10) * 10}年-${
+              Math.floor(curYear / 10) * 10 + 9
+            }年`}</else>
+          </text>
+
+          <if cond={mode === "range"}>
+            <if cond={type === "date" || type === "week"}>
+              {`${calculateNextRange(curYear, curMonth, type).nextYear}年   ${
+                calculateNextRange(curYear, curMonth, type).nextMonth
+              }月`}
+            </if>
+            <else-if cond={type === "month" || type === "quarter"}>
+              {`${calculateNextRange(curYear, curMonth, type).nextYear}年`}
+            </else-if>
+            <else>{`${
+              Math.floor(
+                calculateNextRange(curYear, curMonth, type).nextYear / 10
+              ) * 10
+            }年-${
+              Math.floor(
+                calculateNextRange(curYear, curMonth, type).nextYear / 10
+              ) *
+                10 +
+              9
+            }年`}</else>
           </if>
-          <else-if cond={type === "month" || type === "quarter"}>
-            {`${curYear}年`}
-          </else-if>
-          <else>{`${Math.floor(curYear / 10) * 10}年-${
-            Math.floor(curYear / 10) * 10 + 9
-          }年`}</else>
         </div>
 
         <div className="inula-calendar-header-right">
@@ -728,7 +1192,6 @@ const Calendar = ({
                 key={`${item}-${index}`}
                 type={type}
                 item={item}
-                selectValue={selectValue}
                 defaultValue={defaultValue}
                 disabled={isDisabled(item)}
                 onClick={handleClick}
@@ -751,32 +1214,23 @@ const Calendar = ({
           <for each={calculateRenderWeekItems(curYear, curMonth)}>
             {(row, index) => (
               <div
+                key={`${row}-${index}`}
                 className={[
                   "inula-calendar-content-week-row",
-                  selectValue === `${row[0].year}-${row[0].week}周` &&
-                    "inula-calendar-content-week-row-selected",
-                  !selectValue &&
-                    defaultValue ===
-                      formatDate(
-                        `${row[0].year}-${row[0].week}周`,
-                        defaultValue,
-                        "",
-                        "week"
-                      ) &&
+                  (selectValue !== ""
+                    ? isEqualedDate(selectValue, row[0], "week")
+                    : confirmValue
+                    ? isEqualedDate(confirmValue, row[0], "week")
+                    : isEqualedDate(defaultValue, row[0], "week")) &&
                     "inula-calendar-content-week-row-selected",
                   isDisabled(row[0]) &&
                     "inula-calendar-content-week-row-disabled",
                 ]
                   .filter(Boolean)
                   .join(" ")}
-                key={index}
-                onClick={() =>
-                  !isDisabled(row[0]) && onSelect && onSelect("week", row[0])
-                }
-                onMouseEnter={() =>
-                  !isDisabled(row[0]) && mouseEnterItem("week", row[0])
-                }
-                onMouseLeave={() => !isDisabled(row[0]) && mouseLeaveItem()}
+                onClick={(e) => handleClick(e, "week", row[0])}
+                onMouseEnter={() => handleMounseEnter("week", row[0])}
+                onMouseLeave={() => handleMounseLeave(row[0])}
               >
                 <for each={row}>
                   {(item, index) => (
@@ -801,7 +1255,6 @@ const Calendar = ({
                 key={`${item}-${index}`}
                 type={type}
                 item={item}
-                selectValue={selectValue}
                 defaultValue={defaultValue}
                 disabled={isDisabled(item)}
                 onClick={handleClick}
@@ -819,7 +1272,6 @@ const Calendar = ({
                 key={`${item}-${index}`}
                 type={type}
                 item={item}
-                selectValue={selectValue}
                 defaultValue={defaultValue}
                 disabled={isDisabled(item)}
                 onClick={handleClick}
@@ -837,7 +1289,6 @@ const Calendar = ({
                 key={`${item}-${index}`}
                 type={type}
                 item={item}
-                selectValue={selectValue}
                 defaultValue={defaultValue}
                 disabled={isDisabled(item)}
                 onClick={handleClick}
@@ -848,6 +1299,325 @@ const Calendar = ({
             )}
           </for>
         </else>
+      </div>
+    );
+  };
+
+  const CalendarRangeContent = () => {
+    return (
+      <div className="inula-calendar-range-content">
+        <div
+          className="inula-calendar-content inula-range-calendar-content"
+          style={{ "--grid-columns": getGridColumns() }}
+        >
+          <if cond={type === "date"}>
+            <for each={["一", "二", "三", "四", "五", "六", "日"]}>
+              {(item) => (
+                <div key={item} className="inula-calendar-content-weekday">
+                  {item}
+                </div>
+              )}
+            </for>
+            <for each={calculateRenderDateItems(curYear, curMonth)}>
+              {(item, index) => (
+                <CalendarContentItem
+                  key={`${item}-${index}`}
+                  type={type}
+                  item={item}
+                  selectValue={selectValue}
+                  rangeConfirmValue={rangeConfirmValue[0]}
+                  defaultValue={defaultValue}
+                  disabled={isDisabled(item)}
+                  onClick={handleClick}
+                  onMouseEnter={handleMounseEnter}
+                  onMouseLeave={handleMounseLeave}
+                />
+              )}
+            </for>
+          </if>
+          <else-if cond={type === "week"}>
+            <div className="inula-calendar-content-week-row-header">
+              <for each={[" ", "一", "二", "三", "四", "五", "六", "日"]}>
+                {(item) => (
+                  <div key={item} className="inula-calendar-content-weekday">
+                    {item}
+                  </div>
+                )}
+              </for>
+            </div>
+            <for each={calculateRenderWeekItems(curYear, curMonth)}>
+              {(row, index) => (
+                <div
+                  className={[
+                    "inula-calendar-content-week-row",
+                    selectValue === `${row[0].year}-${row[0].week}周` &&
+                      "inula-calendar-content-week-row-selected",
+                    !selectValue &&
+                      defaultValue ===
+                        formatDate(
+                          `${row[0].year}-${row[0].week}周`,
+                          defaultValue,
+                          "",
+                          "week"
+                        ) &&
+                      "inula-calendar-content-week-row-selected",
+                    isDisabled(row[0]) &&
+                      "inula-calendar-content-week-row-disabled",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  key={index}
+                  onClick={() =>
+                    !isDisabled(row[0]) && onSelect && onSelect("week", row[0])
+                  }
+                  onMouseEnter={() =>
+                    !isDisabled(row[0]) && mouseEnterItem("week", row[0])
+                  }
+                  onMouseLeave={() => !isDisabled(row[0]) && mouseLeaveItem()}
+                >
+                  <for each={row}>
+                    {(item, index) => (
+                      <CalendarContentItem
+                        key={`${item}-${index}`}
+                        type={type}
+                        item={item}
+                        disabled={isDisabled(item)}
+                        onClick={handleClick}
+                        className="week-container"
+                      />
+                    )}
+                  </for>
+                </div>
+              )}
+            </for>
+          </else-if>
+          <else-if cond={type === "month"}>
+            <for each={calculateRenderYQMItems("month", curYear)}>
+              {(item, index) => (
+                <CalendarContentItem
+                  key={`${item}-${index}`}
+                  type={type}
+                  item={item}
+                  selectValue={selectValue}
+                  defaultValue={defaultValue}
+                  disabled={isDisabled(item)}
+                  onClick={handleClick}
+                  onMouseEnter={handleMounseEnter}
+                  onMouseLeave={handleMounseLeave}
+                  className="month-container"
+                />
+              )}
+            </for>
+          </else-if>
+          <else-if cond={type === "quarter"}>
+            <for each={calculateRenderYQMItems("quarter", curYear)}>
+              {(item, index) => (
+                <CalendarContentItem
+                  key={`${item}-${index}`}
+                  type={type}
+                  mode={mode}
+                  item={item}
+                  selectValue={selectValue}
+                  defaultValue={defaultValue}
+                  disabled={isDisabled(item)}
+                  onClick={handleClick}
+                  onMouseEnter={handleMounseEnter}
+                  onMouseLeave={handleMounseLeave}
+                  className="quarter-container"
+                />
+              )}
+            </for>
+          </else-if>
+          <else>
+            <for each={calculateRenderYQMItems("year", curYear)}>
+              {(item, index) => (
+                <CalendarContentItem
+                  key={`${item}-${index}`}
+                  type={type}
+                  mode={mode}
+                  item={item}
+                  selectValue={selectValue}
+                  defaultValue={defaultValue}
+                  disabled={isDisabled(item)}
+                  onClick={handleClick}
+                  onMouseEnter={handleMounseEnter}
+                  onMouseLeave={handleMounseLeave}
+                  className="year-container"
+                />
+              )}
+            </for>
+          </else>
+        </div>
+        <div
+          className="inula-calendar-content inula-range-calendar-content"
+          style={{ "--grid-columns": getGridColumns() }}
+        >
+          <if cond={type === "date"}>
+            <for each={["一", "二", "三", "四", "五", "六", "日"]}>
+              {(item) => (
+                <div key={item} className="inula-calendar-content-weekday">
+                  {item}
+                </div>
+              )}
+            </for>
+            <for
+              each={calculateRenderDateItems(
+                calculateNextRange(curYear, curMonth, type).nextYear,
+                calculateNextRange(curYear, curMonth, type).nextMonth
+              )}
+            >
+              {(item, index) => (
+                <CalendarContentItem
+                  key={`${item}-${index}`}
+                  type={type}
+                  mode={mode}
+                  item={item}
+                  selectValue={selectValue}
+                  rangeConfirmValue={rangeConfirmValue[1]}
+                  defaultValue={defaultValue}
+                  disabled={isDisabled(item)}
+                  onClick={handleClick}
+                  onMouseEnter={handleMounseEnter}
+                  onMouseLeave={handleMounseLeave}
+                />
+              )}
+            </for>
+          </if>
+          <else-if cond={type === "week"}>
+            <div className="inula-calendar-content-week-row-header">
+              <for each={[" ", "一", "二", "三", "四", "五", "六", "日"]}>
+                {(item) => (
+                  <div key={item} className="inula-calendar-content-weekday">
+                    {item}
+                  </div>
+                )}
+              </for>
+            </div>
+            <for
+              each={calculateRenderWeekItems(
+                calculateNextRange(curYear, curMonth, type).nextYear,
+                calculateNextRange(curYear, curMonth, type).nextMonth
+              )}
+            >
+              {(row, index) => (
+                <div
+                  className={[
+                    "inula-calendar-content-week-row",
+                    selectValue === `${row[0].year}-${row[0].week}周` &&
+                      "inula-calendar-content-week-row-selected",
+                    !selectValue &&
+                      defaultValue ===
+                        formatDate(
+                          `${row[0].year}-${row[0].week}周`,
+                          defaultValue,
+                          "",
+                          "week"
+                        ) &&
+                      "inula-calendar-content-week-row-selected",
+                    isDisabled(row[0]) &&
+                      "inula-calendar-content-week-row-disabled",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  key={index}
+                  onClick={() =>
+                    !isDisabled(row[0]) && onSelect && onSelect("week", row[0])
+                  }
+                  onMouseEnter={() =>
+                    !isDisabled(row[0]) && mouseEnterItem("week", row[0])
+                  }
+                  onMouseLeave={() => !isDisabled(row[0]) && mouseLeaveItem()}
+                >
+                  <for each={row}>
+                    {(item, index) => (
+                      <CalendarContentItem
+                        key={`${item}-${index}`}
+                        type={type}
+                        mode={mode}
+                        item={item}
+                        disabled={isDisabled(item)}
+                        onClick={handleClick}
+                        className="week-container"
+                      />
+                    )}
+                  </for>
+                </div>
+              )}
+            </for>
+          </else-if>
+          <else-if cond={type === "month"}>
+            <for
+              each={calculateRenderYQMItems(
+                "month",
+                calculateNextRange(curYear, curMonth, type).nextYear
+              )}
+            >
+              {(item, index) => (
+                <CalendarContentItem
+                  key={`${item}-${index}`}
+                  type={type}
+                  mode={mode}
+                  item={item}
+                  selectValue={selectValue}
+                  defaultValue={defaultValue}
+                  disabled={isDisabled(item)}
+                  onClick={handleClick}
+                  onMouseEnter={handleMounseEnter}
+                  onMouseLeave={handleMounseLeave}
+                  className="month-container"
+                />
+              )}
+            </for>
+          </else-if>
+          <else-if cond={type === "quarter"}>
+            <for
+              each={calculateRenderYQMItems(
+                "quarter",
+                calculateNextRange(curYear, curMonth, type).nextYear
+              )}
+            >
+              {(item, index) => (
+                <CalendarContentItem
+                  key={`${item}-${index}`}
+                  type={type}
+                  mode={mode}
+                  item={item}
+                  selectValue={selectValue}
+                  defaultValue={defaultValue}
+                  disabled={isDisabled(item)}
+                  onClick={handleClick}
+                  onMouseEnter={handleMounseEnter}
+                  onMouseLeave={handleMounseLeave}
+                  className="quarter-container"
+                />
+              )}
+            </for>
+          </else-if>
+          <else>
+            <for
+              each={calculateRenderYQMItems(
+                "year",
+                calculateNextRange(curYear, curMonth, type).nextYear
+              )}
+            >
+              {(item, index) => (
+                <CalendarContentItem
+                  key={`${item}-${index}`}
+                  type={type}
+                  mode={mode}
+                  item={item}
+                  selectValue={selectValue}
+                  defaultValue={defaultValue}
+                  disabled={isDisabled(item)}
+                  onClick={handleClick}
+                  onMouseEnter={handleMounseEnter}
+                  onMouseLeave={handleMounseLeave}
+                  className="year-container"
+                />
+              )}
+            </for>
+          </else>
+        </div>
       </div>
     );
   };
@@ -894,8 +1664,16 @@ const Calendar = ({
   return (
     <div className={calendarClassNames} onMouseDown={(e) => e.preventDefault()}>
       <CalendarHeader />
-      <CalendarContent />
-      {((type === "date" && showNow) || needConfirm) && <CalendarFooter />}
+      <if cond={mode === "range"}>
+        <CalendarRangeContent />
+      </if>
+      <else>
+        <CalendarContent />
+      </else>
+
+      <if cond={(type === "date" && showNow) || needConfirm}>
+        <CalendarFooter />
+      </if>
     </div>
   );
 };
@@ -903,14 +1681,16 @@ const Calendar = ({
 const CalendarContentItem = ({
   type = "date", //日历类型
   item, //item日期信息{year, quarter, month, week, day, isThisTitleRange}
-  selectValue, //选择的日期
   defaultValue, //默认日期
+  rangeConfirmValue,
   disabled, //是否禁用
   onClick,
   onMouseEnter,
   onMouseLeave,
   className,
 }) => {
+  const { confirmValue, selectValue } = useContext(ValueContext);
+  watch(() => console.log(rangeConfirmValue));
   const today = `${new Date().getFullYear()}-${
     new Date().getMonth() + 1
   }-${new Date().getDate()}`;
@@ -919,27 +1699,16 @@ const CalendarContentItem = ({
     (type === "date" || "week") &&
     today === `${item.year}-${item.month}-${item.day}`;
 
-  const isSelected = (item) => {
-    if (selectValue) {
-      return selectValue === defaultString(item) && item.isThisTitleRange;
-    }
-    return false;
-  };
-
   const defaultString = (item) => {
     switch (type) {
       case "date":
         return `${item.year}-${item.month}-${item.day}`;
-
       case "week":
         return `${item.year}-${item.week}周`;
-
       case "month":
         return `${item.year}-${item.month}`;
-
       case "quarter":
         return `${item.year}-Q${item.quarter}`;
-
       case "year":
         return `${item.year}`;
     }
@@ -959,13 +1728,12 @@ const CalendarContentItem = ({
       "inula-calendar-content-date-item-notThisTitleRange",
     isTody && "inula-calendar-content-date-item-today",
     type !== "week" &&
-      isSelected(item) &&
-      "inula-calendar-content-date-item-selected",
-    type !== "week" &&
-      !selectValue &&
-      defaultValue ===
-        formatDate(defaultString(item), defaultValue, "", type) &&
       item.isThisTitleRange &&
+      (selectValue
+        ? selectValue === defaultString(item)
+        : confirmValue || rangeConfirmValue
+        ? isEqualedDate(confirmValue || rangeConfirmValue, item, type)
+        : isEqualedDate(defaultValue, item, type)) &&
       "inula-calendar-content-date-item-selected",
     disabled && "inula-calendar-content-date-item-disabled",
   ]
@@ -975,7 +1743,7 @@ const CalendarContentItem = ({
   return (
     <div
       className={itemContainerClassNames}
-      onMouseEnter={() => onMouseEnter && onMouseEnter("date", item)}
+      onMouseEnter={() => onMouseEnter && onMouseEnter(type, item)}
       onMouseLeave={() => onMouseLeave && onMouseLeave(item)}
     >
       <div className={itemClassNames} onClick={(e) => onClick(e, type, item)}>
@@ -989,4 +1757,4 @@ const CalendarContentItem = ({
   );
 };
 
-export default DatePicker;
+export { DatePicker, RangePicker };

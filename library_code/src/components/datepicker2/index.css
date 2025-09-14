@@ -242,6 +242,15 @@
   color: #fff !important;
 }
 
+/* RangePicker */
+.inula-datepicker-input-container.range-container {
+  width: 300px;
+}
+
+.inula-datepicker-input.range-input {
+  width: 45%;
+}
+
 /* 日历样式 */
 .inula-calendar {
   position: absolute;
@@ -326,6 +335,12 @@
   color: rgba(0, 0, 0, 0.88);
 }
 
+.range-title.inula-calendar-header-title {
+  width: 65%;
+  display: flex;
+  justify-content: space-between;
+}
+
 /* 左右切换箭头 */
 .inula-calendar-header-left {
   display: flex;
@@ -359,6 +374,11 @@
   padding: 10.5px;
   display: grid;
   grid-template-columns: repeat(var(--grid-columns), 1fr);
+}
+
+/* rangpicker */
+.inula-calendar-range-content {
+  display: flex;
 }
 
 /* 
@@ -425,6 +445,16 @@ item通用样式
   ) {
   background-color: #f5f5f5;
   cursor: pointer;
+}
+
+/* rangepicker的hover样式 */
+.inula-calendar-content.inula-range-calendar-content
+  .item-container:not(.week-container):hover
+  .inula-calendar-content-date-item:not(
+    .inula-calendar-content-date-item-notThisTitleRange
+  ) {
+  color: #fff;
+  background-color: #1677ff;
 }
 
 /* 通用非标题范围样式 */
@@ -578,6 +608,11 @@ item通用样式
 .item-container.year-container .inula-calendar-content-date-item {
   height: 24px;
   width: 64px;
+}
+
+/* rangepicker在范围内item样式 */
+.item-container.item-container-in-range {
+  background-color: #e6f4ff;
 }
 
 /* 非title范围 */

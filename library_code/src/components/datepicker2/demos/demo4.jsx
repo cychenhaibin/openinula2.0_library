@@ -1,4 +1,4 @@
-import { DatePicker } from "../index.jsx";
+import { RangePicker } from "../index.jsx";
 
 function DatePickerDemo() {
   const handleChange = (value) => {
@@ -17,7 +17,7 @@ function DatePickerDemo() {
     >
       <div>
         <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          不同picker基础日期选择器
+          不同pickerRange日期选择器
         </h3>
         <div
           style={{
@@ -27,31 +27,31 @@ function DatePickerDemo() {
             flexWrap: "wrap",
           }}
         >
-          <DatePicker placeholder="请选择日期" onChange={handleChange} />
-          <DatePicker
+          <RangePicker placeholder="请选择日期" onChange={handleChange} />
+          {/* <RangePicker
             picker="week"
             placeholder="请选择周"
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             picker="month"
             placeholder="请选择月份"
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             picker="quarter"
             placeholder="请选择季度"
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             picker="year"
             placeholder="请选择年份"
             onChange={handleChange}
-          />
+          /> */}
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <h3 style={{ marginBottom: "12px", color: "#262626" }}>不同尺寸</h3>
         <div
           style={{
@@ -139,7 +139,7 @@ function DatePickerDemo() {
             onChange={handleChange}
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

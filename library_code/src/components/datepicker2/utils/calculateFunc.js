@@ -1,6 +1,30 @@
+import { formatDateToObject } from "./formatFunc";
 //计算给定年月有多少天
 export function calculateDaysInYearMonth(year, month) {
   return new Date(year, month, 0).getDate();
+}
+
+//计算当年当月的下一个区间
+export function calculateNextRange(year, month, type) {
+  switch (type) {
+    case "date":
+    case "week": {
+      const nextYear = month === 12 ? year + 1 : year;
+      const nextMonth = month === 12 ? 1 : month + 1;
+      return { nextYear, nextMonth };
+    }
+    case "month":
+    case "quarter": {
+      const nextYear = year + 1;
+      const nextMonth = month;
+      return { nextYear, nextMonth };
+    }
+    case "year": {
+      const nextYear = year + 10;
+      const nextMonth = month;
+      return { nextYear, nextMonth };
+    }
+  }
 }
 
 //计算给定年月的当月第一天是星期几
@@ -234,4 +258,102 @@ export function getTodayDate() {
     month: date.getMonth() + 1,
     day: date.getDate(),
   };
+}
+
+//对比函数，targetDate > baseDate ? true : false
+export function compareDate(baseDate, targetDate, type) {
+  const baseDateObj = formatDateToObject(baseDate, "", type);
+  let targetDateObj;
+  if (Object.prototype.toString.call(targetDate).slice(8, -1) === "String")
+    targetDateObj = formatDateToObject(targetDate, "", type);
+  else targetDateObj = targetDate;
+  switch (type) {
+    case "date": {
+      if (targetDateObj.year > baseDateObj.year) {
+        return true;
+      } else if (
+        targetDateObj.year === baseDateObj.year &&
+        targetDateObj.month > baseDateObj.month
+      ) {
+        return true;
+      } else if (
+        targetDateObj.year === baseDateObj.year &&
+        targetDateObj.month === baseDateObj.month &&
+        targetDateObj.day > baseDateObj.day
+      ) {
+        return true;
+      }
+    }
+    case "week": {
+      if (targetDateObj.year > baseDateObj.year) {
+        return true;
+      } else if (
+        targetDateObj.year === baseDateObj.year &&
+        targetDateObj.week > baseDateObj.week
+      ) {
+        return true;
+      }
+    }
+    case "month": {
+      if (targetDateObj.year > baseDateObj.year) {
+        return true;
+      } else if (
+        targetDateObj.year === baseDateObj.year &&
+        targetDateObj.month > baseDateObj.month
+      ) {
+        return true;
+      }
+    }
+    case "quarter": {
+      if (targetDateObj.year > baseDateObj.year) {
+        return true;
+      } else if (
+        targetDateObj.year === baseDateObj.year &&
+        targetDateObj.quarter > baseDateObj.quarter
+      ) {
+        return true;
+      }
+    }
+    case "year": {
+      return targetDateObj.year > baseDateObj.year;
+    }
+  }
+
+  return false;
+}
+
+export function isEqualedDate(stringBaseDate, objTargetDate, type) {
+  if (!stringBaseDate) return false;
+  const objBaseDate = formatDateToObject(stringBaseDate, "", type);
+  switch (type) {
+    case "date": {
+      return (
+        objBaseDate.year === objTargetDate.year &&
+        objBaseDate.month === objTargetDate.month &&
+        objBaseDate.day === objTargetDate.day
+      );
+    }
+    case "week": {
+      return (
+        objBaseDate.year === objTargetDate.year &&
+        objBaseDate.week === objTargetDate.week
+      );
+    }
+    case "month": {
+      return (
+        objBaseDate.year === objTargetDate.year &&
+        objBaseDate.month === objTargetDate.month
+      );
+    }
+    case "quarter": {
+      return (
+        objBaseDate.year === objTargetDate.year &&
+        objBaseDate.quarter === objTargetDate.quarter
+      );
+    }
+    case "year": {
+      return objBaseDate.year === objTargetDate.year;
+    }
+  }
+  return false;
 }

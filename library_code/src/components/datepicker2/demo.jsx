@@ -1,7 +1,7 @@
 import Demo1 from "./demos/demo1.jsx";
 import Demo2 from "./demos/demo2.jsx";
 import Demo3 from "./demos/demo3.jsx";
-// import Demo4 from './demos/demo4.jsx';
+import Demo4 from "./demos/demo4.jsx";
 // import Demo5 from './demos/demo5.jsx';
 // import Demo6 from './demos/demo6.jsx';
 // import WeekRangeDemo from './demos/week-range-demo.jsx';
@@ -47,6 +47,18 @@ function DatePickerDemo() {
         </div>
         <div>
           <Demo3 />
+        </div>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <h2>rangePicker</h2>
+          <div>
+            可以通过picker改变选择器功能，size分为大中小，支持禁用、支持varient变体，status状态。
+          </div>
+        </div>
+        <div>
+          <Demo4 />
         </div>
       </div>
     </div>

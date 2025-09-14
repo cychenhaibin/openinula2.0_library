@@ -6,7 +6,10 @@ import {
   calculateRenderYQMItems,
   calculateRenderWeekItems,
   calculateDateWeek,
+  calculateNextRange,
   getTodayDate,
+  compareDate,
+  isEqualedDate,
 } from "./calculateFunc";
 
 import {
@@ -25,8 +28,11 @@ export {
   calculateRenderYQMItems,
   calculateRenderWeekItems,
   calculateDateWeek,
+  calculateNextRange,
   getTodayDate,
   formatDate,
+  compareDate,
+  isEqualedDate,
   formatDateToYYYYMM,
   parseDefaultToFormat,
   formatDateToObject,

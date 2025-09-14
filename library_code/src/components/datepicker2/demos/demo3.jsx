@@ -1,4 +1,4 @@
-import DatePicker from "../index.jsx";
+import { DatePicker } from "../index.jsx";
 import Button from "../../button/index.jsx";
 
 function DatePickerDemo() {
