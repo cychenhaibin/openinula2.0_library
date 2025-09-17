@@ -1,6 +1,6 @@
 import { RangePicker } from "../index.jsx";
 
-function DatePickerDemo() {
+function RangePickerDemo() {
   const handleChange = (value) => {
     console.log("选择的值:", value);
   };
@@ -28,7 +28,7 @@ function DatePickerDemo() {
           }}
         >
           <RangePicker placeholder="请选择日期" onChange={handleChange} />
-          {/* <RangePicker
+          <RangePicker
             picker="week"
             placeholder="请选择周"
             onChange={handleChange}
@@ -47,11 +47,11 @@ function DatePickerDemo() {
             picker="year"
             placeholder="请选择年份"
             onChange={handleChange}
-          /> */}
+          />
         </div>
       </div>
 
-      {/* <div>
+      <div>
         <h3 style={{ marginBottom: "12px", color: "#262626" }}>不同尺寸</h3>
         <div
           style={{
@@ -61,17 +61,17 @@ function DatePickerDemo() {
             flexWrap: "wrap",
           }}
         >
-          <DatePicker
+          <RangePicker
             size="small"
             placeholder="小尺寸"
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             size="default"
             placeholder="默认尺寸"
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             size="large"
             placeholder="大尺寸"
             onChange={handleChange}
@@ -82,7 +82,11 @@ function DatePickerDemo() {
       <div>
         <h3 style={{ marginBottom: "12px", color: "#262626" }}>禁用状态</h3>
         <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-          <DatePicker disabled placeholder="禁用状态" onChange={handleChange} />
+          <RangePicker
+            disabled
+            placeholder="禁用状态"
+            onChange={handleChange}
+          />
         </div>
       </div>
 
@@ -98,18 +102,18 @@ function DatePickerDemo() {
             flexWrap: "wrap",
           }}
         >
-          <DatePicker placeholder="outlined" onChange={handleChange} />
-          <DatePicker
+          <RangePicker placeholder="outlined" onChange={handleChange} />
+          <RangePicker
             variant="filled"
             placeholder="filled"
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             variant="borderless"
             placeholder="borderless"
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             variant="underline"
             placeholder="underline"
             onChange={handleChange}
@@ -128,20 +132,20 @@ function DatePickerDemo() {
             flexWrap: "wrap",
           }}
         >
-          <DatePicker
+          <RangePicker
             status="error"
             placeholder="error"
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             status="warning"
             placeholder="warning"
             onChange={handleChange}
           />
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }
 
-export default DatePickerDemo;
+export default RangePickerDemo;

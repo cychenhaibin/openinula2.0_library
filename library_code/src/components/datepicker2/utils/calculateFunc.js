@@ -262,11 +262,16 @@ export function getTodayDate() {
 
 //对比函数，targetDate > baseDate ? true : false
 export function compareDate(baseDate, targetDate, type) {
-  const baseDateObj = formatDateToObject(baseDate, "", type);
+  if (!baseDate || !targetDate) return false;
+  let baseDateObj;
   let targetDateObj;
   if (Object.prototype.toString.call(targetDate).slice(8, -1) === "String")
     targetDateObj = formatDateToObject(targetDate, "", type);
   else targetDateObj = targetDate;
+  if (Object.prototype.toString.call(baseDate).slice(8, -1) === "String")
+    baseDateObj = formatDateToObject(baseDate, "", type);
+  else baseDateObj = baseDate;
+
   switch (type) {
     case "date": {
       if (targetDateObj.year > baseDateObj.year) {
@@ -279,43 +284,47 @@ export function compareDate(baseDate, targetDate, type) {
       } else if (
         targetDateObj.year === baseDateObj.year &&
         targetDateObj.month === baseDateObj.month &&
-        targetDateObj.day > baseDateObj.day
+        targetDateObj.day >= baseDateObj.day
       ) {
         return true;
       }
+      break;
     }
     case "week": {
       if (targetDateObj.year > baseDateObj.year) {
         return true;
       } else if (
         targetDateObj.year === baseDateObj.year &&
-        targetDateObj.week > baseDateObj.week
+        targetDateObj.week >= baseDateObj.week
       ) {
         return true;
       }
+      break;
     }
     case "month": {
       if (targetDateObj.year > baseDateObj.year) {
         return true;
       } else if (
         targetDateObj.year === baseDateObj.year &&
-        targetDateObj.month > baseDateObj.month
+        targetDateObj.month >= baseDateObj.month
       ) {
         return true;
       }
+      break;
     }
     case "quarter": {
       if (targetDateObj.year > baseDateObj.year) {
         return true;
       } else if (
         targetDateObj.year === baseDateObj.year &&
-        targetDateObj.quarter > baseDateObj.quarter
+        targetDateObj.quarter >= baseDateObj.quarter
       ) {
         return true;
       }
+      break;
     }
     case "year": {
-      return targetDateObj.year > baseDateObj.year;
+      return targetDateObj.year >= baseDateObj.year;
     }
   }
 
@@ -325,6 +334,7 @@ export function compareDate(baseDate, targetDate, type) {
 export function isEqualedDate(stringBaseDate, objTargetDate, type) {
   if (!stringBaseDate) return false;
   const objBaseDate = formatDateToObject(stringBaseDate, "", type);
+  if (type === "week") console.log(111);
   switch (type) {
     case "date": {
       return (
@@ -334,6 +344,12 @@ export function isEqualedDate(stringBaseDate, objTargetDate, type) {
       );
     }
     case "week": {
+      console.log(
+        stringBaseDate,
+        objTargetDate,
+        objBaseDate.year === objTargetDate.year &&
+          objBaseDate.week === objTargetDate.week
+      );
       return (
         objBaseDate.year === objTargetDate.year &&
         objBaseDate.week === objTargetDate.week
@@ -356,4 +372,115 @@ export function isEqualedDate(stringBaseDate, objTargetDate, type) {
     }
   }
   return false;
+}
+
+const defaultString = (item, type) => {
+  switch (type) {
+    case "date":
+      return `${item.year}-${item.month}-${item.day}`;
+    case "week":
+      return `${item.year}-${item.week}周`;
+    case "month":
+      return `${item.year}-${item.month}`;
+    case "quarter":
+      return `${item.year}-Q${item.quarter}`;
+    case "year":
+      return `${item.year}`;
+  }
+};
+
+export function isSelected(
+  selectValue,
+  confirmValue,
+  startConfirmValue,
+  endConfirmValue,
+  defaultValue,
+  hoverValue,
+  focusState,
+  item,
+  type
+) {
+  if (type === "week" || item.isThisTitleRange) return false;
+
+  if (selectValue) {
+    return selectValue === defaultString(item, type);
+  } else {
+    if (confirmValue) {
+      return isEqualedDate(confirmValue, item, type);
+    }
+    if (startConfirmValue) {
+      if (focusState === "10" && hoverValue) return false;
+      return isEqualedDate(startConfirmValue, item, type);
+    }
+    if (endConfirmValue) {
+      if (focusState === "01" && hoverValue) return false;
+      return isEqualedDate(endConfirmValue, item, type);
+    }
+    if (defaultValue) {
+      return isEqualedDate(defaultValue, item, type);
+    }
+  }
+}
+
+// range样式计算函数
+export function isInRangeDate(
+  focusState,
+  rangeHoverValue,
+  startConfirmValue,
+  endConfirmValue,
+  startSelectValue,
+  endSelectValue,
+  item,
+  type
+) {
+  if (type === "week" || !item.isThisTitleRange) return false;
+  if (!rangeHoverValue) {
+    if (startSelectValue && endSelectValue) {
+      return (
+        (compareDate(startSelectValue, item, type) &&
+          compareDate(item, endSelectValue, type)) ||
+        (compareDate(endSelectValue, item, type) &&
+          compareDate(item, startSelectValue, type))
+      );
+    }
+    if (startSelectValue) {
+      return (
+        (compareDate(startSelectValue, item, type) &&
+          compareDate(item, endConfirmValue, type)) ||
+        (compareDate(endConfirmValue, item, type) &&
+          compareDate(item, startSelectValue, type))
+      );
+    } else if (endSelectValue) {
+      return (
+        (compareDate(startConfirmValue, item, type) &&
+          compareDate(item, endSelectValue, type)) ||
+        (compareDate(endSelectValue, item, type) &&
+          compareDate(item, startConfirmValue, type))
+      );
+    }
+    return (
+      compareDate(startConfirmValue, item, type) &&
+      compareDate(item, endConfirmValue, type)
+    );
+  } else {
+    if (focusState === "01") {
+      return (
+        (compareDate(rangeHoverValue, startConfirmValue, type) &&
+          compareDate(rangeHoverValue, item, type) &&
+          compareDate(item, startConfirmValue, type)) ||
+        (compareDate(startConfirmValue, rangeHoverValue, type) &&
+          compareDate(startConfirmValue, item, type) &&
+          compareDate(item, rangeHoverValue, type))
+      );
+    } else if (focusState === "10") {
+      return (
+        (compareDate(rangeHoverValue, endConfirmValue, type) &&
+          compareDate(rangeHoverValue, item, type) &&
+          compareDate(item, endConfirmValue, type)) ||
+        (compareDate(endConfirmValue, rangeHoverValue, type) &&
+          compareDate(endConfirmValue, item, type) &&
+          compareDate(item, rangeHoverValue, type))
+      );
+    }
+  }
 }

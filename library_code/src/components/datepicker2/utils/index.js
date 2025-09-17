@@ -10,6 +10,8 @@ import {
   getTodayDate,
   compareDate,
   isEqualedDate,
+  isInRangeDate,
+  isSelected,
 } from "./calculateFunc";
 
 import {
@@ -33,6 +35,8 @@ export {
   formatDate,
   compareDate,
   isEqualedDate,
+  isInRangeDate,
+  isSelected,
   formatDateToYYYYMM,
   parseDefaultToFormat,
   formatDateToObject,

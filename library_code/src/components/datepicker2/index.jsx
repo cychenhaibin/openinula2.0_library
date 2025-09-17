@@ -13,6 +13,7 @@ import {
   formatDateToYearMonth,
   compareDate,
   isEqualedDate,
+  isInRangeDate,
 } from "./utils";
 
 const ValueContext = createContext({
@@ -21,11 +22,13 @@ const ValueContext = createContext({
 });
 
 const RangeValueContext = createContext({
-  rangeConfirmValue: ["", ""],
-  rangeSelectValue: "",
+  startConfirmValue: "",
+  endConfirmValue: "",
+  startSelectValue: "",
+  endSelectValue: "",
   rangeHoverValue: "",
+  rangeDefaultValue: "",
   focusState: "00",
-  mode: "range",
 });
 
 const DatePicker = ({
@@ -259,6 +262,7 @@ const DatePicker = ({
       else isOpen = true;
     } else if (action === "close") {
       if (selectValue) selectValue = "";
+      inputRef.blur();
       if (onOpenChange && isOpen === true) onOpenChange(isOpen);
       else isOpen = false;
     }
@@ -302,6 +306,7 @@ const DatePicker = ({
         className={inputContainerClassNames}
         style={style}
         onClick={() => {
+          if (disabled) return;
           handleChangeOpen("open");
           if (inputRef) inputRef.focus();
         }}
@@ -331,7 +336,10 @@ const DatePicker = ({
           }}
           onMouseLeave={() => (isClearIcon = false)}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={(e) => handleClear(e)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClear(e);
+          }}
         >
           <if cond={!isClearIcon}>
             {suffixIcon ? (
@@ -401,7 +409,7 @@ const RangePicker = ({
   initialOpen = open !== undefined ? open : defaultOpen || false,
   order = true,
   defaultPickerValue, //默认面板日期，每次打开面板会被重置到该日期，格式为YYYY-MM-DD
-  defaultValue, //默认值，与format对应，如果开始或结束时间为null或undefined，日期范围将是一个开区间
+  defaultValue = ["", ""], //默认值，与format对应，如果开始或结束时间为null或undefined，日期范围将是一个开区间
   minDate, //最小日期
   maxDate, //最大日期
   needConfirm, //是否需要确认按钮 // panekRender, //自定义渲染面板
@@ -424,27 +432,40 @@ const RangePicker = ({
   className, //自定义类名
   style,
 }) => {
-  let selectValue = "";
   let hoverValue;
-  let confirmValue = ["", ""];
+  let startConfirmValue = "";
+  let endConfirmValue = "";
   let focusState = "00";
   let isOpen = initialOpen;
+  let startSelectValue = "";
+  let endSelectValue = "";
   let isClearIcon = false;
   let curYear;
   let curMonth;
   let startInputRef;
   let endInputRef;
 
-  watch(() => {
-    if (defaultPickerValue || defaultValue) {
+  didMount(() => {
+    if (defaultValue) {
       const parsedYearMonth = formatDateToYearMonth(
-        defaultPickerValue || defaultValue,
+        defaultValue[0],
         "",
         picker
       );
       curYear = parsedYearMonth?.year || new Date().getFullYear();
       curMonth = parsedYearMonth?.month || new Date().getMonth() + 1;
-      if (defaultValue) confirmValue = defaultValue;
+      if (defaultValue[0] && defaultValue[1]) {
+        startConfirmValue = compareDate(
+          defaultValue[0],
+          defaultValue[1],
+          picker
+        )
+          ? defaultValue[0]
+          : defaultValue[1];
+        endConfirmValue = compareDate(defaultValue[0], defaultValue[1], picker)
+          ? defaultValue[1]
+          : defaultValue[0];
+      }
     } else {
       curYear = new Date().getFullYear();
       curMonth = new Date().getMonth() + 1;
@@ -457,8 +478,18 @@ const RangePicker = ({
     }
   });
 
-  const initialPlaceholder = () => {
-    if (placeholder) return placeholder;
+  const initialPlaceholder = (inputType) => {
+    if (placeholder) {
+      if (String.prototype.toString.call(inputType).slice(8, -1) !== "Array") {
+        return placeholder;
+      } else {
+        if (inputType === "start") {
+          return placeholder[0];
+        } else {
+          return placeholder[1];
+        }
+      }
+    }
 
     switch (picker) {
       case "date":
@@ -479,23 +510,36 @@ const RangePicker = ({
   const handleSelect = (type, item) => {
     switch (type) {
       case "date": {
-        selectValue = `${item.year}-${item.month}-${item.day}`;
+        if (focusState === "10")
+          startSelectValue = `${item.year}-${item.month}-${item.day}`;
+        else if (focusState === "01")
+          endSelectValue = `${item.year}-${item.month}-${item.day}`;
         break;
       }
       case "week": {
-        selectValue = `${item.year}-${item.week}周`;
+        if (focusState === "10")
+          startSelectValue = `${item.year}-${item.week}周`;
+        else if (focusState === "01")
+          endSelectValue = `${item.year}-${item.week}周`;
         break;
       }
       case "month": {
-        selectValue = `${item.year}-${item.month}`;
+        if (focusState === "10")
+          startSelectValue = `${item.year}-${item.month}`;
+        else if (focusState === "01")
+          endSelectValue = `${item.year}-${item.month}`;
         break;
       }
       case "quarter": {
-        selectValue = `${item.year}-Q${item.quarter}`;
+        if (focusState === "10")
+          startSelectValue = `${item.year}-Q${item.quarter}`;
+        else if (focusState === "01")
+          endSelectValue = `${item.year}-Q${item.quarter}`;
         break;
       }
       case "year": {
-        selectValue = `${item.year}`;
+        if (focusState === "10") startSelectValue = `${item.year}`;
+        else if (focusState === "01") endSelectValue = `${item.year}`;
         break;
       }
       default: {
@@ -508,17 +552,64 @@ const RangePicker = ({
       hoverValue = "";
 
       if (focusState === "10") {
-        confirmValue[0] = formatDate(selectValue, defaultValue, format, picker);
+        startConfirmValue = formatDate(
+          startSelectValue,
+          defaultValue[0],
+          format,
+          picker
+        );
         focusState = "01";
         endInputRef.focus();
       } else if (focusState === "01") {
-        confirmValue[1] = formatDate(selectValue, defaultValue, format, picker);
+        endConfirmValue = formatDate(
+          endSelectValue,
+          defaultValue[1],
+          format,
+          picker
+        );
         focusState = "10";
         startInputRef.focus();
       }
 
-      if (onChange) onChange(selectValue);
-      if (confirmValue[0] && confirmValue[1]) handleChangeOpen("close", item);
+      if (!defaultPickerValue) {
+        switch (type) {
+          case "date":
+          case "week": {
+            if (curYear < item.year) {
+              curYear = item.year;
+              curMonth = 1;
+            } else if (curYear > item.year) {
+              curYear = item.year;
+              curMonth = 12;
+            } else {
+              if (item.month > curMonth + 1 || item.month < curMonth) {
+                curMonth = item.month;
+              }
+            }
+            break;
+          }
+          case "month":
+          case "quarter": {
+            if (Math.abs(curYear - item.year) > 1) curYear = item.year;
+            break;
+          }
+          case "year": {
+            if (
+              Math.floor(curYear / 10) * 10 + 20 === item.year ||
+              Math.floor(curYear / 10) * 10 - 1 === item.year
+            )
+              curYear = item.year;
+          }
+        }
+      } else {
+        if (onPanleChange)
+          onPanleChange(startSelectValue, endSelectValue, picker);
+        curYear = formatDateToYearMonth(defaultPickerValue, "", picker)?.year;
+        curMonth = formatDateToYearMonth(defaultPickerValue, "", picker)?.month;
+      }
+
+      if (onChange) onChange(startSelectValue, endSelectValue);
+      if (startConfirmValue && endConfirmValue) handleChangeOpen("close", item);
     }
   };
 
@@ -553,7 +644,7 @@ const RangePicker = ({
       }
     }
 
-    hoverValue = formatDate(tempValue, defaultValue, format, picker);
+    hoverValue = formatDate(tempValue, defaultValue[0], format, picker);
   };
 
   const mouseLeaveItem = () => {
@@ -562,25 +653,78 @@ const RangePicker = ({
 
   const handleConfirm = () => {
     hoverValue = "";
+    let item;
 
     if (focusState === "10") {
-      confirmValue[0] = formatDate(selectValue, defaultValue, format, picker);
+      if (!startSelectValue) return;
+      startConfirmValue = formatDate(
+        startSelectValue,
+        defaultValue[0],
+        format,
+        picker
+      );
+      item = formatDateToObject(startSelectValue, "", picker);
       focusState = "01";
       endInputRef.focus();
     } else if (focusState === "01") {
-      confirmValue[1] = formatDate(selectValue, defaultValue, format, picker);
+      if (!endSelectValue) return;
+      endConfirmValue = formatDate(
+        endSelectValue,
+        defaultValue[1],
+        format,
+        picker
+      );
+      item = formatDateToObject(endSelectValue, "", picker);
       focusState = "10";
       startInputRef.focus();
     }
 
-    if (onChange) onChange(selectValue);
+    if (!defaultPickerValue) {
+      switch (picker) {
+        case "date":
+        case "week": {
+          if (curYear < item.year) {
+            curYear = item.year;
+            curMonth = 1;
+          } else if (curYear > item.year) {
+            curYear = item.year;
+            curMonth = 12;
+          } else {
+            if (item.month > curMonth + 1 || item.month < curMonth) {
+              curMonth = item.month;
+            }
+          }
+          break;
+        }
+        case "month":
+        case "quarter": {
+          if (Math.abs(curYear - item.year) > 1) curYear = item.year;
+          break;
+        }
+        case "year": {
+          if (
+            Math.floor(curYear / 10) * 10 + 20 === item.year ||
+            Math.floor(curYear / 10) * 10 - 1 === item.year
+          )
+            curYear = item.year;
+        }
+      }
+    } else {
+      if (onPanleChange)
+        onPanleChange(startSelectValue, endSelectValue, picker);
+      curYear = formatDateToYearMonth(defaultPickerValue, "", picker)?.year;
+      curMonth = formatDateToYearMonth(defaultPickerValue, "", picker)?.month;
+    }
 
-    if (confirmValue[0] && confirmValue[1]) handleChangeOpen("close");
+    if (onChange) onChange(startSelectValue, endSelectValue);
+
+    if (startConfirmValue && endConfirmValue) handleChangeOpen("close");
   };
 
   //target: year | month， action: add minus
   const handleChangeTitle = (target, action, type = "date") => {
-    if (onPanleChange) onPanleChange({ curYear, curMonth }, picker);
+    if (onPanleChange)
+      onPanleChange({ curYear, curMonth }, endSelectValue, picker);
 
     if (target === "year") {
       if (type === "year")
@@ -604,8 +748,10 @@ const RangePicker = ({
   const handleClear = (e) => {
     e.stopPropagation();
     if (isClearIcon) {
-      selectValue = undefined;
-      confirmValue = [undefined, undefined];
+      startSelectValue = "";
+      endSelectValue = "";
+      startConfirmValue = "";
+      endConfirmValue = "";
       isClearIcon = false;
     }
   };
@@ -641,6 +787,7 @@ const RangePicker = ({
   };
 
   const handleOnClickContainer = () => {
+    if (disabled) return;
     handleChangeOpen("open");
 
     if (focusState === "00") {
@@ -653,7 +800,17 @@ const RangePicker = ({
       if (onOpenChange && isOpen === false) onOpenChange(isOpen);
       else isOpen = true;
     } else if (action === "close") {
-      if (selectValue) selectValue = "";
+      startSelectValue = "";
+      endSelectValue = "";
+      if (startConfirmValue && endConfirmValue && order) {
+        if (!compareDate(startConfirmValue, endConfirmValue, picker)) {
+          const temp = startConfirmValue;
+          startConfirmValue = endConfirmValue;
+          endConfirmValue = temp;
+        }
+      }
+      startInputRef.blur();
+      endInputRef.blur();
       if (onOpenChange && isOpen === true) onOpenChange(isOpen);
       else isOpen = false;
     }
@@ -721,12 +878,13 @@ const RangePicker = ({
           {...(inputReadOnly && { readOnly: true })}
           autoFocus={autoFocus}
           type="text"
-          placeholder={initialPlaceholder()}
+          placeholder={initialPlaceholder("start")}
           value={
             focusState === "10"
-              ? hoverValue || (confirmValue[0] !== "" ? confirmValue[0] : "")
-              : confirmValue[0] !== ""
-              ? confirmValue[0]
+              ? hoverValue ||
+                (startConfirmValue !== "" ? startConfirmValue : "")
+              : startConfirmValue !== ""
+              ? startConfirmValue
               : ""
           }
           onClick={(e) => e.stopPropagation()}
@@ -749,12 +907,12 @@ const RangePicker = ({
           {...(inputReadOnly && { readOnly: true })}
           autoFocus={autoFocus}
           type="text"
-          placeholder={initialPlaceholder()}
+          placeholder={initialPlaceholder("end")}
           value={
             focusState === "01"
-              ? hoverValue || (confirmValue[1] !== "" ? confirmValue[1] : "")
-              : confirmValue[1] !== ""
-              ? confirmValue[1]
+              ? hoverValue || (endConfirmValue !== "" ? endConfirmValue : "")
+              : endConfirmValue !== ""
+              ? endConfirmValue
               : ""
           }
           onClick={(e) => e.stopPropagation()}
@@ -765,16 +923,19 @@ const RangePicker = ({
         <div
           className={inputIconClassNames}
           onMouseEnter={() => {
-            if (confirmValue) isClearIcon = true;
+            if (startConfirmValue || endConfirmValue) isClearIcon = true;
           }}
           onMouseLeave={() => (isClearIcon = false)}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={(e) => handleClear(e)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClear(e);
+          }}
         >
           <div
             className={inputIconClassNames}
             onMouseEnter={() => {
-              if (confirmValue) isClearIcon = true;
+              if (startConfirmValue || endConfirmValue) isClearIcon = true;
             }}
             onMouseLeave={() => (isClearIcon = false)}
             onMouseDown={(e) => e.preventDefault()}
@@ -805,8 +966,11 @@ const RangePicker = ({
         </div>
       </div>
       <RangeValueContext
-        rangeConfirmValue={confirmValue}
-        rangeSelectValue={selectValue}
+        startConfirmValue={startConfirmValue}
+        endConfirmValue={endConfirmValue}
+        startSelectValue={startSelectValue}
+        endSelectValue={endSelectValue}
+        rangeDefaultValue={defaultValue}
         rangeHoverValue={hoverValue}
         focusState={focusState}
       >
@@ -818,7 +982,7 @@ const RangePicker = ({
           curMonth={curMonth}
           isOpen={open !== undefined ? open : isOpen}
           placement={placement}
-          defaultValue={defaultValue}
+          defaultValue=""
           disabledDate={disabledDate}
           minDate={minDate}
           maxDate={maxDate}
@@ -866,10 +1030,7 @@ const Calendar = ({
   onOk,
 }) => {
   const { selectValue, confirmValue } = useContext(ValueContext);
-  const { rangeSelectValue, rangeConfirmValue, rangeHoverValue, focusState } =
-    useContext(RangeValueContext);
-
-  // watch(() => console.log(rangeConfirmValue, rangeSelectValue));
+  const { rangeDefaultValue } = useContext(RangeValueContext);
 
   const today = `${new Date().getFullYear()}-${
     new Date().getMonth() + 1
@@ -1217,12 +1378,12 @@ const Calendar = ({
                 key={`${row}-${index}`}
                 className={[
                   "inula-calendar-content-week-row",
-                  (selectValue !== ""
-                    ? isEqualedDate(selectValue, row[0], "week")
+                  startSelectValue !== ""
+                    ? startSelectValue === `${row[0].year}-${row[0].week}`
                     : confirmValue
                     ? isEqualedDate(confirmValue, row[0], "week")
-                    : isEqualedDate(defaultValue, row[0], "week")) &&
-                    "inula-calendar-content-week-row-selected",
+                    : isEqualedDate(defaultValue, row[0], "week") &&
+                      "inula-calendar-content-week-row-selected",
                   isDisabled(row[0]) &&
                     "inula-calendar-content-week-row-disabled",
                 ]
@@ -1323,10 +1484,9 @@ const Calendar = ({
                 <CalendarContentItem
                   key={`${item}-${index}`}
                   type={type}
+                  mode={mode}
                   item={item}
-                  selectValue={selectValue}
-                  rangeConfirmValue={rangeConfirmValue[0]}
-                  defaultValue={defaultValue}
+                  defaultValue={rangeDefaultValue[0]}
                   disabled={isDisabled(item)}
                   onClick={handleClick}
                   onMouseEnter={handleMounseEnter}
@@ -1353,10 +1513,10 @@ const Calendar = ({
                     selectValue === `${row[0].year}-${row[0].week}周` &&
                       "inula-calendar-content-week-row-selected",
                     !selectValue &&
-                      defaultValue ===
+                      rangeDefaultValue[0] ===
                         formatDate(
                           `${row[0].year}-${row[0].week}周`,
-                          defaultValue,
+                          rangeDefaultValue[0],
                           "",
                           "week"
                         ) &&
@@ -1380,6 +1540,7 @@ const Calendar = ({
                       <CalendarContentItem
                         key={`${item}-${index}`}
                         type={type}
+                        mode={mode}
                         item={item}
                         disabled={isDisabled(item)}
                         onClick={handleClick}
@@ -1397,9 +1558,9 @@ const Calendar = ({
                 <CalendarContentItem
                   key={`${item}-${index}`}
                   type={type}
+                  mode={mode}
                   item={item}
-                  selectValue={selectValue}
-                  defaultValue={defaultValue}
+                  defaultValue={rangeDefaultValue[0]}
                   disabled={isDisabled(item)}
                   onClick={handleClick}
                   onMouseEnter={handleMounseEnter}
@@ -1417,8 +1578,7 @@ const Calendar = ({
                   type={type}
                   mode={mode}
                   item={item}
-                  selectValue={selectValue}
-                  defaultValue={defaultValue}
+                  defaultValue={rangeDefaultValue[0]}
                   disabled={isDisabled(item)}
                   onClick={handleClick}
                   onMouseEnter={handleMounseEnter}
@@ -1436,8 +1596,7 @@ const Calendar = ({
                   type={type}
                   mode={mode}
                   item={item}
-                  selectValue={selectValue}
-                  defaultValue={defaultValue}
+                  defaultValue={rangeDefaultValue[0]}
                   disabled={isDisabled(item)}
                   onClick={handleClick}
                   onMouseEnter={handleMounseEnter}
@@ -1472,9 +1631,7 @@ const Calendar = ({
                   type={type}
                   mode={mode}
                   item={item}
-                  selectValue={selectValue}
-                  rangeConfirmValue={rangeConfirmValue[1]}
-                  defaultValue={defaultValue}
+                  defaultValue={rangeDefaultValue[1]}
                   disabled={isDisabled(item)}
                   onClick={handleClick}
                   onMouseEnter={handleMounseEnter}
@@ -1506,10 +1663,10 @@ const Calendar = ({
                     selectValue === `${row[0].year}-${row[0].week}周` &&
                       "inula-calendar-content-week-row-selected",
                     !selectValue &&
-                      defaultValue ===
+                      rangeDefaultValue[1] ===
                         formatDate(
                           `${row[0].year}-${row[0].week}周`,
-                          defaultValue,
+                          rangeDefaultValue[1],
                           "",
                           "week"
                         ) &&
@@ -1558,8 +1715,7 @@ const Calendar = ({
                   type={type}
                   mode={mode}
                   item={item}
-                  selectValue={selectValue}
-                  defaultValue={defaultValue}
+                  defaultValue={rangeDefaultValue[1]}
                   disabled={isDisabled(item)}
                   onClick={handleClick}
                   onMouseEnter={handleMounseEnter}
@@ -1582,8 +1738,7 @@ const Calendar = ({
                   type={type}
                   mode={mode}
                   item={item}
-                  selectValue={selectValue}
-                  defaultValue={defaultValue}
+                  defaultValue={rangeDefaultValue[1]}
                   disabled={isDisabled(item)}
                   onClick={handleClick}
                   onMouseEnter={handleMounseEnter}
@@ -1606,8 +1761,7 @@ const Calendar = ({
                   type={type}
                   mode={mode}
                   item={item}
-                  selectValue={selectValue}
-                  defaultValue={defaultValue}
+                  defaultValue={rangeDefaultValue[1]}
                   disabled={isDisabled(item)}
                   onClick={handleClick}
                   onMouseEnter={handleMounseEnter}
@@ -1680,9 +1834,9 @@ const Calendar = ({
 
 const CalendarContentItem = ({
   type = "date", //日历类型
+  mode = "date",
   item, //item日期信息{year, quarter, month, week, day, isThisTitleRange}
   defaultValue, //默认日期
-  rangeConfirmValue,
   disabled, //是否禁用
   onClick,
   onMouseEnter,
@@ -1690,7 +1844,15 @@ const CalendarContentItem = ({
   className,
 }) => {
   const { confirmValue, selectValue } = useContext(ValueContext);
-  watch(() => console.log(rangeConfirmValue));
+  const {
+    startConfirmValue,
+    endConfirmValue,
+    startSelectValue,
+    endSelectValue,
+    focusState,
+    rangeHoverValue,
+  } = useContext(RangeValueContext);
+
   const today = `${new Date().getFullYear()}-${
     new Date().getMonth() + 1
   }-${new Date().getDate()}`;
@@ -1717,6 +1879,16 @@ const CalendarContentItem = ({
   const itemContainerClassNames = [
     "item-container",
     disabled && "item-container-disabled",
+    isInRangeDate(
+      focusState,
+      rangeHoverValue,
+      startConfirmValue,
+      endConfirmValue,
+      startSelectValue,
+      endSelectValue,
+      item,
+      type
+    ) && "item-container-in-range",
     className,
   ]
     .filter(Boolean)
@@ -1729,11 +1901,38 @@ const CalendarContentItem = ({
     isTody && "inula-calendar-content-date-item-today",
     type !== "week" &&
       item.isThisTitleRange &&
+      mode === "date" &&
       (selectValue
         ? selectValue === defaultString(item)
-        : confirmValue || rangeConfirmValue
-        ? isEqualedDate(confirmValue || rangeConfirmValue, item, type)
+        : confirmValue
+        ? isEqualedDate(confirmValue, item, type)
         : isEqualedDate(defaultValue, item, type)) &&
+      "inula-calendar-content-date-item-selected",
+    type !== "week" &&
+      item.isThisTitleRange &&
+      mode === "range" &&
+      !(focusState === "10" && rangeHoverValue) &&
+      (startSelectValue
+        ? startSelectValue === defaultString(item)
+        : startConfirmValue
+        ? isEqualedDate(startConfirmValue, item, type)
+        : isEqualedDate(defaultValue, item, type)) &&
+      "inula-calendar-content-date-item-selected",
+    type !== "week" &&
+      item.isThisTitleRange &&
+      mode === "range" &&
+      !(focusState === "01" && rangeHoverValue) &&
+      (endSelectValue
+        ? endSelectValue === defaultString(item)
+        : endConfirmValue
+        ? isEqualedDate(endConfirmValue, item, type)
+        : isEqualedDate(defaultValue, item, type)) &&
+      "inula-calendar-content-date-item-selected",
+    type !== "week" &&
+      item.isThisTitleRange &&
+      mode === "range" &&
+      rangeHoverValue &&
+      isEqualedDate(rangeHoverValue, item, type) &&
       "inula-calendar-content-date-item-selected",
     disabled && "inula-calendar-content-date-item-disabled",
   ]
