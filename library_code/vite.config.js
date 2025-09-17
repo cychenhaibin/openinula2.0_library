@@ -2,13 +2,27 @@ import { defineConfig } from 'vite';
 import inula from '@openinula/unplugin/vite';
 
 export default defineConfig({
-  optimizeDeps: {
-    disabled: true,
-  },
   plugins: [inula({ files: '**/*.{ts,js,tsx,jsx}' })],
   esbuild: {
     jsxFactory: 'Inula.createElement',
     jsxFragment: 'Inula.Fragment',
-    jsxInject: `import * as Inula from '@openinula/next'`
+    jsxInject: `import * as Inula from '@openinula/next'`,
+  },
+  build: {
+    lib: {
+      entry: 'src/index.js',
+      name: 'InulaUI',
+      fileName: (format) => `index.${format}.js`,
+      formats: ['es','cjs'],
+    },
+    rollupOptions: {
+      external: ['@openinula/next'],
+    },
+  },
+  server: {
+    headers: {
+      'X-Frame-Options': 'ALLOWALL',
+      'Content-Security-Policy': 'frame-ancestors *'
+    }
   }
 });

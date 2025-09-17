@@ -12,7 +12,7 @@ function ButtonDemo() {
         <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
                 <h2>基本</h2>
-                <div>展示按钮的五种类型：主按钮、默认按钮、虚线按钮、文本按钮、链接按钮。</div>
+                <div>展示按钮的五种类型：主按钮、默认按钮、虚线按钮、文本按钮、链接按钮、变体样式。</div>
             </div>
             <div><demo1 /></div>
 

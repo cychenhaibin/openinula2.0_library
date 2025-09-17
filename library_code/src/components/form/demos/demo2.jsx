@@ -61,21 +61,21 @@ const Demo = () => {
         onFinish={handleFinish}
         onFinishFailed={handleFailed}
       >
-        <FormItem name="username" label="用户名" required model={user}>
+        <FormItem name="username" label="Username" required model={user}>
           <Input
             placeholder="请输入用户名"
             onInput={(e) => setValueByPath(user, 'username', e.target.value)}
           />
         </FormItem>
 
-        <FormItem name="email" label="邮箱" required model={user}>
+        <FormItem name="email" label="Email" required model={user}>
           <Input
             placeholder="请输入邮箱"
             onInput={(e) => setValueByPath(user, 'email', e.target.value)}
           />
         </FormItem>
 
-        <FormItem name="phone" label="手机号" required model={user}>
+        <FormItem name="phone" label="Phone" required model={user}>
           <Input
             placeholder="请输入手机号"
             onInput={(e) => setValueByPath(user, 'phone', e.target.value)}

@@ -5,33 +5,58 @@
   display: inline-block;
   min-width: 160px;
   font-size: 14px;
-  color: var(--inula-color-default-text);
+  color: var(--inula-color-primary-text);
   background: var(--inula-select-bg);
 }
 
 .inula-select-disabled {
-  opacity: 1;
-  background: var(--inula-select-disabled-bg);
+  opacity: 0.6;
+  background: var(--inula-color-disabled-bg);
   cursor: not-allowed;
+}
+
+.inula-select-disabled .inula-select-selection {
+  background: var(--inula-color-disabled-bg);
+  border-color: var(--inula-color-disabled-border);
+  color: var(--inula-color-disabled-text);
+  cursor: not-allowed;
+}
+
+.inula-select-disabled .inula-select-selection:hover {
+  border-color: var(--inula-color-disabled-border);
+  box-shadow: none;
+}
+
+.inula-select-disabled .inula-select-arrow {
+  color: var(--inula-color-disabled-text);
+}
+
+.inula-select-disabled .inula-select-placeholder {
+  color: var(--inula-color-disabled-text);
 }
 
 .inula-select-selection {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* 让表单级变体生效：优先使用表单注入的变量 */
   border: 1px solid var(--inula-select-border);
-  background: var(--inula-select-bg);
+  /* 通过可选的变量单独控制边框颜色，避免 border 简写被忽略 */
+  border-color: var(--inula-form-variant-border-color, var(--inula-select-border));
+  background: var(--inula-form-variant-bg, var(--inula-select-bg));
   border-radius: 4px;
   padding: 0 12px;
   height: 32px;
   cursor: pointer;
-  transition: border 0.2s, box-shadow 0.2s;
+  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
   box-sizing: border-box;
 }
 
 .inula-select:not(.inula-select-disabled) .inula-select-selection:hover,
 .inula-select:not(.inula-select-disabled) .inula-select-selection:focus {
-  border-color: var(--inula-select-hover-border);
+  border-color: var(--inula-form-variant-focus-border-color, var(--inula-select-hover-border));
+  /* 若表单级提供了 hover 背景，则使用之 */
+  background: var(--inula-form-variant-hover-bg, var(--inula-form-variant-bg, var(--inula-select-bg)));
   box-shadow: 0 0 0 2px rgba(24,144,255,0.12);
 }
 
@@ -172,4 +197,97 @@
 
 .inula-select-group-title:not(:first-child) {
   border-top: 1px solid var(--inula-select-border-top);
+}
+
+/* Select 变体样式 */
+
+/* Filled 变体 - 支持Form传递的CSS变量 */
+.inula-select-filled .inula-select-selection {
+  background: var(--inula-form-variant-bg, var(--inula-variant-filled-bg));
+  border: 1px solid var(--inula-form-variant-border, transparent);
+}
+
+.inula-select-filled .inula-select-selection:hover {
+  background: var(--inula-form-variant-hover-bg, var(--inula-variant-filled-hover-bg));
+  border-color: var(--inula-form-variant-border, transparent);
+}
+
+.inula-select-filled .inula-select-selection:focus-within {
+  background: var(--inula-form-variant-focus-bg, var(--inula-variant-filled-focus-bg));
+  border-color: var(--inula-form-variant-focus-border, var(--inula-select-hover-border));
+}
+
+.inula-select-filled.inula-select-disabled .inula-select-selection {
+  background: var(--inula-color-disabled-bg);
+  border-color: transparent;
+}
+
+/* Borderless 变体 - 支持Form传递的CSS变量 */
+.inula-select-borderless .inula-select-selection {
+  border: var(--inula-form-variant-border, none) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-bg, transparent);
+}
+
+.inula-select-borderless .inula-select-selection:hover {
+  border: var(--inula-form-variant-border, none) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-hover-bg, var(--inula-variant-borderless-hover-bg));
+}
+
+.inula-select-borderless .inula-select-selection:focus-within {
+  border: var(--inula-form-variant-border, none) !important;
+  box-shadow: none !important;
+  background: var(--inula-form-variant-focus-bg, var(--inula-variant-borderless-focus-bg));
+}
+
+.inula-select-borderless.inula-select-disabled .inula-select-selection {
+  background: var(--inula-color-disabled-bg);
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Underlined 变体 - 支持Form传递的CSS变量 */
+.inula-select-underlined .inula-select-selection {
+  /* 组件级 underlined：优先显示底部边框 */
+  border: none !important;
+  border-bottom: 1px solid var(--inula-variant-underlined-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent;
+}
+
+.inula-select-underlined .inula-select-selection:hover {
+  border: none !important;
+  border-bottom: 1px solid var(--inula-variant-underlined-hover-border) !important;
+  box-shadow: none !important;
+  background: transparent;
+}
+
+.inula-select-underlined .inula-select-selection:focus-within {
+  border: none !important;
+  border-bottom: 1px solid var(--inula-variant-underlined-focus-border) !important;
+  box-shadow: none !important;
+  background: transparent;
+}
+
+.inula-select-underlined.inula-select-disabled .inula-select-selection {
+  border: none !important;
+  border-bottom: 1px solid var(--inula-color-disabled-border) !important;
+  box-shadow: none !important;
+}
+
+.inula-select-no-data {
+  display: flex;
+  justify-content: center;  
+  align-items: center;
+  padding: 30px;
+  color: var(--inula-select-disabled-text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.inula-select-no-data:hover {
+  background: var(--inula-select-bg);
+  color: var(--inula-select-disabled-text);
 }

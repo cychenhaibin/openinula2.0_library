@@ -1,3 +1,4 @@
+import { watch, createContext, useContext } from '@openinula/next';
 import './index.css';
 
 /**
@@ -7,6 +8,17 @@ import './index.css';
  * - 布局：horizontal/vertical/inline
  * - 支持通过props传递disabled状态
  */
+
+// 按 openinula 文档创建 Context（作为 Provider/Consumer 使用）
+const FormContext = createContext({
+  model: {},
+  rules: {},
+  variant: 'outlined',
+  size: 'medium',
+  disabled: false,
+  requiredMark: 'default',
+  requiredMarkRender: null,
+});
 
 const getValueByPath = (obj, path) => {
   if (!obj || !path) return undefined;
@@ -77,6 +89,10 @@ const Form = ({
   labelAlign = 'right', // left | right
   colon = true,
   disabled = false,
+  variant = 'outlined', // outlined | filled | borderless | underlined
+  size = 'medium', // small | medium | large
+  requiredMark = 'default', // default | optional | hidden | customize
+  requiredMarkRender,
   onFinish,
   onFinishFailed,
   className = '',
@@ -87,7 +103,7 @@ const Form = ({
 }) => {
   let submitting = false;
   let formRef = ref;
-  // 记录当前表单的表单级规则
+  // 记录当前表单的表单级规则（兼容已有字段校验实现）
   formRulesRegistry.set(model, rules || {});
 
   // 表单方法
@@ -181,7 +197,7 @@ const Form = ({
           if (typeof fn === 'function') fn(currentVal);
         });
       }
-    } catch (err) {}
+    } catch (err) { }
     submitting = false;
   };
 
@@ -189,7 +205,10 @@ const Form = ({
     'inula-form',
     `inula-form-${layout}`,
     `inula-form-label-${labelAlign}`,
+    `inula-form-${variant}`,
+    `inula-form-${size}`,
     disabled ? 'inula-form-disabled' : '',
+    requiredMark ? `inula-form-required-mark-${requiredMark}` : '',
     className,
   ].filter(Boolean).join(' ');
 
@@ -207,9 +226,19 @@ const Form = ({
   }
 
   return (
-    <form className={formClassNames} style={style} onSubmit={handleSubmit} {...rest}>
-      {children}
-    </form>
+    <FormContext 
+      model={model}
+      rules={rules}
+      variant={variant}
+      size={size}
+      disabled={disabled}
+      requiredMark={requiredMark}
+      requiredMarkRender={requiredMarkRender}
+    >
+      <form className={formClassNames} style={style} onSubmit={handleSubmit} {...rest}>
+        {typeof children === 'function' ? children() : children}
+      </form>
+    </FormContext>
   );
 };
 
@@ -226,15 +255,21 @@ const FormItem = ({
   style = {},
   children,
   colon = true,
-  disabled = false, // 新增：接收禁用状态
+  disabled, // 从Form父组件传递，不设默认值
+  variant, // 从Form父组件传递，不设默认值
+  size, // 从Form父组件传递，不设默认值
+  requiredMark, // 从Form父组件传递，不设默认值
   ...rest
 }) => {
   let error = '';
 
-  const fieldValue = getValueByPath(model, name);
+  // 确保 requiredMark 有默认值
+
+  const { model: ctxModel, rules: ctxRules, variant: ctxVariant, size: ctxSize, disabled: ctxDisabled, requiredMark: ctxRequiredMark, requiredMarkRender: ctxRequiredMarkRender } = useContext(FormContext);
+  const fieldValue = getValueByPath(ctxModel, name);
 
   const triggerValidate = (val) => {
-    const formLevelRules = formRulesRegistry.get(model) || {};
+    const formLevelRules = formRulesRegistry.get(ctxModel) || {};
     const nameRules = formLevelRules ? formLevelRules[name] : undefined;
     const mergedRules = [
       required ? { required: true, message: '该字段为必填项' } : null,
@@ -256,14 +291,14 @@ const FormItem = ({
 
   const onInputCapture = (e) => {
     if (validateOn === 'change') {
-      const val = e && e.target ? e.target.value : getValueByPath(model, name);
+      const val = e && e.target ? e.target.value : getValueByPath(ctxModel, name);
       triggerValidate(val);
     }
   };
 
   const onBlurCapture = (e) => {
     if (validateOn === 'blur') {
-      const val = e && e.target ? e.target.value : getValueByPath(model, name);
+      const val = e && e.target ? e.target.value : getValueByPath(ctxModel, name);
       triggerValidate(val);
     }
   };
@@ -271,26 +306,109 @@ const FormItem = ({
   // 初始 required 态（不显示红字，但显示 * 标识）
   const hasError = !!error;
 
+  // 根据requiredMark属性决定是否添加required类
+  const shouldShowRequiredMark = ctxRequiredMark !== 'hidden' && required;
+
   const itemClassNames = [
     'inula-form-item',
+    `inula-form-item-${ctxSize === 'medium' ? 'default' : ctxSize}`,
     hasError ? 'inula-form-item-has-error' : '',
-    required ? 'inula-form-item-required' : '',
+    shouldShowRequiredMark && (ctxRequiredMark || 'default') === 'default' ? 'inula-form-item-required' : '',
     className,
   ].filter(Boolean).join(' ');
+
+  // 计算标签内容（纯派生，无副作用）
+  const computedDefaultLabel = (() => {
+    if (ctxRequiredMark === 'default') return null;
+    if (ctxRequiredMark === 'optional' && !required) {
+      return <span className="inula-form-item-optional">(可选)</span>;
+    }
+    if (ctxRequiredMark === 'customize' && required) {
+      return <span className="inula-form-item-required-asterisk">（必填）</span>;
+    }
+    if (ctxRequiredMark === 'customize' && !required) {
+      return <span className="inula-form-item-optional">optional</span>;
+    }
+    return null;
+  })();
+
+  const labelContent = ctxRequiredMarkRender
+    ? ctxRequiredMarkRender(computedDefaultLabel, { required, requiredMark: ctxRequiredMark })
+    : computedDefaultLabel;
+
+  
 
   return (
     <div className={itemClassNames} style={style} onInput={onInputCapture} onBlur={onBlurCapture} {...rest}>
       {label !== null ? (
         <div className="inula-form-item-label">
           <label>
+            {labelContent}
             {label}
+            {ctxRequiredMark === 'optional' && required ? (
+              <span className="inula-form-item-required-text">（必填）</span>
+            ) : null}
             {colon ? '：' : ''}
           </label>
         </div>
       ) : (<div className="inula-form-item-label" style={{ height: 0 }}></div>)}
       <div className="inula-form-item-control">
+        {/* <div className="inula-form-item-control-input">
+          {ctxVariant ? (
+            // 克隆子组件并传递variant和size属性
+            typeof children === 'function' ?
+              (() => {
+                const childrenResult = children();
+
+                return Array.isArray(childrenResult) ?
+                  childrenResult.map((child, index) =>
+                    child && typeof child === 'object' && child.type ?
+                      { ...child, props: { ...child.props, variant: ctxVariant, size: (ctxSize === 'medium' ? 'default' : ctxSize), disabled: ctxDisabled || child.props?.disabled, requiredMark: ctxRequiredMark } } :
+                      child
+                  ) :
+                  childrenResult && typeof childrenResult === 'object' && childrenResult.type ?
+                    { ...childrenResult, props: { ...childrenResult.props, variant: ctxVariant, size: (ctxSize === 'medium' ? 'default' : ctxSize), disabled: ctxDisabled || childrenResult.props?.disabled, requiredMark: ctxRequiredMark } } :
+                    childrenResult;
+              })() :
+              Array.isArray(children) ?
+                children.map((child, index) =>
+                  child && typeof child === 'object' && child.type ?
+                    { ...child, props: { ...child.props, variant: ctxVariant, size: (ctxSize === 'medium' ? 'default' : ctxSize), disabled: ctxDisabled || child.props?.disabled, requiredMark: ctxRequiredMark } } :
+                    child
+                ) :
+                children && typeof children === 'object' && children.type ?
+                  { ...children, props: { ...children.props, variant: ctxVariant, size: (ctxSize === 'medium' ? 'default' : ctxSize), disabled: ctxDisabled || children.props?.disabled, requiredMark: ctxRequiredMark } } :
+                  children
+          ) : (
+            // 如果没有variant，传递size和disabled状态（来自上下文）
+            typeof children === 'function' ?
+              (() => {
+                const childrenResult = children();
+                
+                { Array.isArray(childrenResult) }
+                return Array.isArray(childrenResult) ?
+                  childrenResult.map((child, index) =>
+                    child && typeof child === 'object' && child.type ?
+                      { ...child, props: { ...child.props, size: (ctxSize === 'medium' ? 'default' : ctxSize), disabled: ctxDisabled || child.props?.disabled, requiredMark: ctxRequiredMark } } :
+                      child
+                  ) :
+                  childrenResult && typeof childrenResult === 'object' && childrenResult.type ?
+                    { ...childrenResult, props: { ...childrenResult.props, size: (ctxSize === 'medium' ? 'default' : ctxSize), disabled: ctxDisabled || childrenResult.props?.disabled, requiredMark: ctxRequiredMark } } :
+                    childrenResult;
+              })() :
+              Array.isArray(children) ?
+                children.map((child, index) =>
+                  child && typeof child === 'object' && child.type ?
+                    { ...child, props: { ...child.props, size: (ctxSize === 'medium' ? 'default' : ctxSize), disabled: ctxDisabled || child.props?.disabled, requiredMark: ctxRequiredMark } } :
+                    child
+                ) :
+                children && typeof children === 'object' && children.type ?
+                  { ...children, props: { ...children.props, size: (ctxSize === 'medium' ? 'default' : ctxSize), disabled: ctxDisabled || children.props?.disabled, requiredMark: ctxRequiredMark } } :
+                  children
+          )}
+        </div> */}
         <div className="inula-form-item-control-input">
-          {children}
+          {typeof children === 'function' ? children() : children}
         </div>
         {help ? (
           <div className="inula-form-item-extra">{help}</div>

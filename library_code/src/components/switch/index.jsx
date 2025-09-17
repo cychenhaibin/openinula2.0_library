@@ -13,6 +13,7 @@ const Switch = ({
   style,
   checkedChildren,
   unCheckedChildren,
+  variant = "outlined", // outlined | filled | borderless | underlined
 }) => {
   let isChecked = checked !== undefined ? checked : defaultChecked || defaultValue;
 
@@ -21,6 +22,7 @@ const Switch = ({
       ? [
           "inula-switch",
           "inula-switch-checked",
+          `inula-switch-${variant}`,
           size && `inula-switch-${size}`,
           disabled && "inula-switch-checked-disabled",
           loading && "inula-switch-checked-loading",
@@ -28,6 +30,7 @@ const Switch = ({
         ]
       : [
           "inula-switch",
+          `inula-switch-${variant}`,
           size && `inula-switch-${size}`,
           disabled && "inula-switch-disabled",
           loading && "inula-switch-loading",

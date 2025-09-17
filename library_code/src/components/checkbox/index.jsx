@@ -9,6 +9,7 @@ const Checkbox = ({
   checked,
   className,
   style,
+  variant = "outlined", // outlined | filled | borderless | underlined
   onChange,
   onBlur,
   onFocus,
@@ -29,6 +30,7 @@ const Checkbox = ({
   const classNames = [
     className,
     "inula-checkbox",
+    `inula-checkbox-${variant}`,
     disabled ? "inula-checkbox-disabled" : "",
   ]
     .filter(Boolean)

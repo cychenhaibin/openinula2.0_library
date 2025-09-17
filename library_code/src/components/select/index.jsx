@@ -6,12 +6,14 @@ const Select = ({
     value,
     defaultValue = "",
     disabled = false,
-    placeholder = "请选择",
+    placeholder = "",
     onChange,
     allowClear = false,
     className = "",
     style = {},
     multiple = false,
+    variant = "outlined", // outlined | filled | borderless | underlined
+    size = "default", // small | default | large | medium(等同 default)
     ...rest
 }) => {
     let isOpen = false;
@@ -87,8 +89,11 @@ const Select = ({
         onChange && onChange(newValue);
     }
 
+    const normalizedSize = size === 'medium' ? 'default' : size;
     const classNames = [
         "inula-select",
+        `inula-select-${variant}`,
+        `inula-select-${normalizedSize}`,
         disabled ? "inula-select-disabled" : "",
         multiple ? "inula-select-multiple" : "",
         className,
@@ -102,7 +107,7 @@ const Select = ({
     // 渲染选项列表
     const renderOptions = () => {
         if (isGrouped) {
-            return options.map(group => (
+            return options.length > 0 ? options.map(group => (
                 <div key={group.label}>
                     <div className="inula-select-group-title">{group.label}</div>
                     {group.options.map(opt => (
@@ -126,9 +131,13 @@ const Select = ({
                         </li>
                     ))}
                 </div>
-            ));
+            )) : (
+                <li className="inula-select-option inula-select-no-data">
+                    暂无数据~
+                </li>
+            );
         } else {
-            return options.map(opt => (
+            return options.length > 0 ? options.map(opt => (
                 <li
                     key={opt.value}
                     className={
@@ -147,7 +156,11 @@ const Select = ({
                         <Icon value="check" theme="filled" size={12} style={{ marginLeft: 4 }} />
                     )}
                 </li>
-            ));
+            )) : (
+                <li className="inula-select-option inula-select-no-data">
+                    暂无数据~
+                </li>
+            );
         }
     };
 

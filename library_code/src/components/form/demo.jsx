@@ -2,8 +2,9 @@ import demo1 from './demos/demo1.jsx';
 import demo2 from './demos/demo2.jsx';
 import demo3 from './demos/demo3.jsx';
 import demo4 from './demos/demo4.jsx';
-// import demo5 from './demos/demo5.jsx';
-// import demo6 from './demos/demo6.jsx';
+import demo5 from './demos/demo5.jsx';
+import demo6 from './demos/demo6.jsx';
+import demo7 from './demos/demo7.jsx';
 
 function FormDemo() {
     let loading = false;
@@ -34,16 +35,22 @@ function FormDemo() {
             <div><demo4 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>加载中</h2>
-                <div>展示五种类型按钮的'加载中'状态用法。</div>
+                <h2>表单变体</h2>
+                <div>展示四种不同的表单变体：outlined（默认）、filled、borderless、underlined。</div>
             </div>
-            {/* <div><demo5 /></div> */}
+            <div><demo5 /></div>
 
-            <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
+            {/* <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
                 <h2>交互加载</h2>
                 <div>演示点击按钮后进入加载中状态，1.5秒后恢复。</div>
             </div>
-            {/* <div><demo6 /></div> */}
+            <div><demo6 /></div> */}
+
+            <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
+                <h2>自定义必填标记</h2>
+                <div>展示自定义必填标记的功能，包括默认、可选、隐藏、自定义。</div>
+            </div>
+            <div><demo7 /></div>
         </div>
     );
 } 

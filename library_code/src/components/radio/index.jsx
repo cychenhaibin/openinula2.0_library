@@ -19,6 +19,7 @@ function Radio({
   options,
   style = {},
   className = '',
+  variant = 'outlined', // outlined | filled | borderless | underlined
 }) {
   // 如果有 options，渲染为 RadioGroup
   if (Array.isArray(options)) {
@@ -79,7 +80,7 @@ function Radio({
 
   return (
     <label
-      className={`inula-radio-wrapper ${sizeMap[size] || ''}${disabled ? ' inula-radio-wrapper--disabled' : ''}${readOnly ? ' inula-radio-wrapper--readonly' : ''} ${className}`.trim()}
+      className={`inula-radio-wrapper ${sizeMap[size] || ''} inula-radio-${variant}${disabled ? ' inula-radio-wrapper--disabled' : ''}${readOnly ? ' inula-radio-wrapper--readonly' : ''} ${className}`.trim()}
       style={style}
     >
       <span className={`inula-radio${checked ? ' inula-radio-checked' : ''}${disabled ? ' inula-radio-disabled' : ''}${readOnly ? ' inula-radio-readonly' : ''}`.trim()}>

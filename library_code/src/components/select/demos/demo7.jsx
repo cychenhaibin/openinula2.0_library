@@ -26,7 +26,7 @@ function Demo7() {
     values = [...val]; 
   }
 
-  return <Select options={options} multiple onChange={handleChange} />
+  return <Select options={options} multiple onChange={handleChange} placeholder="Select an option" />
 }
 
 export default Demo7; 
