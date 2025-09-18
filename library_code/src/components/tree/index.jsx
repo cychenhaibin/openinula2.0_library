@@ -448,7 +448,14 @@ const Tree = ({
   };
 
   // 初始化，以及受控初始化
-  didMount(() => {
+  // didMount(() => {
+  //   onLoad && onLoad();
+  //   customExpandedKeys = initialExpandedKeys(treeData);
+  //   customCheckedKeys = initialCheckedKeys(treeData);
+  //   customSelectedKeys = initialSelectedKeys(treeData);
+  // });
+
+  watch(() => {
     onLoad && onLoad();
     customExpandedKeys = initialExpandedKeys(treeData);
     customCheckedKeys = initialCheckedKeys(treeData);
@@ -466,6 +473,7 @@ const Tree = ({
     // maxDepth = depth;
   });
 
+  // 虚拟列表扁平化
   watch(() => {
     flattenedTreeNodes = flattenTreeData(
       treeData,
