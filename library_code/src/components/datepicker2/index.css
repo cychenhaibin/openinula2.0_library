@@ -650,6 +650,16 @@ item通用样式
   margin: 18px 0;
 }
 
+.item-container.year-container::before {
+  height: 18px;
+  top: -18px;
+}
+
+.item-container.year-container::after {
+  height: 18px;
+  bottom: -18px;
+}
+
 .item-container.year-container .inula-calendar-content-date-item {
   height: 24px;
   width: 64px;

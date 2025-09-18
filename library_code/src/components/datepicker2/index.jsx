@@ -1378,8 +1378,8 @@ const Calendar = ({
                 key={`${row}-${index}`}
                 className={[
                   "inula-calendar-content-week-row",
-                  startSelectValue !== ""
-                    ? startSelectValue === `${row[0].year}-${row[0].week}`
+                  selectValue !== ""
+                    ? selectValue === `${row[0].year}-${row[0].week}`
                     : confirmValue
                     ? isEqualedDate(confirmValue, row[0], "week")
                     : isEqualedDate(defaultValue, row[0], "week") &&

@@ -16,7 +16,7 @@ window.render = render;
 import Select from "./components/select/demo.jsx";
 import Input from "./components/input/demo.jsx";
 import Modal from "./components/modal/demo.jsx";
-import DatePicker from "./components/datepicker/demo.jsx";
+import DatePicker from "./components/datepicker2/demo.jsx";
 import Form from "./components/form/demo.jsx";
 import Tag from "./components/tag/demo.jsx";
 import { createHashRouter } from "./route.js";
@@ -137,26 +137,6 @@ import TagDemo4 from "./components/tag/demos/demo4.jsx";
 import TooltipDemo1 from "./components/tooltip/demos/demo1.jsx";
 import TooltipDemo2 from "./components/tooltip/demos/demo2.jsx";
 import TooltipDemo3 from "./components/tooltip/demos/demo3.jsx";
-import { render } from "@openinula/next";
-import "./index.css";
-import "./colors.css";
-import Button from "./components/button/demo.jsx";
-import Icon from "./components/icon/demo.jsx";
-import Checkbox from "./components/checkbox/demo.jsx";
-import Switch from "./components/switch/demo.jsx";
-import Radio from "./components/radio/demo.jsx";
-import Tooltip from "./components/tooltip/demo.jsx";
-import Notification from "./components/notification/demo.jsx";
-import Spin from "./components/spin/demo.jsx";
-import Card from "./components/card/demo.jsx";
-import Tabs from "./components/tabs/demo.jsx";
-// import Tree from "./components/tree/demo.jsx";
-import Select from "./components/select/demo.jsx";
-import Input from "./components/input/demo.jsx";
-import Modal from "./components/modal/demo.jsx";
-import DatePicker from "./components/datepicker2/demo.jsx";
-import Form from "./components/form/demo.jsx";
-
 window.render = render;
 
 const routes = {
@@ -247,7 +227,6 @@ const routes = {
   "/tabs/demo9": TabsDemo9,
   "/tabs/demo10": TabsDemo10,
   "/tabs/demo11": TabsDemo11,
-  "/tree": Tree,
   "/select": Select,
   "/select/demo1": SelectDemo1,
   "/select/demo2": SelectDemo2,
@@ -383,12 +362,12 @@ function App() {
         <div className="hero-content">
           <Tabs />
         </div>
-        {/* <p className="hero-subtitle animate__animated animate__fadeInUp">
+        <p className="hero-subtitle animate__animated animate__fadeInUp">
           Tree 组件
         </p>
         <div className="hero-content">
           <Tree />
-        </div> */}
+        </div>
         <p className="hero-subtitle animate__animated animate__fadeInUp">
           Select 选择器组件
         </p>
@@ -430,4 +409,3 @@ function mount() {
 }
 router.onChange(mount);
 mount();
-render(<App />, document.getElementById("root"));

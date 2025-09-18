@@ -50,20 +50,19 @@ const VirtualList = ({
 
   // 监听滚动事件
   watch(() => {
-    const container = containerRef;
-    if (!container) return;
+    if (containerRef) {
+      calculateVisibleItems();
 
-    calculateVisibleItems();
+      const handleScroll = () => {
+        requestAnimationFrame(calculateVisibleItems);
+      };
 
-    const handleScroll = () => {
-      requestAnimationFrame(calculateVisibleItems);
-    };
-
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
+      containerRef.addEventListener("scroll", handleScroll);
+      return () => containerRef.removeEventListener("scroll", handleScroll);
+    }
   });
 
-  // 当items变化时重新计算
+  // // 当items变化时重新计算
   watch(() => {
     calculateVisibleItems();
   }, [items]);

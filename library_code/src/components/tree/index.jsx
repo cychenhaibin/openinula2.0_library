@@ -225,16 +225,22 @@ const Tree = ({
     //是否为异步加载树的叶子节点
     const isLoadLeafNode = loadData && node.isLeaf;
     //是否为普通树的叶子节点
-    const isSimpleLeafNode = !loadData && (node.isLeaf || !node.children);
+    // const isSimpleLeafNode = !loadData && (node?.isLeaf || !node?.children);
     //是否为叶子节点
-    const isLeafNode = isLoadLeafNode || isSimpleLeafNode;
+    // const isLeafNode = isLoadLeafNode || isSimpleLeafNode;
     //是否为加载中节点
-    const isLoading = customLoadingKeys.includes(node.key);
+    // const isLoading = customLoadingKeys.includes(node.key);
+
+    const isSimpleLeafNode = true;
+    // 是否为叶子节点
+    const isLeafNode = true;
+    // 是否为加载中节点
+    const isLoading = true;
 
     //展开收起切换按钮
     const Switcher = () => {
       if (isLeafNode) return null; //叶子节点，不渲染
-      //loading状态，渲染loadingIcon
+      // loading状态，渲染loadingIcon
       if (isLoading)
         return (
           <>
@@ -314,7 +320,7 @@ const Tree = ({
     //内容部分样式
     const titleClassNames = [
       "inula-tree-node-content-title",
-      nodeInfo.depth === maxDepth && isLeafNode && "indent",
+      nodeInfo?.depth === maxDepth && isLeafNode && "indent",
       showLine && isLeafNode && "showLine",
     ]
       .filter(Boolean)
@@ -333,12 +339,12 @@ const Tree = ({
     const childClassNames = [
       "inula-tree-children",
       !isExpanded ? "inula-tree-children-fold" : "",
-      showLine && !nodeInfo.isLast && "showLine",
+      showLine && !nodeInfo?.isLast && "showLine",
     ]
       .filter(Boolean)
       .join(" ");
 
-    //虚拟列表模式渲染
+    // 虚拟列表模式渲染;
     if (isVirtualMode) {
       const { level } = node;
       return (
@@ -349,7 +355,7 @@ const Tree = ({
           data-leaf={isLeafNode}
         >
           <div className="inula-tree-node-content">
-            {(nodeInfo.depth !== maxDepth || loadData) && (
+            {(nodeInfo?.depth !== maxDepth || loadData) && (
               <div
                 className={switcherClassNames}
                 onClick={(e) => hanldleClick(node, "expand", e)}
@@ -393,7 +399,7 @@ const Tree = ({
     return (
       <li key={node.key} className={treeNodeClassName} data-leaf={isLeafNode}>
         <div className="inula-tree-node-content">
-          {(nodeInfo.depth !== maxDepth || loadData) && (
+          {(nodeInfo?.depth !== maxDepth || loadData) && (
             <div
               className={switcherClassNames}
               onClick={(e) => hanldleClick(node, "expand", e)}
@@ -404,7 +410,7 @@ const Tree = ({
 
           <div className={titleClassNames}>
             {/* 连接线 */}
-            {showLine && isLeafNode && !nodeInfo.isLast && (
+            {showLine && isLeafNode && !nodeInfo?.isLast && (
               <div className="inula-tree-node-content-line"></div>
             )}
 
@@ -441,7 +447,7 @@ const Tree = ({
     );
   };
 
-  //初始化，以及受控初始化
+  // 初始化，以及受控初始化
   didMount(() => {
     onLoad && onLoad();
     customExpandedKeys = initialExpandedKeys(treeData);
@@ -450,9 +456,14 @@ const Tree = ({
   });
 
   watch(() => {
-    const { map, depth } = getKeyToTreeMap(treeData);
-    keyToNodeInfoMap = map;
-    maxDepth = depth;
+    if (treeData) {
+      const { map, depth } = getKeyToTreeMap(treeData);
+      keyToNodeInfoMap = map;
+      maxDepth = depth;
+    }
+    // const { map, depth } = getKeyToTreeMap(treeData);
+    // keyToNodeInfoMap = map;
+    // maxDepth = depth;
   });
 
   watch(() => {
