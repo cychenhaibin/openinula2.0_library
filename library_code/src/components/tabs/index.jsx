@@ -115,6 +115,7 @@ const Tabs = ({
       onTabClick && onTabClick(item.key, e);
     } else {
       setActiveKey(item.key);
+      console.log(activeKey);
       onChange && onChange(item.key, e);
       onTabClick && onTabClick(item.key, e);
     }
@@ -181,7 +182,7 @@ const Tabs = ({
               >
                 <div
                   className="inula-tabs-bar-item-content"
-                  onClick={() => handleTabClick(item, e)}
+                  onClick={(e) => handleTabClick(item, e)}
                 >
                   {item.icon}
                   <text>{item.label || item.tab}</text>
