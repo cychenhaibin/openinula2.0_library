@@ -2,7 +2,6 @@
 import Button from '../index.jsx';
 
 function ButtonDemo() {
-    let loading = false;
     return (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
             <Button type="primary" disabled>禁用主按钮</Button>

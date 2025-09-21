@@ -10,7 +10,7 @@ const Demo8 = () => {
         value = e.target.value;
     }
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
             <Input
                 placeholder="请输入内容"
                 value={value}

@@ -1,5 +1,7 @@
 import Spin from "../index.jsx";
 import Switch from "../../switch/index.jsx";
+import Tag from "../../tag/index.jsx";
+
 const SpinDemo = () => {
   let loading = false;
 
@@ -13,9 +15,9 @@ const SpinDemo = () => {
           width: "100%",
         }}
       >
-        <text style={{ width: "12%", textAlign: "start" }}>
+        <Tag color="geekblue">
           点击延迟一秒触发加载
-        </text>
+        </Tag>
         <Spin spinning={loading} delay={1000}>
           <div
             style={{

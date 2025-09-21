@@ -91,13 +91,11 @@ const Tree = ({
   };
 
   return (
-    <li className={classNames} style={styles}>
-      <ul>
-        {treeData.map((node) => (
-          <TreeNode key={node.ksy} node={node} />
-        ))}
-      </ul>
-    </li>
+    <ul className={classNames} style={styles}>
+      {treeData.map((node) => (
+        <TreeNode key={node.key} node={node} />
+      ))}
+    </ul>
   );
 };
 

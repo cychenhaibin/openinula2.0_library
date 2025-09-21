@@ -8,7 +8,7 @@ function Demo6() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start' }}>
+    <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
       <Input
         defaultValue="这是一个输入框"
         allowClear

@@ -1,4 +1,5 @@
 import { CheckboxGroup } from "../index.jsx";
+import { Tag } from "../../tag/index.jsx";
 
 const CheckboxDemo = () => {
   let checkedList = ["Apple", "Pear"];
@@ -14,11 +15,11 @@ const CheckboxDemo = () => {
   };
 
   return (
-    <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+    <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
       <div
         style={{ display: "flex", gap: 16, alignItems: "center", width: "100%" }}
       >
-        <text style={{width: '12%', textAlign: 'start'}}>定义默认选中和选中:</text>
+        <Tag color="geekblue">定义默认选中和选中:</Tag>
         <CheckboxGroup
           options={options}
           defaultValue={["Apple"]}
@@ -28,25 +29,25 @@ const CheckboxDemo = () => {
       <div
         style={{ display: "flex", gap: 16, alignItems: "center", width: "100%" }}
       >
-        <text style={{width: '12%', textAlign: 'start'}}>只定义默认选中:</text>
+        <Tag color="geekblue">只定义默认选中</Tag>
         <CheckboxGroup options={options} defaultValue={["Apple"]} />
       </div>
       <div
         style={{ display: "flex", gap: 16, alignItems: "center", width: "100%" }}
       >
-        <text style={{width: '12%', textAlign: 'start'}}>只定义选中:</text>
+        <Tag color="geekblue">只定义选中</Tag>
         <CheckboxGroup options={options} value={["Apple", "Orange"]} />
       </div>
       <div
         style={{ display: "flex", gap: 16, alignItems: "center", width: "100%" }}
       >
-        <text style={{width: '12%', textAlign: 'start'}}>全禁用:</text>
+        <Tag color="geekblue">全禁用</Tag>
         <CheckboxGroup options={options} disabled />
       </div>
       <div
         style={{ display: "flex", gap: 16, alignItems: "center", width: "100%" }}
       >
-        <text style={{width: '12%', textAlign: 'start'}}>外部受控:</text>
+        <Tag color="geekblue">外部受控</Tag>
         <CheckboxGroup
           options={options}
           defaultValue={checkedList}

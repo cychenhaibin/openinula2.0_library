@@ -24,40 +24,45 @@ export default defineConfig({
     sidebar: {
       '/components': [
         {
-          title: 'Basic 基础组件',
+          title: '通用',
           children: [
             { title: 'Button 按钮', link: '/components/button' },
-            // { title: 'Icon 图标', link: '/components/icon' },
-            // { title: 'FloatButton 悬浮按钮', link: '/components/floatbutton' },
-            { title: 'Breadcrumb 面包屑', link: '/components/breadcrumb' },
+            { title: 'Icon 图标', link: '/components/icon' },
           ],
         },
         {
-          title: 'Feedback 反馈组件',
+          title: '导航',
           children: [
-            // { title: 'Message 全局提示', link: '/components/message' },
-            // { title: 'Dialog 对话框', link: '/components/dialog' },
-            // { title: 'Tooltip 文字提示', link: '/components/tooltip' },
+            { title: 'Tabs 标签页', link: '/components/tabs' },
           ],
         },
         {
-          title: 'Form 表单组件',
+          title: '数据录入',
           children: [
-            // { title: 'Input 输入框', link: '/components/input' },
-            // { title: 'Checkbox 多选框', link: '/components/checkbox' },
-            // { title: 'Radio 单选框', link: '/components/radio' },
-            // { title: 'Select 选择器', link: '/components/select' },
-            // { title: 'InputTag 标签输入', link: '/components/inputtag' },
-            // { title: 'InputNumber 数字输入', link: '/components/inputnumber' },
-            // { title: 'Rate 评分', link: '/components/rate' },
-            // { title: 'Foo', link: '/components/Foo' },
+            { title: 'Checkbox 多选框', link: '/components/checkbox' },
+            { title: 'DataPicker 日期选择器', link: '/components/datapicker' },
+            { title: 'Form 表单', link: '/components/form' },
+            { title: 'Input 输入框', link: '/components/input' },
+            { title: 'Radio 单选框', link: '/components/radio' },
+            { title: 'Select 选择器', link: '/components/select' },
+            { title: 'Switch 开关', link: '/components/switch' },
           ],
         },
         {
-          title: 'Data 数据展示',
+          title: '数据展示',
           children: [
-            // { title: 'Progress 进度条', link: '/components/progress' },
-            // { title: 'Tree 树形控件', link: '/components/tree' },
+            { title: 'Card 卡片', link: '/components/card' },
+            { title: 'Tooltip 文字提示', link: '/components/tooltip' },
+            { title: 'Tag 标签', link: '/components/tag' },
+            { title: 'Tree 树形控件', link: '/components/tree' },
+          ],
+        },
+        {
+          title: '反馈',
+          children: [
+            { title: 'Modal 对话框', link: '/components/dialog' },
+            { title: 'Spin 加载中', link: '/components/spin' },
+            { title: 'Notification 通知提示框', link: '/components/notification' },
           ],
         },
       ],

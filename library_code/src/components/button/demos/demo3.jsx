@@ -1,7 +1,6 @@
 import Button from '../index.jsx';
 
 function ButtonDemo() {
-    let loading = false;
     return (
         <div className="demo-dark-bg" style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
             <Button type="primary" ghost>主幽灵按钮</Button>

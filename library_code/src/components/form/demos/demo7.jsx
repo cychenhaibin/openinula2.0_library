@@ -21,7 +21,7 @@ const Demo7 = () => {
 
   const customizeRequiredMark = (label, { required }) => (
     <>
-      {required ? <Tag color='red' style={{marginRight: '5px'}}>Required</Tag> : <Tag color='volcano' style={{marginRight: '5px'}}>optional</Tag>}
+      {required ? <Tag color='red' style={{marginRight: '5px'}}>Required</Tag> : <Tag color='geekblue' style={{marginRight: '5px'}}>optional</Tag>}
       {label}
     </>
   );

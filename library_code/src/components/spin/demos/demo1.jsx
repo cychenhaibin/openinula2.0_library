@@ -1,15 +1,16 @@
 import Spin from "../index.jsx";
+import Tag from "../../tag/index.jsx"
 
 const SpinDemo = () => {
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
       <div style={{ display: "flex", gap: 16, alignItems: "center", width: '100%' }}>
-      <text style={{width: '12%', textAlign: 'start'}}>最简单的Spin</text>
+        <Tag color="geekblue">最简单的Spin</Tag>
         <Spin />
       </div>
       <div style={{ display: "flex", gap: 20, alignItems: "center", width: '100%' }}>
-      <text style={{width: '12%', textAlign: 'start'}}>小中大的Spin</text>
+        <Tag color="geekblue">小中大的Spin</Tag>
         <Spin size="small" />
         <Spin size="default" />
         <Spin size="large" />

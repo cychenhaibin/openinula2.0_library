@@ -2,7 +2,6 @@
 import Button from '../index.jsx';
 
 function ButtonDemo() {
-    let loading = false;
     return (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
             <Button type="primary" loading>加载中主按钮</Button>

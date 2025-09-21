@@ -17,7 +17,7 @@ const TabsDemo = () => {
     { key: "3", label: "Tab 3", children: "Content of Tab Pane 3" },
   ];
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 24, width: "80%" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", width: "80%" }}>
       <div
         style={{
           display: "flex",

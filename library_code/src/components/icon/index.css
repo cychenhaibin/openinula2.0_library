@@ -15,11 +15,11 @@
 
 /* Icon表样式 */
 .inula-icon-table {
-  width: 80%;
-  height: 600px;
+  /* width: 80%; */
+  /* height: 600px; */
   overflow-y: scroll;
-  border: 1px solid #f0f0f0;
-  background-color: #fAf8f9;
+  /* border: 1px solid #f0f0f0; */
+  /* background-color: #fAf8f9; */
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
