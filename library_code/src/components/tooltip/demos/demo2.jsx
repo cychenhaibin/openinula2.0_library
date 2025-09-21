@@ -4,7 +4,7 @@ import '../index.css';
 
 function Demo() {
   return (
-    <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
+    <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap', height:'90px', alignItems:'center' }}>
       <div style={{ display: 'flex' }}>
         <Tooltip title="上方提示" placement="top" trigger="hover">
           <Button type="primary">上方 hover</Button>

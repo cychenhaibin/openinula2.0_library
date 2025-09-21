@@ -19,8 +19,8 @@ function Tooltip() {
             <div><demo2 /></div>
 
             <div style={{ display: 'flex',alignItems:'center', gap: 16 }}>
-                <h2>自定义内容</h2>
-                <div>Tooltip 支持自定义内容，如富文本、图片等。</div>
+                <h2>模式</h2>
+                <div>Tooltip 支持hover和click模式</div>
             </div>
             <div><demo3 /></div>
         </div>

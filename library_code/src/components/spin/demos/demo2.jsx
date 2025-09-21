@@ -1,12 +1,14 @@
 import Spin from "../index.jsx";
 import Switch from "../../switch/index.jsx";
+import Tag from "../../tag/index.jsx";
+
 const SpinDemo = () => {
   let loading = false;
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
       <div style={{ display: "flex", gap: 16, alignItems: "center", width: '100%' }}>
-        <text style={{width: '12%', textAlign:'start'}}>简单嵌套状态</text>
+      <Tag color="geekblue">简单嵌套状态</Tag>
         <Spin spinning={loading}>
           <div
             style={{
@@ -26,7 +28,7 @@ const SpinDemo = () => {
         <text>切换嵌套组件的加载状态</text>
       </div>
       <div style={{ display: "flex", gap: 20, alignItems: "center", width: '100%' }}>
-      <text style={{width: '12%', textAlign: 'start'}}>自定义tip的Spin，小中大样式</text>
+      <Tag color="geekblue">自定义tip的Spin，小中大样式</Tag>
         <Spin size="small" tip="loading">
           <div
             style={{
