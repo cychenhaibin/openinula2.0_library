@@ -1,285 +1,97 @@
 import { DatePicker } from "../index.jsx";
+import Tag from "../../tag/index.jsx";
 import Icon from "../../icon/index.jsx";
 
 function DatePickerDemo() {
-  const handleChange = (value) => {
-    console.log("选择的值:", value);
-  };
-
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "24px",
+        gap: "80px",
         padding: "20px",
-        maxWidth: "800px",
       }}
     >
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          needConfirm 属性控制是否需要确认, showNow 属性控制是否显示“今天”按钮
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <DatePicker
-            placeholder="请选择日期"
-            needConfirm
-            showNow={false}
-            onChange={handleChange}
-          />
-          <DatePicker
-            picker="week"
-            placeholder="请选择周"
-            needConfirm
-            onChange={handleChange}
-          />
-          <DatePicker
-            picker="month"
-            placeholder="请选择月份"
-            needConfirm
-            onChange={handleChange}
-          />
-          <DatePicker
-            picker="quarter"
-            placeholder="请选择季度"
-            needConfirm
-            onChange={handleChange}
-          />
-          <DatePicker
-            picker="year"
-            placeholder="请选择年份"
-            needConfirm
-            onChange={handleChange}
-          />
-        </div>
+      <div
+        style={{
+          display: "flex",
+          gap: "16px",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <Tag color="geekblue">需要确认的日期选择器</Tag>
+        <DatePicker placeholder="请选择日期" needConfirm />
+        <DatePicker picker="week" placeholder="请选择周" needConfirm />
+        <DatePicker picker="month" placeholder="请选择月份" needConfirm />
+        <DatePicker picker="quarter" placeholder="请选择季度" needConfirm />
+        <DatePicker picker="year" placeholder="请选择年份" needConfirm />
       </div>
 
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          支持改变后缀，以及改变切换calendar切换箭头
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <DatePicker
-            prefix={<Icon value="check" theme="filled" size={12} />}
-            placeholder="prefix"
-            onChange={handleChange}
-          />
-          <DatePicker
-            suffixIcon={<Icon value="check" theme="filled" size={12} />}
-            placeholder="suffixIcon"
-            onChange={handleChange}
-          />
-          <DatePicker
-            prevIcon={<Icon value="check" theme="filled" size={12} />}
-            placeholder="prevIcon"
-            onChange={handleChange}
-          />
-          <DatePicker
-            nextIcon={<Icon value="check" theme="filled" size={12} />}
-            placeholder="nextIcon"
-            onChange={handleChange}
-          />
-          <DatePicker
-            superPrevIcon={<Icon value="check" theme="filled" size={12} />}
-            placeholder="superPrevIcon"
-            onChange={handleChange}
-          />
-          <DatePicker
-            superNextIcon={<Icon value="check" theme="filled" size={12} />}
-            placeholder="superNextIcon"
-            onChange={handleChange}
-          />
-        </div>
+      <div
+        style={{
+          display: "flex",
+          gap: "16px",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <Tag color="geekblue">showNow控制今天按钮显示</Tag>
+        <DatePicker placeholder="请选择日期" needConfirm showNow={false} />
       </div>
 
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          支持defaultValue，支持format自定义格式，传入format时，defaultValue要与format匹配
-        </h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(5,1fr)",
-            gap: "16px",
-            alignItems: "center",
-          }}
-        >
-          <DatePicker
-            defaultValue="2024-03-10"
-            placeholder="日期-默认值"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultValue="2024-37周"
-            placeholder="周数-默认值"
-            picker="week"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultValue="2024-10"
-            picker="month"
-            placeholder="月-默认值"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultValue="2024-Q1"
-            picker="quarter"
-            placeholder="季度-默认值"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultValue="2024"
-            picker="year"
-            placeholder="年-默认值"
-            onChange={handleChange}
-          />
-          {/* <DatePicker
-            defaultValue="2025/09/10"
-            placeholder="日期-默认值"
-            format="YYYY/MM/DD"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultValue="2025-37周"
-            placeholder="周数-默认值"
-            picker="week"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultValue="2025-09"
-            picker="month"
-            placeholder="月-默认值"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultValue="2025-Q1"
-            picker="quarter"
-            placeholder="季度-默认值"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultValue="2025"
-            picker="year"
-            placeholder="年-默认值"
-            onChange={handleChange}
-          /> */}
-        </div>
+      <div
+        style={{
+          display: "flex",
+          gap: "16px",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <Tag color="geekblue">自定义prefix,suffixIcon图标</Tag>
+        <DatePicker
+          prefix={<Icon value="check" theme="filled" size={12} />}
+          placeholder="prefix"
+        />
+        <DatePicker
+          suffixIcon={<Icon value="check" theme="filled" size={12} />}
+          placeholder="suffixIcon"
+        />
       </div>
 
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          支持defaultPickerValue，存在时每次打开面板，面板page都会重置到此处
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <DatePicker
-            defaultPickerValue="2024-10-09"
-            placeholder="默认面板"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultPickerValue="2024-37周"
-            placeholder="默认面板"
-            picker="week"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultPickerValue="2024-10"
-            placeholder="默认面板"
-            picker="month"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultPickerValue="2024-Q3"
-            placeholder="默认面板"
-            picker="quarter"
-            onChange={handleChange}
-          />
-          <DatePicker
-            defaultPickerValue="2024-10-09"
-            placeholder="默认面板"
-            picker="year"
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          禁用disabledState，minDate，maxDate
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <DatePicker
-            minDate={"2025-08-12"}
-            maxDate={"2025-10-24"}
-            disabledDate={["2025-09-11"]}
-            placeholder="日期范围限定"
-            style={{ width: 150 }}
-            onChange={handleChange}
-          />
-          <DatePicker
-            minDate={"2025-30周"}
-            maxDate={"2025-38周"}
-            disabledDate={["2025-33周"]}
-            placeholder={"周日期范围限定"}
-            style={{ width: 150 }}
-            picker="week"
-            onChange={handleChange}
-          />
-          <DatePicker
-            minDate={"2024-08"}
-            maxDate={"2026-01"}
-            disabledDate={["2025-08"]}
-            placeholder={"月日期范围限定"}
-            style={{ width: 150 }}
-            picker="month"
-            onChange={handleChange}
-          />
-          <DatePicker
-            minDate={"2023-Q3"}
-            maxDate={"2027-Q1"}
-            disabledDate={["2025-Q1"]}
-            placeholder={"季度日期范围限定"}
-            style={{ width: 150 }}
-            picker="quarter"
-            onChange={handleChange}
-          />
-          <DatePicker
-            minDate={"2000"}
-            maxDate={"2060"}
-            disabledDate={["2028"]}
-            placeholder={"年日期范围限定"}
-            style={{ width: 150 }}
-            picker="year"
-            onChange={handleChange}
-          />
-        </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          flexWrap: "wrap",
+        }}
+      >
+        <Tag color="geekblue">自定义日历title切换图标</Tag>
+        <DatePicker
+          prevIcon={<Icon value="check" theme="filled" size={12} />}
+          style={{ width: 200 }}
+          placeholder="prevIcon"
+          placement="topLeft"
+        />
+        <DatePicker
+          nextIcon={<Icon value="check" theme="filled" size={12} />}
+          style={{ width: 200 }}
+          placeholder="nextIcon"
+          placement="topLeft"
+        />
+        <DatePicker
+          superPrevIcon={<Icon value="check" theme="filled" size={12} />}
+          style={{ width: 200 }}
+          placeholder="superPrevIcon"
+          placement="topLeft"
+        />
+        <DatePicker
+          superNextIcon={<Icon value="check" theme="filled" size={12} />}
+          style={{ width: 200 }}
+          placeholder="superNextIcon"
+          placement="topLeft"
+        />
       </div>
     </div>
   );

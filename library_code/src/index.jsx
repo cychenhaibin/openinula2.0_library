@@ -56,6 +56,7 @@ import IconDemo2 from "./components/icon/demos/demo2.jsx";
 import IconDemo3 from "./components/icon/demos/demo3.jsx";
 import IconDemo4 from "./components/icon/demos/demo4.jsx";
 import IconDemo5 from "./components/icon/demos/demo5.jsx";
+import IconDemo6 from "./components/icon/demos/demo6.jsx";
 
 // input demos
 import InputDemo1 from "./components/input/demos/demo1.jsx";
@@ -113,6 +114,7 @@ import SpinDemo5 from "./components/spin/demos/demo5.jsx";
 import SwitchDemo1 from "./components/switch/demos/demo1.jsx";
 import SwitchDemo2 from "./components/switch/demos/demo2.jsx";
 import SwitchDemo3 from "./components/switch/demos/demo3.jsx";
+import SwitchDemo4 from "./components/switch/demos/demo4.jsx";
 
 // tabs demos
 import TabsDemo1 from "./components/tabs/demos/demo1.jsx";
@@ -137,6 +139,24 @@ import TagDemo4 from "./components/tag/demos/demo4.jsx";
 import TooltipDemo1 from "./components/tooltip/demos/demo1.jsx";
 import TooltipDemo2 from "./components/tooltip/demos/demo2.jsx";
 import TooltipDemo3 from "./components/tooltip/demos/demo3.jsx";
+
+//datepicker demos
+import DatePickerDemo1 from "./components/datepicker2/demos/demo1.jsx";
+import DatePickerDemo2 from "./components/datepicker2/demos/demo2.jsx";
+import DatePickerDemo3 from "./components/datepicker2/demos/demo3.jsx";
+import DatePickerDemo4 from "./components/datepicker2/demos/demo4.jsx";
+import DatePickerDemo5 from "./components/datepicker2/demos/demo5.jsx";
+import DatePickerDemo6 from "./components/datepicker2/demos/demo6.jsx";
+import DatePickerDemo7 from "./components/datepicker2/demos/demo7.jsx";
+import DatePickerDemo8 from "./components/datepicker2/demos/demo8.jsx";
+
+//tree demos
+import TreeDemo1 from "./components/tree/demos/demo1.jsx";
+import TreeDemo2 from "./components/tree/demos/demo2.jsx";
+import TreeDemo3 from "./components/tree/demos/demo3.jsx";
+import TreeDemo4 from "./components/tree/demos/demo4.jsx";
+import TreeDemo5 from "./components/tree/demos/demo5.jsx";
+
 window.render = render;
 
 const routes = {
@@ -178,6 +198,7 @@ const routes = {
   "/icon/demo3": IconDemo3,
   "/icon/demo4": IconDemo4,
   "/icon/demo5": IconDemo5,
+  "/icon/demo6": IconDemo6,
   "/checkbox": Checkbox,
   "/checkbox/demo1": CheckboxDemo1,
   "/checkbox/demo2": CheckboxDemo2,
@@ -186,6 +207,7 @@ const routes = {
   "/switch/demo1": SwitchDemo1,
   "/switch/demo2": SwitchDemo2,
   "/switch/demo3": SwitchDemo3,
+  "/switch/demo4": SwitchDemo4,
   "/radio": Radio,
   "/radio/demo1": RadioDemo1,
   "/radio/demo2": RadioDemo2,
@@ -227,6 +249,12 @@ const routes = {
   "/tabs/demo9": TabsDemo9,
   "/tabs/demo10": TabsDemo10,
   "/tabs/demo11": TabsDemo11,
+  "/tree": Tree,
+  "/tree/demo1": TreeDemo1,
+  "/tree/demo2": TreeDemo2,
+  "/tree/demo3": TreeDemo3,
+  "/tree/demo4": TreeDemo4,
+  "/tree/demo5": TreeDemo5,
   "/select": Select,
   "/select/demo1": SelectDemo1,
   "/select/demo2": SelectDemo2,
@@ -268,6 +296,15 @@ const routes = {
   "/tag/demo2": TagDemo2,
   "/tag/demo3": TagDemo3,
   "/tag/demo4": TagDemo4,
+  "/datepicker": DatePicker,
+  "/datepicker/demo1": DatePickerDemo1,
+  "/datepicker/demo2": DatePickerDemo2,
+  "/datepicker/demo3": DatePickerDemo3,
+  "/datepicker/demo4": DatePickerDemo4,
+  "/datepicker/demo5": DatePickerDemo5,
+  "/datepicker/demo6": DatePickerDemo6,
+  "/datepicker/demo7": DatePickerDemo7,
+  "/datepicker/demo8": DatePickerDemo8,
 };
 
 const router = createHashRouter(routes);

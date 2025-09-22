@@ -1,7 +1,7 @@
 import Icon from "../index.jsx";
 import { success, error } from "../../Notification/index.jsx";
 import "../index.css";
-import { filledIconValueList } from "./iconlist.ts";
+import { brandIconValueList } from "./iconlist.ts";
 import Tag from "../../tag/index.jsx";
 
 const handleCopy = async (text) => {
@@ -29,20 +29,12 @@ const IconDemo = () => {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24, width: "100%" }}>
       <Tag color="geekblue" size="large">
-        实体图标表
+        品牌图标表
       </Tag>
-      <div
-        style={{
-          display: "flex",
-          gap: 16,
-          width: "100%",
-        }}
-      >
-        <div className="inula-icon-table">
-          {filledIconValueList.map((value) => (
-            <IconItem key={value} value={value} theme="filled" />
-          ))}
-        </div>
+      <div className="inula-icon-table">
+        {brandIconValueList.map((value) => (
+          <IconItem key={value} value={value} theme="brand" />
+        ))}
       </div>
     </div>
   );

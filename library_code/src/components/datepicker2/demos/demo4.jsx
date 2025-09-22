@@ -1,151 +1,59 @@
-import { RangePicker } from "../index.jsx";
+import { DatePicker } from "../index.jsx";
+import Tag from "../../tag/index.jsx";
 
-function RangePickerDemo() {
-  const handleChange = (value) => {
-    console.log("选择的值:", value);
-  };
-
+function DatePickerDemo() {
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "24px",
+        gap: "16px",
+        flexWrap: "wrap",
         padding: "20px",
-        maxWidth: "800px",
       }}
     >
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          不同pickerRange日期选择器
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <RangePicker placeholder="请选择日期" onChange={handleChange} />
-          <RangePicker
-            picker="week"
-            placeholder="请选择周"
-            onChange={handleChange}
-          />
-          <RangePicker
-            picker="month"
-            placeholder="请选择月份"
-            onChange={handleChange}
-          />
-          <RangePicker
-            picker="quarter"
-            placeholder="请选择季度"
-            onChange={handleChange}
-          />
-          <RangePicker
-            picker="year"
-            placeholder="请选择年份"
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>不同尺寸</h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <RangePicker
-            size="small"
-            placeholder="小尺寸"
-            onChange={handleChange}
-          />
-          <RangePicker
-            size="default"
-            placeholder="默认尺寸"
-            onChange={handleChange}
-          />
-          <RangePicker
-            size="large"
-            placeholder="大尺寸"
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>禁用状态</h3>
-        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
-          <RangePicker
-            disabled
-            placeholder="禁用状态"
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          不同varient变体
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <RangePicker placeholder="outlined" onChange={handleChange} />
-          <RangePicker
-            variant="filled"
-            placeholder="filled"
-            onChange={handleChange}
-          />
-          <RangePicker
-            variant="borderless"
-            placeholder="borderless"
-            onChange={handleChange}
-          />
-          <RangePicker
-            variant="underline"
-            placeholder="underline"
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          status不同状态
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <RangePicker
-            status="error"
-            placeholder="error"
-            onChange={handleChange}
-          />
-          <RangePicker
-            status="warning"
-            placeholder="warning"
-            onChange={handleChange}
-          />
-        </div>
-      </div>
+      <Tag color="geekblue">范围和选中限制</Tag>
+      <DatePicker
+        minDate={"2025-08-12"}
+        maxDate={"2025-10-24"}
+        disabledDate={["2025-09-11"]}
+        placeholder="日期范围限定"
+        style={{ width: 200 }}
+      />
+      <DatePicker
+        minDate={"2025-30周"}
+        maxDate={"2025-38周"}
+        disabledDate={["2025-33周"]}
+        placeholder={"周日期范围限定"}
+        style={{ width: 200 }}
+        picker="week"
+      />
+      <DatePicker
+        minDate={"2024-08"}
+        maxDate={"2026-01"}
+        disabledDate={["2025-08"]}
+        placeholder={"月日期范围限定"}
+        style={{ width: 200 }}
+        picker="month"
+      />
+      <DatePicker
+        minDate={"2023-Q3"}
+        maxDate={"2027-Q1"}
+        disabledDate={["2025-Q1"]}
+        placeholder={"季度日期范围限定"}
+        style={{ width: 200 }}
+        picker="quarter"
+      />
+      <DatePicker
+        minDate={"2000"}
+        maxDate={"2060"}
+        disabledDate={["2028"]}
+        placeholder={"年日期范围限定"}
+        style={{ width: 200 }}
+        picker="year"
+      />
     </div>
   );
 }
 
-export default RangePickerDemo;
+export default DatePickerDemo;

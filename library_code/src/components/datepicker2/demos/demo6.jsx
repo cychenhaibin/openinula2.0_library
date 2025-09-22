@@ -1,39 +1,9 @@
 import { RangePicker } from "../index.jsx";
-import Button from "../../button/index.jsx";
+import Tag from "../../tag/index.jsx";
 
 function RangePickerDemo() {
-  let open = false;
-  let defaultOpen = false;
-  let placement = "bottomLeft";
-  let picker = "date";
-  let size = "default";
-
-  const handleControllOpenChange = (isOpen) => {
-    open = !isOpen;
-  };
-
   const handleChange = (value) => {
     console.log("选择的值:", value);
-  };
-
-  const handleOpenChange = (isOpen) => {
-    console.log(isOpen);
-  };
-
-  const handlePanleChange = (value, mode) => {
-    console.log(value, mode);
-  };
-
-  const handleClickOk = (value) => {
-    console.log("ok", value);
-  };
-
-  const onBlur = () => {
-    console.log(111);
-  };
-
-  const onFocus = () => {
-    console.log(111);
   };
 
   return (
@@ -43,11 +13,19 @@ function RangePickerDemo() {
         flexDirection: "column",
         gap: "24px",
         padding: "20px",
-        maxWidth: "800px",
       }}
     >
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>回调函数测试</h3>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+          gap: 10,
+        }}
+      >
+        <Tag color="geekblue" size="large">
+          五种picker-range日期选择器
+        </Tag>
         <div
           style={{
             display: "flex",
@@ -56,34 +34,25 @@ function RangePickerDemo() {
             flexWrap: "wrap",
           }}
         >
-          <RangePicker
-            placeholder="onChange"
-            showNow={false}
-            onChange={handleChange}
-          />
-          <RangePicker
-            placeholder="onOpenChange"
-            onOpenChange={handleOpenChange}
-          />
-          <RangePicker
-            placeholder="onPanleChange"
-            onPanleChange={handlePanleChange}
-          />
-          <RangePicker
-            placeholder="onClickOk"
-            needConfirm
-            onOk={handleClickOk}
-          />
-          <RangePicker
-            placeholder="onBlur & onFocus"
-            style={{ width: 150 }}
-            onBlur={onBlur}
-            onFocus={onFocus}
-          />
+          <RangePicker placeholder="请选择日期" onChange={handleChange} />
+          <RangePicker picker="week" placeholder="请选择周" />
+          <RangePicker picker="month" placeholder="请选择月份" />
+          <RangePicker picker="quarter" placeholder="请选择季度" />
+          <RangePicker picker="year" placeholder="请选择年份" />
         </div>
       </div>
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>受控测试</h3>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+          gap: 10,
+        }}
+      >
+        <Tag color="geekblue" size="large">
+          三种size-range日期选择器
+        </Tag>
         <div
           style={{
             display: "flex",
@@ -92,19 +61,39 @@ function RangePickerDemo() {
             flexWrap: "wrap",
           }}
         >
-          <RangePicker placeholder="defaultOpen" defaultOpen={defaultOpen} />
-          <RangePicker
-            placeholder="open受控"
-            open={open}
-            defaultOpen={defaultOpen}
-            onOpenChange={handleControllOpenChange}
-          />
+          <RangePicker size="small" placeholder="小尺寸" />
+          <RangePicker size="default" placeholder="默认尺寸" />
+          <RangePicker size="large" placeholder="大尺寸" />
         </div>
       </div>
-      <div>
-        <h3 style={{ marginBottom: "12px", color: "#262626" }}>
-          日历弹出位置控制
-        </h3>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+          gap: 10,
+        }}
+      >
+        <Tag color="geekblue" size="large">
+          禁用状态range日期选择器
+        </Tag>
+        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+          <RangePicker disabled placeholder="禁用状态" />
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+          gap: 10,
+        }}
+      >
+        <Tag color="geekblue" size="large">
+          四种varient-range日期选择器
+        </Tag>
         <div
           style={{
             display: "flex",
@@ -113,27 +102,38 @@ function RangePickerDemo() {
             flexWrap: "wrap",
           }}
         >
+          <RangePicker placeholder="outlined" />
+          <RangePicker variant="filled" placeholder="filled" />
+          <RangePicker variant="borderless" placeholder="borderless" />
+          <RangePicker variant="underline" placeholder="underline" />
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+          gap: 10,
+        }}
+      >
+        <Tag color="geekblue" size="large">
+          两种status-range日期选择器
+        </Tag>
+        <div
+          style={{
+            display: "flex",
+            gap: "16px",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <RangePicker status="error" placeholder="error" placement="topLeft" />
           <RangePicker
-            placeholder="placement & picker & size"
-            style={{ width: 700 }}
-            placement={placement}
-            picker={picker}
-            size={size}
+            status="warning"
+            placeholder="warning"
+            placement="topLeft"
           />
-          <Button onClick={() => (placement = "bottomLeft")}>bottomLeft</Button>
-          <Button onClick={() => (placement = "bottomRight")}>
-            bottomRight
-          </Button>
-          <Button onClick={() => (placement = "topLeft")}>topLeft</Button>
-          <Button onClick={() => (placement = "topRight")}>topRight</Button>
-          <Button onClick={() => (picker = "date")}>date</Button>
-          <Button onClick={() => (picker = "week")}>week</Button>
-          <Button onClick={() => (picker = "month")}>month</Button>
-          <Button onClick={() => (picker = "quarter")}>quarter</Button>
-          <Button onClick={() => (picker = "year")}>year</Button>
-          <Button onClick={() => (size = "small")}>small</Button>
-          <Button onClick={() => (size = "default")}>default</Button>
-          <Button onClick={() => (size = "large")}>large</Button>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { Card } from "../index.jsx";
 import Icon from "../../icon/index.jsx";
+import Tag from "../../tag/index.jsx";
 
 const actions = [
   <Icon value="wand-magic-sparkles" />,
@@ -10,8 +11,17 @@ const actions = [
 const CardDemo = () => {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-      <div style={{ display: "flex", gap: 16, alignItems: "center", width: '100%' }}>
-        <text style={{width: '20%', textAlign: 'start'}}>完整Card布局</text>
+      <Tag color="geekblue" size="large">
+        完整Card布局
+      </Tag>
+      <div
+        style={{
+          display: "flex",
+          gap: 16,
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
         <Card
           title="Default size card"
           extra={<div>More</div>}
@@ -28,8 +38,17 @@ const CardDemo = () => {
           <span>Card content</span>
         </Card>
       </div>
-      <div style={{ display: "flex", gap: 20, alignItems: "center", width: '100%' }}>
-        <text style={{width: '20%', textAlign: 'start'}}>边框样式，带边框和不带边框、型号、hover</text>
+      <Tag color="geekblue" size="large">
+        不同大小、边框、hover动效的Card
+      </Tag>
+      <div
+        style={{
+          display: "flex",
+          gap: 20,
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
         <Card title="不带边框的Card" variant="borderless">
           <div style={{ width: "100%" }}>默认型号，无hover动效</div>
         </Card>

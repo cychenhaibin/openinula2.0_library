@@ -1,8 +1,8 @@
-import { DatePicker } from "../index.jsx";
+import { RangePicker } from "../index.jsx";
 import Button from "../../button/index.jsx";
 import Tag from "../../tag/index.jsx";
 
-function DatePickerDemo() {
+function RangePickerDemo() {
   let open = false;
   let defaultOpen = false;
   let placement = "bottomLeft";
@@ -47,9 +47,16 @@ function DatePickerDemo() {
         maxWidth: "800px",
       }}
     >
-      <div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+          gap: 10,
+        }}
+      >
         <Tag color="geekblue" size="large">
-          回调函数示例
+          自定义回调函数的range日期选择器
         </Tag>
         <div
           style={{
@@ -57,28 +64,27 @@ function DatePickerDemo() {
             gap: "16px",
             alignItems: "center",
             flexWrap: "wrap",
-            marginTop: 10,
           }}
         >
-          <DatePicker
+          <RangePicker
             placeholder="onChange"
             showNow={false}
             onChange={handleChange}
           />
-          <DatePicker
+          <RangePicker
             placeholder="onOpenChange"
             onOpenChange={handleOpenChange}
           />
-          <DatePicker
+          <RangePicker
             placeholder="onPanleChange"
             onPanleChange={handlePanleChange}
           />
-          <DatePicker
+          <RangePicker
             placeholder="onClickOk"
             needConfirm
             onOk={handleClickOk}
           />
-          <DatePicker
+          <RangePicker
             placeholder="onBlur & onFocus"
             style={{ width: 150 }}
             onBlur={onBlur}
@@ -86,9 +92,17 @@ function DatePickerDemo() {
           />
         </div>
       </div>
-      <div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+          gap: 10,
+        }}
+      >
         <Tag color="geekblue" size="large">
-          open受控示例
+          浮层弹出受控示例
         </Tag>
         <div
           style={{
@@ -98,8 +112,8 @@ function DatePickerDemo() {
             flexWrap: "wrap",
           }}
         >
-          <DatePicker placeholder="defaultOpen" defaultOpen={defaultOpen} />
-          <DatePicker
+          <RangePicker placeholder="defaultOpen" defaultOpen={defaultOpen} />
+          <RangePicker
             placeholder="open受控"
             open={open}
             defaultOpen={defaultOpen}
@@ -107,9 +121,17 @@ function DatePickerDemo() {
           />
         </div>
       </div>
-      <div>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+          gap: 10,
+        }}
+      >
         <Tag color="geekblue" size="large">
-          日历弹出位置控制
+          控制日历弹出位置
         </Tag>
         <div
           style={{
@@ -121,7 +143,7 @@ function DatePickerDemo() {
             marginBottom: 10,
           }}
         >
-          <DatePicker
+          <RangePicker
             placeholder="placement & picker & size"
             style={{ width: 700 }}
             placement={placement}
@@ -158,4 +180,4 @@ function DatePickerDemo() {
   );
 }
 
-export default DatePickerDemo;
+export default RangePickerDemo;

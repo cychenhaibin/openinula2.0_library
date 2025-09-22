@@ -1,4 +1,5 @@
 import { Card } from "../index.jsx";
+import Tag from "../../tag/index.jsx";
 
 const tabList = [
   {
@@ -50,6 +51,9 @@ const CardDemo = () => {
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
+      <Tag color="geekblue" size="large">
+        两种传参方式的标签卡片
+      </Tag>
       <div
         style={{
           display: "flex",
