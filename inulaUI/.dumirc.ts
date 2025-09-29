@@ -1,7 +1,7 @@
 import { defineConfig } from 'dumi';
 export default defineConfig({
   outputPath: 'docs-dist',
-  themeConfig: ({
+  themeConfig: {
     name: 'InulaUI',
     nav: [
       {
@@ -32,15 +32,13 @@ export default defineConfig({
         },
         {
           title: '导航',
-          children: [
-            { title: 'Tabs 标签页', link: '/components/tabs' },
-          ],
+          children: [{ title: 'Tabs 标签页', link: '/components/tabs' }],
         },
         {
           title: '数据录入',
           children: [
             { title: 'Checkbox 多选框', link: '/components/checkbox' },
-            { title: 'DataPicker 日期选择器', link: '/components/datapicker' },
+            { title: 'DatePicker 日期选择器', link: '/components/datepicker' },
             { title: 'Form 表单', link: '/components/form' },
             { title: 'Input 输入框', link: '/components/input' },
             { title: 'Radio 单选框', link: '/components/radio' },
@@ -62,10 +60,13 @@ export default defineConfig({
           children: [
             { title: 'Modal 对话框', link: '/components/dialog' },
             { title: 'Spin 加载中', link: '/components/spin' },
-            { title: 'Notification 通知提示框', link: '/components/notification' },
+            {
+              title: 'Notification 通知提示框',
+              link: '/components/notification',
+            },
           ],
         },
       ],
     },
-  }),
+  },
 });

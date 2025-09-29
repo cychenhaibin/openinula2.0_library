@@ -1,5 +1,6 @@
 import "./index.css";
 import Icon from "../icon/index.jsx";
+import { watch } from "@openinula/next";
 
 /** 
 TabProps: {
@@ -39,41 +40,35 @@ const Tabs = ({
   onTabClick, // (key: string, e: React.MouseEvent) => void; 选项卡点击时的回调函数
   onEdit, // (targetKey: string, action: 'add' | 'remove') => void; 选项卡编辑时的回调函数, 只在 type="editable-card" 时有效
   onTabScroll, // ({ direction: left | right | top | bottom }) => void 选项卡滚动时的回调函数
-  initialActiveKey = activeKey || defaultActiveKey, // string; 初始选中的选项卡的 key
-  initialItems = items || [], // TabProps[]; 选项卡列表
 }) => {
-  let customState = {
-    activeKey: initialActiveKey,
-    items: initialItems,
-  };
+  let customActiveKey = activeKey || defaultActiveKey;
+  let customItems = items || [];
+
+  watch(() => {
+    // console.log(activeKey);
+    customItems = items || [];
+    // customActiveKey = activeKey || defaultActiveKey;
+  });
 
   function addItem(item) {
-    customState = {
-      ...customState,
-      items: [...customState.items, item],
-      activeKey: item.key,
-    };
+    customItems.push(item);
+    customActiveKey = item.key;
   }
 
   function removeItem(key) {
-    customState = {
-      ...customState,
-      items: customState.items.filter((item) => item.key !== key),
-      activeKey:
-        customState.items.length > 0 ? customState.items[0].key : undefined,
-    };
+    const targetIndex = customItems.findIndex((item) => item.key === key);
+    customItems = customItems.filter((item) => item.key !== key);
+    const index =
+      targetIndex === customItems.length ? targetIndex - 1 : targetIndex;
+    customActiveKey =
+      customItems.length && key === customActiveKey
+        ? customItems[index].key
+        : customActiveKey;
   }
 
   function setActiveKey(key) {
-    customState = {
-      ...customState,
-      activeKey: key,
-    };
+    customActiveKey = key;
   }
-
-  // watch(() => {
-  //   console.log("items", customState.items);
-  // });
 
   const classNames = [
     "inula-tabs",
@@ -104,7 +99,7 @@ const Tabs = ({
         return `${indicator.size}px`;
       } else if (typeof indicator.size === "function") {
         const value = indicator.size(0);
-        const sign = value > 0 ? '+' : value < 0 ? '- ' : '';
+        const sign = value > 0 ? "+" : value < 0 ? "- " : "";
         return `calc(100% ${sign} ${Math.abs(value)}px)`;
       }
     } else {
@@ -112,25 +107,29 @@ const Tabs = ({
     }
   };
 
-  const handleTabClick = (item) => {
+  const handleTabClick = (item, e) => {
     if (item.disabled) return;
     if (activeKey) {
       setActiveKey(item.key);
-      onChange && onChange(item.key);
-      onTabClick && onTabClick(item.key);
+      onChange && onChange(item.key, e);
+      onTabClick && onTabClick(item.key, e);
     } else {
       setActiveKey(item.key);
-      onChange && onChange(item.key);
-      onTabClick && onTabClick(item.key);
+      console.log(activeKey);
+      onChange && onChange(item.key, e);
+      onTabClick && onTabClick(item.key, e);
     }
   };
 
   const handleEdit = (targetKey, action, isDisabled = false) => {
     if (isDisabled) return;
     if (onEdit) {
+      //受控，直接返回
+      if (!onEdit) throw new Error("受控模式没有onEdit");
       onEdit(targetKey, action);
       return;
     }
+
     if (action === "add") {
       addItem({
         key: `tab_${Date.now()}`, // 使用时间戳生成唯一key
@@ -145,7 +144,11 @@ const Tabs = ({
   return (
     <div className={classNames} style={style}>
       {/* tabBar */}
-      <div className={tabBarClassNames} style={tabBarStyles} onScroll={onTabScroll}>
+      <div
+        className={tabBarClassNames}
+        style={tabBarStyles}
+        onScroll={onTabScroll}
+      >
         {/* tabBar左侧额外内容 */}
         {tabBarExtraContent && tabBarExtraContent.left && (
           <div
@@ -156,15 +159,15 @@ const Tabs = ({
         )}
 
         {/* 标签项 */}
-        <for each={customState.items}>
+        <for each={customItems}>
           {(item) => {
             return (
               <div
                 key={item.key}
                 className={`inula-tabs-bar-item ${
-                  customState.activeKey === item.key
-                    ? // customActiveKey === item.key
-                      "inula-tabs-bar-item-active"
+                  // customState.activeKey === item.key
+                  customActiveKey === item.key
+                    ? "inula-tabs-bar-item-active"
                     : ""
                 } 
                 ${item.disabled ? "inula-tabs-bar-item-disabled" : ""} 
@@ -179,7 +182,7 @@ const Tabs = ({
               >
                 <div
                   className="inula-tabs-bar-item-content"
-                  onClick={() => handleTabClick(item)}
+                  onClick={(e) => handleTabClick(item, e)}
                 >
                   {item.icon}
                   <text>{item.label || item.tab}</text>
@@ -209,7 +212,7 @@ const Tabs = ({
         {type === "editable-card" && !hideAdd && (
           <div
             className="inula-tabs-bar-item-add"
-            onClick={() => handleEdit(`${customState.items.length + 1}`, "add")}
+            onClick={() => handleEdit(`${customItems.length + 1}`, "add")}
           >
             {addIcon}
           </div>
@@ -227,10 +230,10 @@ const Tabs = ({
 
       {/* 内容区域 */}
       <div className="inula-tabs-content">
-        <for each={customState.items}>
+        <for each={customItems}>
           {(item) => {
             return (
-              <if cond={customState.activeKey === item.key}>
+              <if cond={customActiveKey === item.key}>
                 <div className="inula-tabs-content-item">{item.children}</div>
               </if>
             );

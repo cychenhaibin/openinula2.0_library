@@ -1,5 +1,5 @@
 import Switch from "../index.jsx";
-import Button from "../../button/index.jsx";
+import Tag from "../../tag/index.jsx";
 
 const SwitchDemo = () => {
   let checked = false;
@@ -14,9 +14,7 @@ const SwitchDemo = () => {
           width: "100%",
         }}
       >
-        <text style={{ width: "20%", textAlign: "start" }}>
-          默认型号、小号开关
-        </text>
+        <Tag color="geekblue">默认型号、小号开关</Tag>
         <Switch />
         <text>默认型号</text>
         <Switch size="small" />
@@ -30,13 +28,9 @@ const SwitchDemo = () => {
           width: "100%",
         }}
       >
-        <text style={{ width: "20%", textAlign: "start" }}>
-          定义默认选中、选中的开关
-        </text>
+        <Tag color="geekblue">默认选中</Tag>
         <Switch defaultChecked={true} />
         <text>默认选中</text>
-        <Switch checked={true} style={{ backgroundColor: "pink" }} />
-        <text>选中</text>
       </div>
       <div
         style={{
@@ -46,27 +40,11 @@ const SwitchDemo = () => {
           width: "100%",
         }}
       >
-        <text style={{ width: "20%", textAlign: "start" }}>
-          定义默认选中禁用、禁用的开关
-        </text>
+        <Tag color="geekblue">禁用开关</Tag>
         <Switch defaultChecked={true} disabled={true} />
         <text>默认选中禁用</text>
         <Switch disabled={true} />
         <text>禁用</text>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          gap: 16,
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <text style={{ width: "20%", textAlign: "start" }}>
-          通过外部受控切换状态的开关
-        </text>
-        <Switch checked={checked} />
-        <Button onClick={() => (checked = !checked)}>切换</Button>
       </div>
     </div>
   );

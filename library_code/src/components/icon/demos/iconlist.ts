@@ -353,7 +353,7 @@ const filledIconValueList = [
   "wave-square",
   "water-ladder",
   "wand-magic",
-  "cardboard-box",
+  "vr-cardboard",
   "wand-sparkles",
   "volume-xmark",
   "volume-off",

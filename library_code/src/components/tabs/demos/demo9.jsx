@@ -2,7 +2,7 @@ import Button from "../../button/index.jsx";
 import Tabs from "../index.jsx";
 
 const TabsDemo = () => {
-  const items = [
+  let items = [
     {
       key: "1",
       label: "Tab 1",
@@ -20,11 +20,42 @@ const TabsDemo = () => {
       closable: false,
     },
   ];
+  let MyActiveKey;
+  let newTabIndex = 0;
 
+  const add = () => {
+    const newMyActiveKey = `newTab${newTabIndex++}`;
+    items.push({
+      label: "New Tab",
+      children: "New Tab Pane",
+      key: newMyActiveKey,
+    });
+    MyActiveKey = newMyActiveKey;
+  };
+
+  const remove = (targetKey) => {
+    const targetIndex = items.findIndex((item) => item.key === targetKey);
+    const newItems = items.filter((item) => item.key !== targetKey);
+    const index =
+      targetIndex === newItems.length ? targetIndex - 1 : targetIndex;
+    MyActiveKey =
+      items.length && targetKey === MyActiveKey
+        ? items[index].key
+        : MyActiveKey;
+    items = newItems;
+  };
+
+  const onEdit = (targetKey, action) => {
+    if (action === "add") {
+      add();
+    } else {
+      remove(targetKey);
+    }
+  };
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 24, width: "80%" }}>
       <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-        <Button>ADD</Button>
+        <Button onClick={add}>ADD</Button>
       </div>
       <div
         style={{
@@ -34,7 +65,13 @@ const TabsDemo = () => {
           width: "100%",
         }}
       >
-        <Tabs items={items} defaultActiveKey="1" type="editable-card" hideAdd />
+        <Tabs
+          items={items}
+          onEdit={onEdit}
+          activeKey={MyActiveKey}
+          type="editable-card"
+          hideAdd
+        />
       </div>
     </div>
   );
