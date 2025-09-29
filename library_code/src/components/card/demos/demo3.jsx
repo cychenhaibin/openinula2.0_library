@@ -1,5 +1,6 @@
 import { Card, CardMeta } from "../index.jsx";
 import Icon from "../../icon/index.jsx";
+import Tag from "../../tag/index.jsx";
 
 const actions = [
   <Icon value="wand-magic-sparkles" />,
@@ -9,11 +10,19 @@ const actions = [
 
 const CardDemo = () => {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        flexWrap: "wrap",
+        gap: 24,
+      }}
+    >
+      <Tag color="geekblue" size="large">
+        Meta组件，快速定义内容
+      </Tag>
       <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
         <Card
-        //   title="Default size card"
-        //   extra={<div>More</div>}
           cover={
             <img
               alt="example"
