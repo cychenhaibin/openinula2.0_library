@@ -14,7 +14,7 @@
 <div style="border: 1px solid #eaecef; border-radius: 4px; padding: 0 20px 20px; margin: 20px 0">
 <iframe
   src="http://localhost:5173/#/form/demo1"
-  style="width: 100%; height: 225px; border: 0;"
+  style="width: 100%; height: 265px; border: 0;"
 ></iframe>
 <h3>基本</h3>
 <p>基本的表单数据域控制展示，包含布局、初始化、验证、提交。</p>
@@ -109,7 +109,7 @@ export default Demo1;
 <div style="border: 1px solid #eaecef; border-radius: 4px; padding: 0 20px 20px; margin: 20px 0">
 <iframe
   src="http://localhost:5173/#/form/demo2"
-  style="width: 100%; height: 55px; border: 0;"
+  style="width: 100%; height: 290px; border: 0;"
 ></iframe>
 <h3>表单方法调用</h3>
 <p>展示表单的各种方法调用，包括校验、重置、设置值等。</p>
@@ -220,7 +220,7 @@ export default Demo;
 <div style="border: 1px solid #eaecef; border-radius: 4px; padding: 0 20px 20px; margin: 20px 0">
 <iframe
   src="http://localhost:5173/#/form/demo3"
-  style="width: 100%; height: 85px; border: 0;"
+  style="width: 100%; height: 255px; border: 0;"
 ></iframe>
 <h3>表单布局</h3>
 <p>表单有三种布局。</p>
@@ -308,7 +308,7 @@ export default Demo3;
 <div style="border: 1px solid #eaecef; border-radius: 4px; padding: 0 20px 20px; margin: 20px 0">
 <iframe
   src="http://localhost:5173/#/form/demo4"
-  style="width: 100%; height: 55px; border: 0;"
+  style="width: 100%; height: 500px; border: 0;"
 ></iframe>
 <h3>表单禁用</h3>
 <p>展示表单的禁用功能，包括禁用状态切换、表单重置等。</p>
@@ -448,7 +448,7 @@ export default Demo4;
 <div style="border: 1px solid #eaecef; border-radius: 4px; padding: 0 20px 20px; margin: 20px 0">
 <iframe
   src="http://localhost:5173/#/form/demo5"
-  style="width: 100%; height: 55px; border: 0;"
+  style="width: 100%; height: 395px; border: 0;"
 ></iframe>
 <h3>表单变体</h3>
 <p>展示四种不同的表单变体：outlined（默认）、filled、borderless、underlined。</p>
@@ -558,7 +558,7 @@ export default Demo5;
 <div style="border: 1px solid #eaecef; border-radius: 4px; padding: 0 20px 20px; margin: 20px 0">
 <iframe
   src="http://localhost:5173/#/form/demo7"
-  style="width: 100%; height: 55px; border: 0;"
+  style="width: 100%; height: 360px; border: 0;"
 ></iframe>
 <h3>自定义必填标记</h3>
 <p>展示自定义必填标记的功能，包括默认、可选、隐藏、自定义。</p>
@@ -650,16 +650,72 @@ export default Demo7;
 
 ## API
 
+### Form 属性
+
 | 属性 | 说明 | 类型 | 可选值 | 默认值 |
 |---|---|---|---|---|
-| type | 按钮类型 | `string` | `primary` / `default` / `dashed` / `text` / `link` | `default` |
+| model | 表单数据模型（响应式对象） | `Record<string, any>` | - | `{}` |
+| rules | 表单级校验规则 | `Record<string, Rule \| Rule[]>` | - | `{}` |
+| layout | 表单布局 | `string` | `horizontal` / `vertical` / `inline` | `horizontal` |
+| labelAlign | 标签对齐方式 | `string` | `left` / `right` | `right` |
+| colon | 是否在标签后显示冒号 | `boolean` | - | `true` |
+| disabled | 整体禁用 | `boolean` | - | `false` |
 | variant | 视觉变体 | `string` | `outlined` / `filled` / `borderless` / `underlined` | `outlined` |
-| danger | 危险状态样式 | `boolean` | - | `false` |
-| ghost | 幽灵样式（深色背景常用） | `boolean` | - | `false` |
-| disabled | 禁用状态 | `boolean` | - | `false` |
-| loading | 加载中状态（禁用且展示旋转图标） | `boolean` | - | `false` |
-| htmlType | 原生按钮类型 | `string` | `button` / `submit` / `reset` | `button` |
-| onClick | 点击回调 | `(e) => void` | - | - |
-| children | 按钮内容 | `ReactNode` | - | - |
+| size | 表单控件尺寸 | `string` | `small` / `medium` / `large` | `medium` |
+| requiredMark | 必填标记策略 | `string` | `default` / `optional` / `hidden` / `customize` | `default` |
+| requiredMarkRender | 自定义必填标记渲染 | `(label, ctx) => any` | - | `null` |
+| onFinish | 提交且校验通过回调 | `(values) => void` | - | - |
+| onFinishFailed | 提交且校验失败回调 | `({ errors, values }) => void` | - | - |
+| className | 自定义类名 | `string` | - | - |
+| style | 内联样式 | `Record<string, any>` | - | - |
 
-说明：其余属性会透传给原生 `button` 元素（如 `title`、`id`、`aria-*` 等）。
+说明：其余属性会透传给原生 `form` 元素。
+
+#### Rule 规则项
+
+| 字段 | 说明 | 类型 |
+|---|---|---|
+| required | 是否必填 | `boolean` |
+| min | 最小值/最小长度 | `number` |
+| max | 最大值/最大长度 | `number` |
+| pattern | 正则校验 | `RegExp` |
+| validator | 自定义校验函数，返回 `false` 或错误文案表示失败 | `(value, model) => boolean \| string \| { valid: boolean; message?: string }` |
+| message | 校验失败的提示文案 | `string` |
+
+### Form 实例方法
+
+| 方法 | 说明 | 签名 |
+|---|---|---|
+| validate | 校验表单，返回是否通过与错误/值 | `(fieldNames?: string[]) => { valid: boolean; errors: Record<string, string>; values: any }` |
+| validateField | 校验单个字段 | `(fieldName: string) => { valid: boolean; error: string; value: any }` |
+| resetFields | 重置字段为默认空值 | `(fieldNames?: string[]) => void` |
+| setFieldsValue | 批量设置字段值 | `(values: Record<string, any>) => void` |
+| getFieldsValue | 获取全部或部分字段值 | `(fieldNames?: string[]) => any` |
+| clearValidate | 清除校验状态（占位，按需扩展） | `(fieldNames?: string[]) => void` |
+| submit | 触发表单提交 | `() => void` |
+
+### FormItem 属性
+
+| 属性 | 说明 | 类型 | 可选值 | 默认值 |
+|---|---|---|---|---|
+| name | 字段名（支持路径 `a.b.c`） | `string` | - | - |
+| label | 标签文本，传 `null` 隐藏 | `any` | - | - |
+| required | 是否必填（叠加到规则） | `boolean` | - | `false` |
+| rules | 字段级规则（与表单级规则合并） | `Rule \| Rule[]` | - | `[]` |
+| model | 绑定的表单模型（用于注册字段） | `Record<string, any>` | - | - |
+| validateOn | 触发校验时机 | `string` | `change` / `blur` / `submit` | `change` |
+| help | 帮助文案 | `any` | - | - |
+| extra | 额外说明 | `any` | - | - |
+| className | 自定义类名 | `string` | - | - |
+| style | 内联样式 | `Record<string, any>` | - | - |
+| colon | 覆盖是否展示冒号 | `boolean` | - | `true` |
+| children | 表单控件 | `any` | - | - |
+
+说明：`disabled`、`variant`、`size`、`requiredMark` 等会从 `Form` 上下文继承。
+
+### 辅助函数
+
+从包中额外导出以下工具函数：
+
+- `getValueByPath(obj, path)`：根据路径获取对象值。
+- `setValueByPath(obj, path, value)`：根据路径设置对象值。

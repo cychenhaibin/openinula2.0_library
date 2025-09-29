@@ -85,7 +85,7 @@ const Demo = () => {
         <div style={{ marginLeft: 120, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <Button type="primary" htmlType="submit">Submit</Button>
           <Button htmlType="reset">Reset</Button>
-          <Button type="link" onClick={handleSetValues}>Fill form</Button>
+          {/* <Button type="link" onClick={handleSetValues}>Fill form</Button> */}
         </div>
       </Form>
     </div>

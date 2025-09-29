@@ -10,9 +10,9 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: 'src/index.js',
+      entry: 'src/notification.js',
       name: 'InulaUI',
-      fileName: (format) => `index.${format}.js`,
+      fileName: (format) => `notification.${format}.js`,
       formats: ['es','cjs'],
     },
     rollupOptions: {

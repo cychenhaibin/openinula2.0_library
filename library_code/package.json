@@ -15,6 +15,10 @@
       "import": "./dist/index.es.js",
       "require": "./dist/index.cjs.js"
     },
+    "./notification": {
+      "import": "./dist/notification.es.js",
+      "require": "./dist/notification.cjs.js"
+    },
     "./style.css": "./dist/style.css",
     "./dist/*": "./dist/*"
   },

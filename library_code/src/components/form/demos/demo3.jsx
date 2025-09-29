@@ -61,7 +61,7 @@ const Demo3 = () => {
                 <FormItem name="actions" label={null} model={searchForm}>
                     <div style={{ display: 'flex', gap: 8 }}>
                         <Button type="primary" htmlType="submit">Search</Button>
-                        <Button onClick={handleReset}>Reset</Button>
+                        {/* <Button onClick={handleReset}>Reset</Button> */}
                     </div>
                 </FormItem>
             </Form>
