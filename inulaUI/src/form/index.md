@@ -14,7 +14,7 @@
 <div style="border: 1px solid #eaecef; border-radius: 4px; padding: 0 20px 20px; margin: 20px 0">
 <iframe
   src="http://localhost:5173/#/form/demo1"
-  style="width: 100%; height: 55px; border: 0;"
+  style="width: 100%; height: 225px; border: 0;"
 ></iframe>
 <h3>基本</h3>
 <p>基本的表单数据域控制展示，包含布局、初始化、验证、提交。</p>
